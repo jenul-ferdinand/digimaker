@@ -2,25 +2,18 @@
   display: block;
   min-height: 100vh;
   padding: 40px 0;
-  // TODO: font-family
-  -webkit-font-smoothing: antialiased;
 }
 
 .a4-page {
   background: white;
-  width: 210mm;        /* Strict A4 Width */
-  min-height: 297mm;   /* Strict A4 Height */
-  margin: 0 auto;      /* Center in the browser */
-  padding: 20mm;       /* Standard 2cm print margins */
-
-  // Visual styling for screen (Drop shadow makes it look like paper)
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  position: relative;
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  padding: 20mm;
   box-sizing: border-box;
-
-  // Flex column allows footer to sit at bottom if content is short
   display: flex;
   flex-direction: column;
+  -webkit-font-smoothing: antialiased;
 }
 
 header {
@@ -58,7 +51,7 @@ main {
 }
 
 footer {
-  margin-top: 40px;
+  margin-top: auto;
   padding-top: 10px;
   border-top: 1px solid #ddd;
   text-align: center;
@@ -71,22 +64,24 @@ footer {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  color: white;
   font-size: 1.2rem;
+  color: #666;
 }
 
 @media print {
   :host {
-    background: none;
     padding: 0;
+    min-height: unset;
   }
 
   .a4-page {
-    width: 100%;
     margin: 0;
-    box-shadow: none;
     page-break-after: always;
+    page-break-inside: avoid;
+    overflow: hidden;
   }
 
-  .loading-state { display: none; }
+  .loading-state {
+    display: none;
+  }
 }

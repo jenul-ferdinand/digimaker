@@ -1,5 +1,18 @@
-$bg-color: #252525;
-
 body {
-  background-color: $bg-color;
+  background-color: #252525;
+  margin: 0;
+  padding: 0;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  body {
+    background-color: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
