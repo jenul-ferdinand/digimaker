@@ -82,9 +82,9 @@ export class LiveEditorComponent {
         'Check if the car bounces at the edges',
       ],
       challengeSection: [
-        'Bruise Penguin: Add sound effects when the penguin gets hit',
-        'Add more cars: Add more cars moving at different speeds',
-        'Multiple Levels: Create multiple levels with increasing difficulty',
+        { name: 'Bruise Penguin', task: 'Add sound effects when the penguin gets hit' },
+        { name: 'Add more cars', task: 'Add more cars moving at different speeds' },
+        { name: 'Multiple Levels', task: 'Create multiple levels with increasing difficulty' },
       ],
       newProject: 'Try creating a similar game with different sprites and backgrounds',
       testYourself: {

@@ -50,8 +50,8 @@
       <h3>Challenge!</h3>
       <section>
         @for (step of data.challengeSection; track $index; let i = $index) {
-          <h4>{{ data.challengeSection[i].split(':')[0] }}</h4>
-          <p>{{ data.challengeSection[i].split(':')[1]}}</p>
+          <h4>{{ data.challengeSection[i].name }}</h4>
+          <p>{{ data.challengeSection[i].task }}</p>
         }
       </section>
 
