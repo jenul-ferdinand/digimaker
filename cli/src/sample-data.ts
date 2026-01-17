@@ -46,7 +46,10 @@ export const sampleLessonData: ParsedLesson = {
     { name: 'Add more cars', task: 'Add more cars moving at different speeds' },
     { name: 'Multiple Levels', task: 'Create multiple levels with increasing difficulty' },
   ],
-  newProject: 'Try creating a similar game with different sprites and backgrounds',
+  newProject: {
+    name: 'Energy Boost',
+    task: 'Try creating a similar game with different sprites and backgrounds',
+  },
   testYourself: {
     message: 'Can you explain why we use "forever" and "if" blocks together?',
     image: null,

@@ -20,6 +20,11 @@ export interface Challenge {
   task: string;
 }
 
+export interface NewProject {
+  name: string;
+  task: string;
+}
+
 export interface TestYourself {
   message: string;
   image: string | null;
@@ -37,7 +42,7 @@ export interface ParsedLesson {
   codeBlock: string | null;
   tryItOutSection: Array<string> | null;
   challengeSection: Array<Challenge>;
-  newProject: string;
+  newProject: NewProject;
   testYourself: TestYourself;
   funFact: string | null;
 }
