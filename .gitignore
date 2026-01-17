@@ -33,3 +33,10 @@ typings/
 
 .DS_Store
 Thumbs.db
+
+# CLI output
+output/
+
+# Ignore compiled files in types/ source folder (should only be in dist/)
+types/*.js
+types/*.d.ts
