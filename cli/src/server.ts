@@ -24,7 +24,7 @@ export async function startServer(): Promise<ServerInstance> {
   const app = express();
 
   app.use(express.static(ANGULAR_DIST_PATH));
-  app.get('*', (req, res) => {
+  app.get('/{*path}', (req, res) => {
     res.sendFile(path.join(ANGULAR_DIST_PATH, 'index.html'));
   });
 

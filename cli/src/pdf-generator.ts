@@ -1,14 +1,14 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
 import fs from 'fs/promises';
-import { LessonData } from '@common-types/lesson';
+import { ParsedLesson } from '@common-types/lesson';
 import { GenerateOptions } from '@common-types/generate';
 import { logger } from './logger.js';
 
 export interface PdfGeneratorInstance {
   browser: Browser;
-  generatePdf: (data: LessonData, options?: GenerateOptions) => Promise<string>;
-  generateBatch: (items: { data: LessonData; options: GenerateOptions }[]) => Promise<string[]>;
+  generatePdf: (data: ParsedLesson, options?: GenerateOptions) => Promise<string>;
+  generateBatch: (items: { data: ParsedLesson; options: GenerateOptions }[]) => Promise<string[]>;
   close: () => Promise<void>;
 }
 
@@ -19,6 +19,7 @@ interface PooledPage {
 
 const POOL_SIZE = 4;
 const RENDER_DELAY = 100;
+const PAGE_WAIT_MS = 30_000;
 
 export async function createPdfGenerator(serverUrl: string): Promise<PdfGeneratorInstance> {
   logger.info('[PDF] Launching browser...');
@@ -62,24 +63,30 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
     return pooledPage!;
   }
 
-  async function generateOnPage(page: Page, data: LessonData, options: GenerateOptions): Promise<string> {
+  async function generateOnPage(page: Page, data: ParsedLesson, options: GenerateOptions): Promise<string> {
     const { outputDir = './output', filename = 'output' } = options;
     await fs.mkdir(outputDir, { recursive: true });
 
+    // Clear previous data
     await page.evaluate(() => {
       (window as any)['PDF_DATA'] = null;
     });
 
+    // Small delay to ensure Angular detects the null value
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // Set new data
     await page.evaluate((lessonData) => {
       (window as any)['PDF_DATA'] = lessonData;
     }, data);
 
+    // Wait for content to render with longer timeout and more frequent polling
     await page.waitForFunction(
       () => {
         const el = document.querySelector('.a4-page');
         return el && el.textContent && el.textContent.length > 10;
       },
-      { timeout: 5000 }
+      { timeout: PAGE_WAIT_MS, polling: 100 }
     );
 
     await new Promise(resolve => setTimeout(resolve, RENDER_DELAY));
@@ -97,7 +104,7 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
     return pdfPath;
   }
 
-  async function generatePdf(data: LessonData, options: GenerateOptions = {}): Promise<string> {
+  async function generatePdf(data: ParsedLesson, options: GenerateOptions = {}): Promise<string> {
     const pooledPage = await getAvailablePage();
     try {
       const result = await generateOnPage(pooledPage.page, data, options);
@@ -108,7 +115,7 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
     }
   }
 
-  async function generateBatch(items: { data: LessonData; options: GenerateOptions }[]): Promise<string[]> {
+  async function generateBatch(items: { data: ParsedLesson; options: GenerateOptions }[]): Promise<string[]> {
     logger.info(`[PDF] Processing ${items.length} files with ${POOL_SIZE} parallel workers...`);
 
     const results: string[] = [];
