@@ -18,7 +18,7 @@ import { Previewer } from 'pagedjs';
   imports: [],
   templateUrl: './lesson-preview.component.html',
   styleUrl: './lesson-preview.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class LessonPreviewComponent implements AfterViewInit, OnChanges {
   @Input() data: ParsedLesson | null = null;

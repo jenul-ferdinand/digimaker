@@ -24,11 +24,7 @@ export class LessonFormComponent {
     this.dataChange.emit(updated);
   }
 
-  onUpdateStepSection(
-    key: string,
-    index: number,
-    newValue: any
-  ) {
+  onUpdateStepSection(key: string, index: number, newValue: any) {
     const updatedArray = [...this.data[key as keyof ParsedLesson]];
     updatedArray[index] = newValue;
     this.updateField(key as keyof ParsedLesson, updatedArray);

@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  NgZone,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ParsedLesson } from '@common-types/lesson';
 import { LessonPreviewComponent } from '../../dumb/lesson-preview/lesson-preview.component';
 
