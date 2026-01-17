@@ -1,0 +1,38 @@
+@if (data) {
+  <div class="a4-page">
+
+    <header>
+      <h1>{{ data.title || 'Untitled Document' }}</h1>
+      <div class="meta">
+        <span><strong>Ref:</strong> {{ data.id || 'N/A' }}</span>
+        <span><strong>Date:</strong> {{ data.generatedAt }}</span>
+      </div>
+    </header>
+
+    <main>
+      @for (para of data.paragraphs; track $index) {
+        <p class="paragraph">{{ para }}</p>
+      }
+
+      @if (data.paragraphs?.length === 0) {
+        <p class="paragraph" style="color: #999; font-style: italic;">
+          [No text content found in document]
+        </p>
+      }
+    </main>
+
+    <footer>
+      Generated via Angular CLI Tool • Page 1
+    </footer>
+
+  </div>
+}
+
+@else {
+  <div class="loading-state">
+    <div style="text-align: center;">
+      <p>Waiting for CLI Data Injection...</p>
+      <small style="opacity: 0.7">Run 'node cli.js' to generate PDF</small>
+    </div>
+  </div>
+}

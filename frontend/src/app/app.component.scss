@@ -1,0 +1,92 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 40px 0;
+  // TODO: font-family
+  -webkit-font-smoothing: antialiased;
+}
+
+.a4-page {
+  background: white;
+  width: 210mm;        /* Strict A4 Width */
+  min-height: 297mm;   /* Strict A4 Height */
+  margin: 0 auto;      /* Center in the browser */
+  padding: 20mm;       /* Standard 2cm print margins */
+
+  // Visual styling for screen (Drop shadow makes it look like paper)
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  box-sizing: border-box;
+
+  // Flex column allows footer to sit at bottom if content is short
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  border-bottom: 2px solid #333;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+
+  h1 {
+    font-size: 24pt;
+    margin: 0;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .meta {
+    margin-top: 10px;
+    font-size: 10pt;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+main {
+  flex-grow: 1;
+
+  .paragraph {
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: justify;
+  }
+}
+
+footer {
+  margin-top: 40px;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  font-size: 9pt;
+  color: #999;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+  font-size: 1.2rem;
+}
+
+@media print {
+  :host {
+    background: none;
+    padding: 0;
+  }
+
+  .a4-page {
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+    page-break-after: always;
+  }
+
+  .loading-state { display: none; }
+}
