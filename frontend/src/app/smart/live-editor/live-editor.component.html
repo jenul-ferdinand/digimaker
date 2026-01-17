@@ -1,0 +1,9 @@
+<div class="split-layout">
+  <div class="pane-left">
+    <app-lesson-form [data]="activeData" (dataChange)="handleDataChange($event)"> </app-lesson-form>
+  </div>
+
+  <div class="pane-right">
+    <app-lesson-preview [data]="previewData"></app-lesson-preview>
+  </div>
+</div>

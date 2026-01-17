@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.print-container {
+  width: 210mm;
+  background: white;
+  margin: 0 auto;
+}
+
+// Override lesson-preview styles for cleaner PDF output
+::ng-deep {
+  .pdf-preview {
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .pagedjs_pages {
+    background: white;
+  }
+
+  .pagedjs_page {
+    margin-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+}

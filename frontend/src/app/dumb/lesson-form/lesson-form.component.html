@@ -1,0 +1,67 @@
+<div class="form-container">
+  <h2>Lesson Editor</h2>
+
+  <div class="form-group">
+    <label>Topic</label>
+    <input
+      [ngModel]="data.topic"
+      (ngModelChange)="updateField('topic', $event)"
+      placeholder="e.g. Decisions"
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Project</label>
+    <input [ngModel]="data.project" (ngModelChange)="updateField('project', $event)" />
+  </div>
+
+  <div class="form-group">
+    <label>Description</label>
+    <textarea
+      [ngModel]="data.description"
+      (ngModelChange)="updateField('description', $event)"
+      rows="6"
+    ></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Project One Liner</label>
+    <textarea
+      [ngModel]="data.projectExplainer"
+      (ngModelChange)="updateField('projectExplainer', $event)"
+      rows="3"
+    ></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Cover Image</label>
+    <input type="file" id="file-upload" name="uploaded-file" />
+  </div>
+
+  <div class="form-group">
+    <label>Get Ready Section</label>
+    @for (step of data.getReadySection; track $index; let i = $index) {
+      <input
+        [ngModel]="data.getReadySection[i]"
+        (ngModelChange)="onUpdateStepSection('getReadySection', i, $event)"
+        [name]="'step-'+i"
+      />
+    }
+  </div>
+
+  <div class="form-group">
+    <label>Add Your Code Section</label>
+    @for (step of data.addYourCodeSection; track $index; let i = $index) {
+      <input
+        [ngModel]="data.addYourCodeSection[i].step"
+        (ngModelChange)="onUpdateStepSection('addYourCodeSection', i, $event)"
+        [name]="'step-'+i"
+      >
+      <input type="file" id="file-upload" name="uploaded-file" />
+    }
+  </div>
+
+  <div class="form-group">
+    
+  </div>
+</div>

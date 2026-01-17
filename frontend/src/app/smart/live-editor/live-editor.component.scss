@@ -1,0 +1,30 @@
+.split-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.pane-left {
+  width: 30%;
+  min-width: 350px;
+  overflow-y: auto;
+  background: #f9f9f9;
+  border-right: 1px solid #e0e0e0;
+  padding: 2rem;
+}
+
+.pane-right {
+  flex: 1; // take remaining space
+  overflow: hidden;
+  background: #525659;
+  display: flex;
+  flex-direction: column;
+}
+
+.pane-right ::ng-deep app-lesson-preview {
+  flex: 1;
+  min-height: 0; // Needed for flex child scrolling
+  display: flex;
+  flex-direction: column;
+}

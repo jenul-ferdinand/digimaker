@@ -1,5 +1,23 @@
+// We need this here
+.pagedjs_pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pagedjs_page {
+  background-color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.pagedjs_sheet {
+  background-color: white;
+}
+
+// Scrollbars
 body {
-  background-color: #252525;
+  scrollbar-gutter: stable !important;
   margin: 0;
   padding: 0;
 }
@@ -9,10 +27,54 @@ body {
   margin: 0;
 }
 
+// Styles for the /print route - remove height constraints for PDF generation
+body.print-mode,
+body.print-mode app-root {
+  height: auto !important;
+  overflow: visible !important;
+}
+
 @media print {
+  // Reset body for print
   body {
-    background-color: white;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    background: white !important;
+  }
+
+  // Hide the form pane
+  .pane-left {
+    display: none !important;
+  }
+
+  // Make the layout fill the page
+  .split-layout,
+  .pane-right,
+  app-lesson-preview,
+  .pdf-preview {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  // Reset Paged.js container for print
+  .pagedjs_pages {
+    display: block !important;
+  }
+
+  // Each page prints naturally
+  .pagedjs_page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  // Last page shouldn't force a break
+  .pagedjs_page:last-child {
+    page-break-after: auto;
+    break-after: auto;
   }
 }

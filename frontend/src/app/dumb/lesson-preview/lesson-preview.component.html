@@ -1,0 +1,71 @@
+@if (data) {
+  <div #sourceContent style="display: none">
+    <header>
+      <h1>{{ data.topic }}</h1>
+      <h2>{{ data.project }}</h2>
+    </header>
+
+    <main>
+      <section class="description">
+        <p>{{ data.description }}</p>
+      </section>
+
+      <section class="oneliner">
+        <p>{{ data.projectExplainer }}</p>
+      </section>
+
+      <h3>Get Ready</h3>
+      <section class="get-ready">
+        @for (step of data.getReadySection; track $index; let i = $index) {
+          <p>{{ data.getReadySection[i] }}</p>
+        }
+      </section>
+
+      <h3>Add Your Code</h3>
+      <section class="add-your-code">
+        @for (step of data.addYourCodeSection; track $index; let i = $index) {
+          <p>{{ data.addYourCodeSection[i].step }}</p>
+          @let image = data.addYourCodeSection[i].image;
+          @if (image) {
+            <img [src]="image" />
+          }
+        }
+      </section>
+      <section class="code-">
+        @let codeBlock = data.codeBlock;
+        @if (codeBlock) {
+          <code>{{ codeBlock }}</code>
+        }
+      </section>
+
+      @if (data.tryItOutSection) {
+        <h3>Try It Out!</h3>
+        <section>
+          @for (step of data.tryItOutSection; track $index) {
+            <p>{{ step }}</p>
+          }
+        </section>
+      }
+
+      <h3>Challenge!</h3>
+      <section>
+        @for (step of data.challengeSection; track $index; let i = $index) {
+          <h4>{{ data.challengeSection[i].split(':')[0] }}</h4>
+          <p>{{ data.challengeSection[i].split(':')[1]}}</p>
+        }
+      </section>
+
+      <h3>New Project</h3>
+      <section>
+        <a href="some link go here">{{ data.newProject }}</a>
+      </section>
+
+      <h3>Test Yourself</h3>
+      <section>
+        <p>{{ data.testYourself }}</p>
+      </section>
+    </main>
+  </div>
+}
+
+<div #previewContainer class="pdf-preview"></div>

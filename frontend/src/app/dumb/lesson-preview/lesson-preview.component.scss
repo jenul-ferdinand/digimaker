@@ -1,0 +1,34 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.pdf-preview {
+  background-color: #171717;
+  flex: 1;
+  min-height: 0; // For flex child scrolling
+  width: 100%;
+  overflow-y: auto;
+  padding: 40px 0;
+}
+
+// Pagedjs container
+::ng-deep .pagedjs_pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// Each page wrapper
+::ng-deep .pagedjs_page {
+  background-color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+// The actual paper sheet
+::ng-deep .pagedjs_sheet {
+  background-color: white;
+}

@@ -1,25 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'frontend';
-  data: any = {
-
-  };
-
-  ngOnInit(): void {
-    const checkData = setInterval(() => {
-      const win = window as any;
-      if (win['PDF_DATA']) {
-        this.data = win['PDF_DATA'];
-        clearInterval(checkData);
-      }
-    }, 50);
-  }
 }

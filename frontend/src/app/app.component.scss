@@ -1,87 +1,9 @@
 :host {
   display: block;
-  min-height: 100vh;
-  padding: 40px 0;
-}
-
-.a4-page {
-  background: white;
-  width: 210mm;
-  height: 297mm;
-  margin: 0 auto;
-  padding: 20mm;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  -webkit-font-smoothing: antialiased;
-}
-
-header {
-  border-bottom: 2px solid #333;
-  padding-bottom: 20px;
-  margin-bottom: 30px;
-
-  h1 {
-    font-size: 24pt;
-    margin: 0;
-    color: #222;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .meta {
-    margin-top: 10px;
-    font-size: 10pt;
-    color: #666;
-    display: flex;
-    justify-content: space-between;
-  }
-}
-
-main {
-  flex-grow: 1;
-
-  .paragraph {
-    font-size: 11pt;
-    line-height: 1.6;
-    color: #333;
-    margin-bottom: 15px;
-    text-align: justify;
-  }
-}
-
-footer {
-  margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px solid #ddd;
-  text-align: center;
-  font-size: 9pt;
-  color: #999;
-}
-
-.loading-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  
   height: 100vh;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-@media print {
-  :host {
-    padding: 0;
-    min-height: unset;
-  }
-
-  .a4-page {
-    margin: 0;
-    page-break-after: always;
-    page-break-inside: avoid;
-    overflow: hidden;
-  }
-
-  .loading-state {
-    display: none;
-  }
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
