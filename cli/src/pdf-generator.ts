@@ -34,8 +34,8 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
   async function initPage(): Promise<Page> {
     const page = await browser.newPage();
     await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 2 });
-    await page.goto(serverUrl, { waitUntil: 'networkidle0' });
-    await page.emulateMediaType('print');
+    const printUrl = serverUrl.endsWith('/') ? `${serverUrl}print` : `${serverUrl}/print`;
+    await page.goto(printUrl, { waitUntil: 'networkidle0' });
     return page;
   }
 
@@ -80,25 +80,32 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
       (window as any)['PDF_DATA'] = lessonData;
     }, data);
 
-    // Wait for content to render with longer timeout and more frequent polling
+    // Wait for Paged.js to fully complete pagination
+    // The LessonPreviewComponent sets window.PAGED_READY = true when done
+    await page.waitForFunction(
+      () => (window as any)['PAGED_READY'] === true,
+      { timeout: PAGE_WAIT_MS, polling: 100 }
+    );
+
+    // Wait for all images to be fully loaded
     await page.waitForFunction(
       () => {
-        const el = document.querySelector('.a4-page');
-        return el && el.textContent && el.textContent.length > 10;
+        const images = Array.from(document.querySelectorAll('img'));
+        return images.every(img => img.complete && img.naturalHeight > 0);
       },
       { timeout: PAGE_WAIT_MS, polling: 100 }
     );
 
+    // Small delay for any final paint operations
     await new Promise(resolve => setTimeout(resolve, RENDER_DELAY));
 
     const pdfPath = path.join(outputDir, `${filename}.pdf`);
 
     await page.pdf({
       path: pdfPath,
-      format: 'A4',
       printBackground: true,
-      preferCSSPageSize: true,
-      margin: { top: '0', right: '0', bottom: '0', left: '0' },
+      width: '210mm',   // A4 width
+      height: '297mm',  // A4 height
     });
 
     return pdfPath;
