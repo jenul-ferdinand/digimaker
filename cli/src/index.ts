@@ -5,6 +5,7 @@ import { hideBin } from 'yargs/helpers';
 import path from 'path';
 import { startServer, stopServer } from './server.js';
 import { createPdfGenerator } from './pdf-generator.js';
+import { findDocxFiles, parseDocx } from './parsing/index.js';
 import { sampleLessonData } from './sample-data.js';
 import { logger } from './logger.js';
 
@@ -15,8 +16,65 @@ async function main() {
     .scriptName('digimaker')
     .usage('$0 <command> [options]')
     .command(
+      'convert [path]',
+      'Convert .docx files to PDF',
+      (yargs) =>
+        yargs
+          .positional('path', {
+            type: 'string',
+            default: '.',
+            description: 'Path to .docx file or directory',
+          })
+          .option('output', {
+            alias: 'o',
+            type: 'string',
+            default: OUTPUT_DIR,
+            description: 'Output directory for PDFs',
+          })
+          .option('recursive', {
+            alias: 'r',
+            type: 'boolean',
+            default: false,
+            description: 'Recursively search directories',
+          }),
+      async (argv) => {
+        const targetPath = path.resolve(argv.path);
+        const files = await findDocxFiles(targetPath, { recursive: argv.recursive });
+
+        if (files.length === 0) {
+          logger.warn('No .docx files found');
+          return;
+        }
+
+        logger.info(`Converting ${files.length} file(s)...`);
+
+        const server = await startServer();
+
+        try {
+          const generator = await createPdfGenerator(server.url);
+
+          const items = await Promise.all(
+            files.map(async (file) => {
+              const result = await parseDocx(file.path);
+              return {
+                data: result.data,
+                options: { outputDir: argv.output, filename: file.name },
+              };
+            })
+          );
+
+          await generator.generateBatch(items);
+          await generator.close();
+
+          logger.info(`Done! ${files.length} PDF(s) saved to ${argv.output}`);
+        } finally {
+          await stopServer(server);
+        }
+      }
+    )
+    .command(
       'generate',
-      'Generate a PDF from sample data',
+      'Generate a PDF from sample data (for testing)',
       (yargs) =>
         yargs
           .option('output', {
@@ -61,7 +119,7 @@ async function main() {
         });
       }
     )
-    .demandCommand(1, 'Specify a command: generate or serve')
+    .demandCommand(1, 'Specify a command: convert, generate, or serve')
     .help()
     .alias('help', 'h')
     .parse();
