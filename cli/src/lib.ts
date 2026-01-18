@@ -7,7 +7,7 @@ export { logger } from './logger.js';
 
 // Parsing
 export { findDocxFiles, parseDocx } from './parsing/index.js';
-export type { DiscoveryOptions, DiscoveredFile, ParseOptions, ParseResult } from './parsing/index.js';
+export type { DiscoveryOptions, DiscoveredFile, ParseResult } from './parsing/index.js';
 
 // Re-export common types
 export type { LessonData } from '@common-types/lesson';

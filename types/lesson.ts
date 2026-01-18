@@ -25,12 +25,6 @@ export interface NewProject {
   task: string;
 }
 
-export interface TestYourself {
-  message: string;
-  image: string | null;
-  code: string | null;
-}
-
 export interface ParsedLesson {
   topic: string;
   project: string;
@@ -43,6 +37,6 @@ export interface ParsedLesson {
   tryItOutSection: Array<string> | null;
   challengeSection: Array<Challenge>;
   newProject: NewProject;
-  testYourself: TestYourself;
+  testYourself: string; // link to quiz
   funFact: string | null;
 }

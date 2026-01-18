@@ -7,23 +7,18 @@ import { z } from 'zod';
 import { ParsedLesson } from '@common-types/lesson';
 import { logger } from '../logger.js';
 
-// Zod schema matching ParsedLesson interface
 const StepWithImageSchema = z.object({
   step: z.string().describe('The instruction text for this step'),
   image: z.string().nullable().default(null).describe('Image reference if present, otherwise null'),
 });
 
 const ChallengeSchema = z.object({
-  name: z.string().describe('The name of the specific challenge, excluding the "- New Project" text'),
+  name: z
+    .string()
+    .describe('The name of the specific challenge, excluding the "- New Project" text'),
   task: z
     .string()
     .describe('The task for the challenge, explained as a requirement or feature to add'),
-});
-
-const TestYourselfSchema = z.object({
-  message: z.string().describe('The test yourself question or prompt'),
-  image: z.string().nullable().default(null).describe('Image reference if present'),
-  code: z.string().nullable().default(null).describe('Code snippet if present'),
 });
 
 const NewProjectSchema = z.object({
@@ -73,7 +68,10 @@ const ParsedLessonSchema = z.object({
     .array(ChallengeSchema)
     .describe('Challenge tasks for students to extend the project'),
   newProject: NewProjectSchema.describe('Suggestion for a new project or extension activity'),
-  testYourself: TestYourselfSchema.describe('Self-assessment question for the student'),
+  testYourself: z
+    .string()
+    .nullable()
+    .describe('A link to the quiz, found under the "Test Yourself" header'),
   funFact: z
     .string()
     .nullable()
@@ -81,22 +79,17 @@ const ParsedLessonSchema = z.object({
     .describe('An interesting fact related to the lesson topic'),
 });
 
-export interface ParseOptions {
-  model?: string;
-}
-
 export interface ParseResult {
   data: ParsedLesson;
   sourcePath: string;
 }
 
+// Setup google generative ai
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-/**
- * Extract images from docx as base64 data URIs
- */
+// Extract images from docx as base64 data URIs
 async function extractImages(buffer: Buffer): Promise<string[]> {
   const images: string[] = [];
 
@@ -116,13 +109,8 @@ async function extractImages(buffer: Buffer): Promise<string[]> {
   return images;
 }
 
-/**
- * Parse a .docx file and extract lesson data using LLM
- */
-export async function parseDocx(
-  filePath: string,
-  options: ParseOptions = {}
-): Promise<ParseResult> {
+// Parse a .docx file and extract lesson data
+export async function parseDocx(filePath: string): Promise<ParseResult> {
   logger.info(`Parsing: ${filePath}`);
 
   const buffer = await fs.readFile(filePath);

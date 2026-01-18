@@ -90,11 +90,7 @@ export class LiveEditorComponent {
         name: 'Energy Boost',
         task: 'Try creating a similar game with different sprites and backgrounds',
       },
-      testYourself: {
-        message: 'Can you explain why we use "forever" and "if" blocks together?',
-        image: null,
-        code: null,
-      },
+      testYourself: 'https://youtube.com',
       funFact:
         'The original Crossy Road game was inspired by the classic arcade game Frogger from 1981!',
     };
