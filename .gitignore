@@ -43,3 +43,6 @@ types/*.d.ts
 
 # Claude
 .claude/
+
+# Environment variables
+.env
