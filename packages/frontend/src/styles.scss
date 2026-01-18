@@ -94,3 +94,10 @@ body.print-mode app-root {
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+  font-family: 'Jetbrains';
+  src: url('../public/fonts/JetBrainsMono-Regular.ttf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
