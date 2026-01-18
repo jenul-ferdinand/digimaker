@@ -5,6 +5,7 @@ import { ParsedLesson } from '@digimaker/core';
 import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.component';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
 import { sampleScratchLesson } from '@sample-data/scratch-lesson';
+import { sampleJavaLesson } from '@sample-data/java-lesson';
 
 @Component({
   selector: 'app-live-editor',
@@ -41,7 +42,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleScratchLesson;
+    this.activeData = sampleJavaLesson;
 
     this.previewData = { ...this.activeData };
   }
