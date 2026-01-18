@@ -1,14 +1,23 @@
 <section class="add-your-code">
   @if (isStepWithImageArray) {
     <!-- StepWithImage[]: step -> image -> step -> image -->
+    <!-- This is normally for scratch lessons -->
     @for (step of stepsWithImages; track $index) {
-      <p class="step">{{ step.step }}</p>
+      @let splitText = step.step.split(':');
+      @if (splitText.length == 2) {
+        <p class="step" style="font-weight: bold;">{{ splitText[0].toUpperCase() }}: <span style="font-weight: normal;">{{ splitText[1] }}</span></p>
+      } @else {
+        <p class="step">{{ step.step }}</p>
+      }
+
       @if (step.image) {
         <img class="step-image" [src]="step.image" />
+        <br/>
       }
     }
   } @else if (stepsWithCodeBlock) {
     <!-- StepsWithCodeBlock: steps list -> code block -->
+    <!-- Normal programming language lessons will have this format -->
     @for (step of stepsWithCodeBlock.steps; track $index) {
       <p class="step">{{ step }}</p>
     }
