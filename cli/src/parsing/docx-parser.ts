@@ -6,10 +6,19 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 import { ParsedLesson } from '@common-types/lesson';
 import { logger } from '../logger.js';
+import { StepWithImage } from '@common-types/lesson';
 
 const StepWithImageSchema = z.object({
   step: z.string().describe('The instruction text for this step'),
   image: z.string().nullable().default(null).describe('Image reference if present, otherwise null'),
+});
+const StepsWithCodeBlock = z.object({
+  codeBlock: z.string().describe('The code block that students have to write to get started'),
+  steps: z
+    .string()
+    .describe(
+      'The steps listed above the code block but below the "Add your code header", says "Main Program"'
+    ),
 });
 
 const ChallengeSchema = z.object({
@@ -51,9 +60,12 @@ const ParsedLessonSchema = z.object({
   getReadySection: z
     .array(z.string())
     .describe('List of setup steps to prepare for the project (adding sprites, backdrops, etc.)'),
-  addYourCodeSection: z
-    .array(StepWithImageSchema)
-    .describe('Step-by-step coding instructions, each step may have an associated image'),
+  addYourCodeSection: z.union([
+    z
+      .array(StepWithImageSchema)
+      .describe('Step-by-step coding instructions, each step may have an associated image'),
+    StepsWithCodeBlock.describe('A block of code given with steps on what it does'),
+  ]),
   codeBlock: z
     .string()
     .nullable()
@@ -159,7 +171,7 @@ ${text}`,
   data.projectImage = projectImage;
 
   // Assign step images in order
-  if (stepImages.length > 0 && data.addYourCodeSection) {
+  if (stepImages.length > 0 && Array.isArray(data.addYourCodeSection)) {
     data.addYourCodeSection.forEach((step, index) => {
       step.image = stepImages[index] ?? null;
     });

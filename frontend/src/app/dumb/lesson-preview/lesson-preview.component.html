@@ -23,12 +23,20 @@
 
       <h3>Add Your Code</h3>
       <section class="add-your-code">
-        @for (step of data.addYourCodeSection; track $index; let i = $index) {
-          <p>{{ data.addYourCodeSection[i].step }}</p>
-          @let image = data.addYourCodeSection[i].image;
-          @if (image) {
-            <img [src]="image" />
+        @if (isStepWithImageArray) {
+          <!-- StepWithImage[]: step -> image -> step -> image -->
+          @for (step of stepsWithImages; track $index) {
+            <p>{{ step.step }}</p>
+            @if (step.image) {
+              <img [src]="step.image" />
+            }
           }
+        } @else if (stepsWithCodeBlock) {
+          <!-- StepsWithCodeBlock: steps list -> code block -->
+          @for (step of stepsWithCodeBlock.steps; track $index) {
+            <p>{{ step }}</p>
+          }
+          <code>{{ stepsWithCodeBlock.codeBlock }}</code>
         }
       </section>
       <section class="code-">
@@ -64,6 +72,13 @@
         <h3>Test Yourself</h3>
         <section>
           <a [href]="data.testYourself">Click me, to go to quiz</a>
+        </section>
+      }
+
+      @if (data.funFact) {
+        <h3>Fun Fact!</h3>
+        <section>
+          <p>{{ data.funFact }}</p>
         </section>
       }
     </main>

@@ -11,7 +11,7 @@ export interface StepWithImage {
 }
 
 export interface StepsWithCodeBlock {
-  code_block: string;
+  codeBlock: string;
   steps: Array<string>;
 }
 
@@ -32,7 +32,7 @@ export interface ParsedLesson {
   projectExplainer: string;
   projectImage: any;
   getReadySection: Array<string>;
-  addYourCodeSection: Array<StepWithImage>;
+  addYourCodeSection: Array<StepWithImage> | StepsWithCodeBlock;
   codeBlock: string | null;
   tryItOutSection: Array<string> | null;
   challengeSection: Array<Challenge>;

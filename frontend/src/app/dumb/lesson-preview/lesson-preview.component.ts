@@ -8,7 +8,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { ParsedLesson } from '@common-types/lesson';
+import { ParsedLesson, StepWithImage, StepsWithCodeBlock } from '@common-types/lesson';
 // @ts-expect-error
 import { Previewer } from 'pagedjs';
 
@@ -27,6 +27,19 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
   @ViewChild('previewContainer') previewContainer!: ElementRef;
 
   private viewReady = false;
+
+  // Type guards for addYourCodeSection union type
+  get isStepWithImageArray(): boolean {
+    return Array.isArray(this.data?.addYourCodeSection);
+  }
+
+  get stepsWithImages(): StepWithImage[] {
+    return this.isStepWithImageArray ? (this.data!.addYourCodeSection as StepWithImage[]) : [];
+  }
+
+  get stepsWithCodeBlock(): StepsWithCodeBlock | null {
+    return !this.isStepWithImageArray ? (this.data!.addYourCodeSection as StepsWithCodeBlock) : null;
+  }
 
   ngAfterViewInit(): void {
     this.viewReady = true;
