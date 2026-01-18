@@ -1,0 +1,29 @@
+.title {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  background-color: var(--offwhite-color);
+  border-radius: 1rem;
+  padding: 1rem;
+
+  .topic-and-project {
+    flex-basis: 50%;
+    text-align: center;
+    .topic {
+      font-size: 16pt;
+      margin-top: 1rem;
+      margin-bottom: 0;
+    }
+    .project {
+      font-size: 12pt;
+      margin-top: 0;
+    }
+  }
+
+  .description {
+    font-size: 12pt;
+    padding: 0;
+    margin: 0;
+  }
+}
