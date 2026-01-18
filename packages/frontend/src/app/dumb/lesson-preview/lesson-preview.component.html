@@ -21,6 +21,10 @@
         }
       </section>
 
+      <section class="project-image">
+        <img [src]="data.projectImage">
+      </section>
+
       <h3>Add Your Code</h3>
       <section class="add-your-code">
         @if (isStepWithImageArray) {
@@ -36,13 +40,13 @@
           @for (step of stepsWithCodeBlock.steps; track $index) {
             <p>{{ step }}</p>
           }
-          <code>{{ stepsWithCodeBlock.codeBlock }}</code>
+          <pre><code>{{ stepsWithCodeBlock.codeBlock }}</code></pre>
         }
       </section>
       <section class="code-">
         @let codeBlock = data.codeBlock;
         @if (codeBlock) {
-          <code>{{ codeBlock }}</code>
+          <pre><code>{{ codeBlock }}</code></pre>
         }
       </section>
 
