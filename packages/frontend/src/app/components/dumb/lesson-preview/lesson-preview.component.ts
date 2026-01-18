@@ -14,11 +14,12 @@ import { AddYourCodeComponent } from './add-your-code/add-your-code.component';
 import { Previewer } from 'pagedjs';
 import { TitleSectionComponent } from './title-section/title-section.component';
 import { GetReadySectionComponent } from './get-ready-section/get-ready-section.component';
+import { ChallengeSectionComponent } from './challenge-section/challenge-section.component';
 
 @Component({
   selector: 'app-lesson-preview',
   standalone: true,
-  imports: [AddYourCodeComponent, TitleSectionComponent, GetReadySectionComponent],
+  imports: [AddYourCodeComponent, TitleSectionComponent, GetReadySectionComponent, ChallengeSectionComponent],
   templateUrl: './lesson-preview.component.html',
   styleUrl: './lesson-preview.component.scss',
   encapsulation: ViewEncapsulation.None,

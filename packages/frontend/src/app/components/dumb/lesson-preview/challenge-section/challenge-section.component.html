@@ -1,0 +1,15 @@
+<section class="challenge-section">
+  @for (challenge of challenges; track $index; let i = $index) {
+    <div class="challenge-item">
+      <img
+        class="challenge-medal"
+        [src]="i === 0 ? 'bronze.png' : i === 1 ? 'silver.png' : 'gold.png'"
+        [alt]="i === 0 ? 'Bronze medal' : i === 1 ? 'Silver medal' : 'Gold medal'"
+      />
+      <div class="challenge-content">
+        <h4>{{ challenge.name }}</h4>
+        <p>{{ challenge.task }}</p>
+      </div>
+    </div>
+  }
+</section>

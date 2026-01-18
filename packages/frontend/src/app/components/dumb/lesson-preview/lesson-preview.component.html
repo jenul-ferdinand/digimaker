@@ -34,12 +34,7 @@
       }
 
       <h3>Challenge!</h3>
-      <section>
-        @for (step of data.challengeSection; track $index; let i = $index) {
-          <h4>{{ data.challengeSection[i].name }}</h4>
-          <p>{{ data.challengeSection[i].task }}</p>
-        }
-      </section>
+      <app-challenge-section [challenges]="data.challengeSection" />
 
       <h3>{{ data.newProject.name }} - New Project</h3>
       <section>
