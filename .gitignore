@@ -43,6 +43,8 @@ types/*.d.ts
 
 # Claude
 .claude/
+.playwright-mcp/
+.mcp.json
 
 # Environment variables
 .env
