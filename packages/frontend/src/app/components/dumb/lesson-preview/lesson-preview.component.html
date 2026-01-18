@@ -1,54 +1,27 @@
 @if (data) {
   <div #sourceContent style="display: none">
     <header>
-      <h1>{{ data.topic }}</h1>
-      <h2>{{ data.project }}</h2>
+      <img src="digimaker-logo.png" width="200px" />
     </header>
 
     <main>
-      <section class="description">
-        <p>{{ data.description }}</p>
-      </section>
+      <app-title-section
+        [topic]="data.topic"
+        [project]="data.project"
+        [description]="data.description"
+      />
 
       <section class="oneliner">
         <p>{{ data.projectExplainer }}</p>
       </section>
 
-      <h3>Get Ready</h3>
-      <section class="get-ready">
-        @for (step of data.getReadySection; track $index; let i = $index) {
-          <p>{{ data.getReadySection[i] }}</p>
-        }
-      </section>
-
-      <section class="project-image">
-        <img [src]="data.projectImage">
-      </section>
+      <app-get-ready-section
+        [getReadySectionData]="data.getReadySection"
+        [projectImage]="data.projectImage!"
+      />
 
       <h3>Add Your Code</h3>
-      <section class="add-your-code">
-        @if (isStepWithImageArray) {
-          <!-- StepWithImage[]: step -> image -> step -> image -->
-          @for (step of stepsWithImages; track $index) {
-            <p>{{ step.step }}</p>
-            @if (step.image) {
-              <img [src]="step.image" />
-            }
-          }
-        } @else if (stepsWithCodeBlock) {
-          <!-- StepsWithCodeBlock: steps list -> code block -->
-          @for (step of stepsWithCodeBlock.steps; track $index) {
-            <p>{{ step }}</p>
-          }
-          <pre><code>{{ stepsWithCodeBlock.codeBlock }}</code></pre>
-        }
-      </section>
-      <section class="code-">
-        @let codeBlock = data.codeBlock;
-        @if (codeBlock) {
-          <pre><code>{{ codeBlock }}</code></pre>
-        }
-      </section>
+      <app-add-your-code [data]="data.addYourCodeSection" />
 
       @if (data.tryItOutSection) {
         <h3>Try It Out!</h3>

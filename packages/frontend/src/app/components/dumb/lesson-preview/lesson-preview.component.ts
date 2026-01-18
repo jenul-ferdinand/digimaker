@@ -8,14 +8,17 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { ParsedLesson, StepWithImage, StepsWithCodeBlock } from '@digimaker/core';
+import { ParsedLesson } from '@digimaker/core';
+import { AddYourCodeComponent } from './add-your-code/add-your-code.component';
 // @ts-expect-error
 import { Previewer } from 'pagedjs';
+import { TitleSectionComponent } from './title-section/title-section.component';
+import { GetReadySectionComponent } from './get-ready-section/get-ready-section.component';
 
 @Component({
   selector: 'app-lesson-preview',
   standalone: true,
-  imports: [],
+  imports: [AddYourCodeComponent, TitleSectionComponent, GetReadySectionComponent],
   templateUrl: './lesson-preview.component.html',
   styleUrl: './lesson-preview.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -27,19 +30,6 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
   @ViewChild('previewContainer') previewContainer!: ElementRef;
 
   private viewReady = false;
-
-  // Type guards for addYourCodeSection union type
-  get isStepWithImageArray(): boolean {
-    return Array.isArray(this.data?.addYourCodeSection);
-  }
-
-  get stepsWithImages(): StepWithImage[] {
-    return this.isStepWithImageArray ? (this.data!.addYourCodeSection as StepWithImage[]) : [];
-  }
-
-  get stepsWithCodeBlock(): StepsWithCodeBlock | null {
-    return !this.isStepWithImageArray ? (this.data!.addYourCodeSection as StepsWithCodeBlock) : null;
-  }
 
   ngAfterViewInit(): void {
     this.viewReady = true;
@@ -63,21 +53,21 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
     // Signal that rendering has started (for Puppeteer)
     (window as any)['PAGED_READY'] = false;
 
-    // 1. Clear previous PDF
+    // Clear previous PDF
     this.previewContainer.nativeElement.innerHTML = '';
 
-    // 2. Define page styles for Paged.js
+    // Page styles for Paged.js (component styles are global via SCSS)
     const pageStyles = `
       @page {
         size: A4;
-        margin: 15mm;
+        margin: 5mm;
       }
       body {
-        font-family: sans-serif;
+        font-family: 'Poppins';
       }
     `;
 
-    // 3. Run Paged.js with styles
+    // Run Paged.js
     const paged = new Previewer();
     await paged.preview(
       this.sourceContent.nativeElement.innerHTML,
