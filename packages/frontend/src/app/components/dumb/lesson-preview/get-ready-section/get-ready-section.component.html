@@ -1,0 +1,9 @@
+<h3 class="header">Get Ready</h3>
+<section class="get-ready">
+  <div class="get-ready-steps">
+    @for (step of getReadySectionData; track $index; let i = $index) {
+      <p>{{ getReadySectionData[i] }}</p>
+    }
+  </div>
+  <img class="project-image" [src]="projectImage" />
+</section>
