@@ -15,11 +15,12 @@ import { Previewer } from 'pagedjs';
 import { TitleSectionComponent } from './title-section/title-section.component';
 import { GetReadySectionComponent } from './get-ready-section/get-ready-section.component';
 import { ChallengeSectionComponent } from './challenge-section/challenge-section.component';
+import { NewProjectSectionComponent } from './new-project-section/new-project-section.component';
 
 @Component({
   selector: 'app-lesson-preview',
   standalone: true,
-  imports: [AddYourCodeComponent, TitleSectionComponent, GetReadySectionComponent, ChallengeSectionComponent],
+  imports: [AddYourCodeComponent, TitleSectionComponent, GetReadySectionComponent, ChallengeSectionComponent, NewProjectSectionComponent],
   templateUrl: './lesson-preview.component.html',
   styleUrl: './lesson-preview.component.scss',
   encapsulation: ViewEncapsulation.None,

@@ -36,10 +36,8 @@
       <h3>Challenge!</h3>
       <app-challenge-section [challenges]="data.challengeSection" />
 
-      <h3>{{ data.newProject.name }} - New Project</h3>
-      <section>
-        <p>{{ data.newProject.task }}</p>
-      </section>
+      <h3>New Project</h3>
+      <app-new-project-section [newProject]="data.newProject" />
 
       @if (data.testYourself) {
         <h3>Test Yourself</h3>
