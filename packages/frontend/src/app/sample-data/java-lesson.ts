@@ -12,6 +12,7 @@ export const sampleJavaLesson: ParsedLesson = {
   addYourCodeSection: {
     codeBlock:
       'convAmt = amt * currency[ch];\nif (ch == 1)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in US Dollars");\nelse if (ch == 2)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in British Pounds");\nelse if (ch == 3)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in Euro");\ninput.close();',
+    codeBlockLanguage: 'java',
     steps: [
       'Main Program: Calculate converted amount. Use IF conditions – to check',
       'if choice = 1, print conversion in US dollars',
