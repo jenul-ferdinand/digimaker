@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import mammoth from 'mammoth';
-import 'dotenv/config';
 import { generateText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { ParsedLessonSchema, ParsedLesson } from '../schemas/index.js';
