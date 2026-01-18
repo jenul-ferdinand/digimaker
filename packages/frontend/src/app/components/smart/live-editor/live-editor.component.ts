@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ParsedLesson } from '@digimaker/core';
-import { LessonFormComponent } from '../../dumb/lesson-form/lesson-form.component';
-import { LessonPreviewComponent } from '../../dumb/lesson-preview/lesson-preview.component';
-import { sampleScratchLesson } from '../../sample-data/scratch-lesson';
+import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.component';
+import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
+import { sampleScratchLesson } from '@sample-data/scratch-lesson';
 
 @Component({
   selector: 'app-live-editor',

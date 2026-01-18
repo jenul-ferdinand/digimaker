@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ParsedLesson } from '@digimaker/core';
-import { LessonPreviewComponent } from '../../dumb/lesson-preview/lesson-preview.component';
+import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
 
 declare global {
   interface Window {
