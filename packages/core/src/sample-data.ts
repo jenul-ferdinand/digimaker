@@ -1,4 +1,4 @@
-import { ParsedLesson } from './schemas/index.js';
+import { ParsedLesson } from './schemas/lesson.js';
 
 export const sampleLessonData: ParsedLesson = {
   topic: 'Decisions',
