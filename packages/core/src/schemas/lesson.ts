@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-// Zod schemas - single source of truth for types
-
 export const StepWithImageSchema = z.object({
   step: z.string().describe('The instruction text for this step'),
   image: z.string().nullable().default(null).describe('Image reference if present, otherwise null'),
@@ -86,15 +84,9 @@ export const ParsedLessonSchema = z.object({
     .describe('An interesting fact related to the lesson topic'),
 });
 
-export const GenerateOptionsSchema = z.object({
-  outputDir: z.string().optional(),
-  filename: z.string().optional(),
-});
-
 // Inferred types - no manual interfaces needed!
-export type StepWithImage = z.infer<typeof StepWithImageSchema>;
-export type StepsWithCodeBlock = z.infer<typeof StepsWithCodeBlockSchema>;
-export type Challenge = z.infer<typeof ChallengeSchema>;
-export type NewProject = z.infer<typeof NewProjectSchema>;
-export type ParsedLesson = z.infer<typeof ParsedLessonSchema>;
-export type GenerateOptions = z.infer<typeof GenerateOptionsSchema>;
+export interface StepWithImage extends z.infer<typeof StepWithImageSchema> {};
+export interface StepsWithCodeBlock extends z.infer<typeof StepsWithCodeBlockSchema> {};
+export interface Challenge extends z.infer<typeof ChallengeSchema> {};
+export interface NewProject extends z.infer<typeof NewProjectSchema> {};
+export interface ParsedLesson extends z.infer<typeof ParsedLessonSchema> {};
