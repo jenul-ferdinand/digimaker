@@ -1,0 +1,17 @@
+<section class="add-your-code">
+  @if (isStepWithImageArray) {
+    <!-- StepWithImage[]: step -> image -> step -> image -->
+    @for (step of stepsWithImages; track $index) {
+      <p class="step">{{ step.step }}</p>
+      @if (step.image) {
+        <img class="step-image" [src]="step.image" />
+      }
+    }
+  } @else if (stepsWithCodeBlock) {
+    <!-- StepsWithCodeBlock: steps list -> code block -->
+    @for (step of stepsWithCodeBlock.steps; track $index) {
+      <p class="step">{{ step }}</p>
+    }
+    <pre class="code-block"><code #codeBlock>{{ stepsWithCodeBlock.codeBlock }}</code></pre>
+  }
+</section>

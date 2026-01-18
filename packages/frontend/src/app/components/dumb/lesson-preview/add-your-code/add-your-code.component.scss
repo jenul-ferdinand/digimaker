@@ -1,0 +1,38 @@
+.add-your-code {
+  margin: 1rem 0;
+}
+
+.add-your-code .step {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 1rem;
+  font-size: 0.95rem;
+}
+
+.add-your-code .step-image {
+  display: block;
+  max-width: 100%;
+  margin: 0.5rem auto;
+  border-radius: 4px;
+}
+
+.add-your-code .code-block {
+  background-color: #2d2d2d;
+  //color: #f8f8f2;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 1rem 0;
+  user-select: none;
+}
+
+.add-your-code .code-block code {
+  font-size: 9pt;
+  tab-size: 2;
+  font-family: 'Jetbrains Mono';
+}
