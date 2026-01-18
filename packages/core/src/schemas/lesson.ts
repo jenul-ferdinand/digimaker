@@ -76,6 +76,7 @@ export const ParsedLessonSchema = z.object({
   testYourself: z
     .string()
     .nullable()
+    .default(null)
     .describe('A link to the quiz, found under the "Test Yourself" header'),
   funFact: z
     .string()
