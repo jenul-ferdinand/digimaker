@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "@digimaker/core": "*",
     "@angular/animations": "^18.2.0",
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",
@@ -19,6 +18,8 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@digimaker/core": "*",
+    "prismjs": "^1.29.0",
     "pagedjs": "^0.4.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
