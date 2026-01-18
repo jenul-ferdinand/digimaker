@@ -14,6 +14,7 @@ import {
   type ParsedLesson,
   type PdfGeneratorInstance,
   type ServerInstance,
+  sampleLessonData,
 } from '@digimaker/core';
 
 async function generateFromDocx() {
@@ -52,26 +53,7 @@ async function generateWithCustomData() {
     const generator: PdfGeneratorInstance = await createPdfGenerator(server.url);
 
     // You can also provide lesson data directly
-    const lessonData: ParsedLesson = {
-      topic: 'Variables',
-      project: 'Score Counter',
-      description: 'Learn how to use variables to track scores.',
-      projectExplainer: 'We will create a simple score counter.',
-      projectImage: null,
-      getReadySection: ['Open Scratch', 'Create new project'],
-      addYourCodeSection: [
-        { step: 'Create a variable called "score"', image: null },
-        { step: 'When green flag clicked, set score to 0', image: null },
-      ],
-      codeBlock: null,
-      tryItOutSection: ['Click the green flag', 'Check the score displays 0'],
-      challengeSection: [
-        { name: 'Add Points', task: 'Make clicking the sprite add 1 to score' },
-      ],
-      newProject: { name: 'Timer', task: 'Create a countdown timer using variables' },
-      testYourself: null,
-      funFact: 'Variables are like labeled boxes that store information!',
-    };
+    const lessonData: ParsedLesson = sampleLessonData;
 
     const pdfPath = await generator.generatePdf(lessonData, {
       outputDir: './output',

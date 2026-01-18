@@ -65,11 +65,6 @@ export const ParsedLessonSchema = z.object({
       .describe('Step-by-step coding instructions, each step may have an associated image'),
     StepsWithCodeBlockSchema.describe('A block of code given with steps on what it does'),
   ]),
-  codeBlock: z
-    .string()
-    .nullable()
-    .default(null)
-    .describe('A single code block if the lesson uses text-based code instead of visual blocks'),
   tryItOutSection: z
     .array(z.string())
     .nullable()

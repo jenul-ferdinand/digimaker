@@ -19,8 +19,6 @@ export const sampleJavaLesson: ParsedLesson = {
       'if choice = 2, print conversion in British Pounds',
     ],
   },
-  codeBlock:
-    'import java.util.ArrayList; \npublic class Main{ \n\tpublic static void main(String[] args) { \n\t\tint marks[] = new int[4]; \n\t\tfor(int i=0;i<4; i++) {\n\t\t\tmarks[i] = (int)(Math.random() * 100);\n\t\t\tSystem.out.println(marks[i]);\n\t\t}\n\t} \n}',
   tryItOutSection: ['Click on Save.', 'Click on Run.'],
   challengeSection: [
     {

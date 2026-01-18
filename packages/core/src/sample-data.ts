@@ -35,7 +35,6 @@ export const sampleLessonData: ParsedLesson = {
       image: null,
     },
   ],
-  codeBlock: null,
   tryItOutSection: [
     'Click the green flag and test your game',
     'Make sure the penguin can move in all directions',
