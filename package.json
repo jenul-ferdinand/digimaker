@@ -9,11 +9,11 @@
   "scripts": {
     "build": "npm run build:core && npm run build:frontend && npm run build:cli && npm run build:server",
     "build:core": "npm run build -w @digimaker/core",
-    "build:cli": "npm run build -w digimaker-cli",
+    "build:cli": "npm run build -w @digimaker/cli",
     "build:server": "npm run build -w @digimaker/server",
     "build:frontend": "npm run build -w @digimaker/frontend",
     "dev:frontend": "npm run start -w @digimaker/frontend",
-    "dev:cli": "npm run dev -w digimaker-cli",
+    "dev:cli": "npm run dev -w @digimaker/cli",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
   },
