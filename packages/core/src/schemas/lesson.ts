@@ -7,6 +7,12 @@ export const StepWithImageSchema = z.object({
 
 export const StepsWithCodeBlockSchema = z.object({
   codeBlock: z.string().describe('The code block that students have to write to get started'),
+  codeBlockLanguage: z
+    .enum(['none', 'small-basic', 'javascript or html or css', 'python', 'java', 'c'])
+    .default('small-basic')
+    .describe(
+      'The programming language used in the code block. Detect from syntax, "none" if unsure'
+    ),
   steps: z
     .array(z.string())
     .describe(
@@ -86,8 +92,8 @@ export const ParsedLessonSchema = z.object({
 });
 
 // Inferred types - no manual interfaces needed!
-export interface StepWithImage extends z.infer<typeof StepWithImageSchema> {};
-export interface StepsWithCodeBlock extends z.infer<typeof StepsWithCodeBlockSchema> {};
-export interface Challenge extends z.infer<typeof ChallengeSchema> {};
-export interface NewProject extends z.infer<typeof NewProjectSchema> {};
-export interface ParsedLesson extends z.infer<typeof ParsedLessonSchema> {};
+export interface StepWithImage extends z.infer<typeof StepWithImageSchema> {}
+export interface StepsWithCodeBlock extends z.infer<typeof StepsWithCodeBlockSchema> {}
+export interface Challenge extends z.infer<typeof ChallengeSchema> {}
+export interface NewProject extends z.infer<typeof NewProjectSchema> {}
+export interface ParsedLesson extends z.infer<typeof ParsedLessonSchema> {}
