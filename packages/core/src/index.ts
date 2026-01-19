@@ -19,8 +19,8 @@ export {
 } from './schemas/index.js';
 
 // PDF generation
-export { createPdfGenerator } from './pdf-generator.js';
-export type { PdfGeneratorInstance } from './pdf-generator.js';
+export { createPdfGenerator, convertWithConcurrency, POOL_SIZE } from './pdf-generator.js';
+export type { PdfGeneratorInstance, FileToConvert, ConversionResult } from './pdf-generator.js';
 
 // Server
 export { startServer, stopServer } from './server.js';

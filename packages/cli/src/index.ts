@@ -8,10 +8,11 @@ import {
   startServer,
   stopServer,
   createPdfGenerator,
+  convertWithConcurrency,
   findDocxFiles,
-  parseDocx,
   sampleLessonData,
   logger,
+  POOL_SIZE,
 } from '@digimakers/core';
 
 const OUTPUT_DIR = path.resolve(process.cwd(), 'output');
@@ -41,6 +42,12 @@ async function main() {
             type: 'boolean',
             default: false,
             description: 'Recursively search directories',
+          })
+          .option('concurrency', {
+            alias: 'c',
+            type: 'number',
+            default: POOL_SIZE,
+            description: 'Maximum concurrent file processing',
           }),
       async (argv) => {
         const targetPath = path.resolve(argv.path);
@@ -51,27 +58,43 @@ async function main() {
           return;
         }
 
-        logger.info(`Converting ${files.length} file(s)...`);
+        logger.info(`Converting ${files.length} file(s) with concurrency ${argv.concurrency}...`);
 
         const server = await startServer();
 
         try {
           const generator = await createPdfGenerator(server.url);
 
-          const items = await Promise.all(
-            files.map(async (file) => {
-              const result = await parseDocx(file.path);
-              return {
-                data: result.data,
-                options: { outputDir: argv.output, filename: file.name },
-              };
-            })
+          const results = await convertWithConcurrency(
+            files,
+            generator,
+            argv.output,
+            argv.concurrency
           );
 
-          await generator.generateBatch(items);
           await generator.close();
 
-          logger.info(`Done! ${files.length} PDF(s) saved to ${argv.output}`);
+          // Summary
+          const succeeded = results.filter((r) => r.success);
+          const failed = results.filter((r) => !r.success);
+
+          logger.info('');
+          logger.info('=== Conversion Summary ===');
+          logger.info(`Succeeded: ${succeeded.length}`);
+          logger.info(`Failed: ${failed.length}`);
+
+          if (failed.length > 0) {
+            logger.info('');
+            logger.info('Failed files:');
+            for (const f of failed) {
+              logger.info(`  - ${f.file}: ${f.error}`);
+            }
+          }
+
+          if (succeeded.length > 0) {
+            logger.info('');
+            logger.info(`PDFs saved to: ${argv.output}`);
+          }
         } finally {
           await stopServer(server);
         }

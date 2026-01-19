@@ -62,24 +62,14 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
   async render() {
     if (!this.sourceContent || !this.previewContainer) return;
 
-    // Signal that rendering has started (for Puppeteer)
-    (window as any)['PAGED_READY'] = false;
-
-    // Clear previous PDF
+    const renderToken = (window as any)['RENDER_TOKEN'];
     this.previewContainer.nativeElement.innerHTML = '';
 
-    // Page styles for Paged.js (component styles are global via SCSS)
     const pageStyles = `
-      @page {
-        size: A4;
-        margin: 5mm;
-      }
-      body {
-        font-family: 'Poppins';
-      }
+      @page { size: A4; margin: 5mm; }
+      body { font-family: 'Poppins'; }
     `;
 
-    // Run Paged.js
     const paged = new Previewer();
     await paged.preview(
       this.sourceContent.nativeElement.innerHTML,
@@ -87,7 +77,8 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
       this.previewContainer.nativeElement
     );
 
-    // Signal that rendering is complete (for Puppeteer)
-    (window as any)['PAGED_READY'] = true;
+    if (renderToken !== undefined) {
+      (window as any)['RENDER_DONE_TOKEN'] = renderToken;
+    }
   }
 }
