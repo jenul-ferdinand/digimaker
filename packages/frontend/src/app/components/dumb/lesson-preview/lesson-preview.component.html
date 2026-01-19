@@ -24,22 +24,15 @@
       <h3>Add Your Code</h3>
       <app-add-your-code [data]="data.addYourCodeSection" />
 
-      @if (data.tryItOutSection) {
-        <h3>Try It Out!</h3>
-        <section>
-          @for (step of data.tryItOutSection; track $index) {
-            <p>{{ step }}</p>
-          }
-        </section>
-      }
-      
+      <!-- @if (data.tryItOutSection) { -->
+      <app-try-it-out [tryItOutData]="data.tryItOutSection!" />;
+      <!-- } -->
+
       <app-challenge-section [challenges]="data.challengeSection" />
 
-      <h3>New Project</h3>
       <app-new-project-section [newProject]="data.newProject" />
 
       @if (data.testYourself) {
-        <h3>Test Yourself</h3>
         <app-test-yourself [testYourselfData]="data.testYourself" />
       }
 

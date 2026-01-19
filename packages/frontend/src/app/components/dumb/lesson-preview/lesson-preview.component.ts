@@ -17,6 +17,7 @@ import { GetReadySectionComponent } from './get-ready-section/get-ready-section.
 import { ChallengeSectionComponent } from './challenge-section/challenge-section.component';
 import { NewProjectSectionComponent } from './new-project-section/new-project-section.component';
 import { TestYourselfComponent } from './test-yourself/test-yourself.component';
+import { TryItOutComponent } from './try-it-out/try-it-out.component';
 
 @Component({
   selector: 'app-lesson-preview',
@@ -28,6 +29,7 @@ import { TestYourselfComponent } from './test-yourself/test-yourself.component';
     ChallengeSectionComponent,
     NewProjectSectionComponent,
     TestYourselfComponent,
+    TryItOutComponent,
   ],
   templateUrl: './lesson-preview.component.html',
   styleUrl: './lesson-preview.component.scss',
