@@ -46,9 +46,9 @@ packages/
 
 ## User Installation
 
-- macOS / Linux / WSL: `curl -fsSL https://raw.githubusercontent.com/jenul-ferdinand/digimaker-cli/main/install.sh | bash`
+- macOS / Linux / WSL: `curl -fsSL https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.sh | bash`
 
-- Windows PowerShell: `irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker-cli/main/install.ps1 | iex`
+- Windows PowerShell: `irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.ps1 | iex`
 
 - Or directly via npm: `npm install -g @digimakers/cli`
 

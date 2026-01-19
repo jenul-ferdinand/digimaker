@@ -6,7 +6,7 @@
     Installs the DigiMaker CLI tool via npm.
     Requires Node.js 18+ to be installed.
 .EXAMPLE
-    irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker-cli/main/install.ps1 | iex
+    irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.ps1 | iex
 #>
 
 $ErrorActionPreference = "Stop"
