@@ -23,7 +23,7 @@ export const sampleJavaLesson: ParsedLesson = {
   challengeSection: [
     {
       name: 'Options Menu',
-      task: 'Show options menu as follows:\n\tCurrency Conversion App\n\t1 - US Dollar\n\t2 - British Pound\n\t3 - Euro\n\nHint: use \nSystem.out.println()',
+      task: 'Show options menu as follows:\n\tCurrency Conversion App\n\t1 - US Dollar\n\t2 - British Pound\n\t3 - Euro',
       hintCode: 'System.out.println("Testing something with something yes");',
     },
     {

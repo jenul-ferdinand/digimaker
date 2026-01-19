@@ -36,6 +36,14 @@
     margin: 0;
     font-size: 0.85rem;
     line-height: 1.4;
+    white-space: pre-wrap;
     color: #555;
+  }
+
+  .code-block {
+    padding: 0rem 1rem;
+    max-width: fit-content;
+    border-radius: 1rem;
+    background-color: var(--codeblock-background-color);
   }
 }

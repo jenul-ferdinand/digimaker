@@ -21,7 +21,7 @@
 }
 
 .add-your-code .code-block {
-  background-color: #2d2d2d;
+  background-color: var(--codeblock-background-color);
   padding: 1rem;
   border-radius: 8px;
   font-family: 'Consolas', 'Monaco', monospace;
