@@ -1,14 +1,25 @@
+.test-yourself-section {
+  break-inside: avoid;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .test-yourself-button {
   display: flex;
-  background-color: rgb(220, 180, 105);
+  background-color: rgb(220, 90, 43);
   border-radius: 1rem;
-  padding: 0.5rem;
+  padding: 15px 32px;
   max-width: 50%;
+  cursor: pointer;
 
   justify-content: center;
   align-items: center;
 
   a {
-
+    color: white;
   }
 }
