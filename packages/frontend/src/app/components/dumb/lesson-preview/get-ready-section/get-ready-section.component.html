@@ -4,5 +4,7 @@
       <p>{{ getReadySectionData[i] }}</p>
     }
   </div>
-  <img class="project-image" [src]="projectImage" />
+  @if (projectImage) {
+    <img class="project-image" [src]="projectImage" />
+  }
 </section>
