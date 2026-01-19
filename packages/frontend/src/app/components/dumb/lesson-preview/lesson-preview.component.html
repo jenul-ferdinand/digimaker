@@ -22,13 +22,13 @@
       />
 
       <h3>Add Your Code</h3>
-      <app-add-your-code [data]="data.addYourCodeSection" />
+      <app-add-your-code [data]="data.addYourCodeSection" [programmingLanguage]="data.programmingLanguage" />
 
       <!-- @if (data.tryItOutSection) { -->
       <app-try-it-out [tryItOutData]="data.tryItOutSection!" />
       <!-- } -->
 
-      <app-challenge-section [challenges]="data.challengeSection" />
+      <app-challenge-section [challenges]="data.challengeSection" [programmingLanguage]="data.programmingLanguage" />
 
       <app-new-project-section [newProject]="data.newProject" />
 

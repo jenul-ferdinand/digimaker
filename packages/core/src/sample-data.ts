@@ -7,6 +7,7 @@ export const sampleLessonData: ParsedLesson = {
     'Decision making is important when there will be situations with multiple options and an option needs to be selected based on the given conditions.',
   projectExplainer:
     'In this lesson, we will create a Crossy Road style game where a penguin needs to cross the road and get to the other side without being hit by cars.',
+  programmingLanguage: 'scratch',
   projectImage: null,
   getReadySection: ['Add Backdrop "street"', 'Add Sprites: Car and Penguin (set sizes to 40)'],
   addYourCodeSection: [
@@ -41,9 +42,13 @@ export const sampleLessonData: ParsedLesson = {
     'Check if the car bounces at the edges',
   ],
   challengeSection: [
-    { name: 'Bruise Penguin', task: 'Add sound effects when the penguin gets hit' },
-    { name: 'Add more cars', task: 'Add more cars moving at different speeds' },
-    { name: 'Multiple Levels', task: 'Create multiple levels with increasing difficulty' },
+    { name: 'Bruise Penguin', task: 'Add sound effects when the penguin gets hit', hintCode: null },
+    { name: 'Add more cars', task: 'Add more cars moving at different speeds', hintCode: null },
+    {
+      name: 'Multiple Levels',
+      task: 'Create multiple levels with increasing difficulty',
+      hintCode: null,
+    },
   ],
   newProject: {
     name: 'Energy Boost',

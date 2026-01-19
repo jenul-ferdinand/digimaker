@@ -6,18 +6,20 @@ import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-clike';
+import { PrismHighlightDirective } from '@directives/prism-highlight.directive';
 
 @Component({
   selector: 'app-add-your-code',
   standalone: true,
-  imports: [],
+  imports: [PrismHighlightDirective],
   styleUrl: './add-your-code.component.scss',
   templateUrl: './add-your-code.component.html',
 })
-export class AddYourCodeComponent implements AfterViewInit {
+export class AddYourCodeComponent {
   @ViewChild('codeBlock') codeBlock!: ElementRef;
 
   @Input({ required: true }) data!: StepWithImage[] | StepsWithCodeBlock;
+  @Input({ required: true }) programmingLanguage!: string;
 
   get isStepWithImageArray(): boolean {
     return Array.isArray(this.data);
@@ -29,27 +31,5 @@ export class AddYourCodeComponent implements AfterViewInit {
 
   get stepsWithCodeBlock(): StepsWithCodeBlock | null {
     return !this.isStepWithImageArray ? (this.data as StepsWithCodeBlock) : null;
-  }
-
-  ngAfterViewInit(): void {
-    if (this.codeBlock?.nativeElement && this.stepsWithCodeBlock) {
-      const codeEl = this.codeBlock.nativeElement;
-      const code = codeEl.textContent || '';
-      let language: string = this.stepsWithCodeBlock.codeBlockLanguage || 'none';
-      if (language === 'small-basic') language = 'visual-basic';
-      if (language === 'c' || language === 'java') language = 'clike';
-      if (language === 'javascript or html or css') language = 'markup';
-      if (language === 'none') {
-        return;
-      }
-      codeEl.className = `language-${language}`;
-
-      // Highlight code block using Prism
-      const prismLanguage = Prism.languages[language];
-      if (prismLanguage) {
-        const highlighted = Prism.highlight(code, prismLanguage, language);
-        codeEl.innerHTML = highlighted;
-      }
-    }
   }
 }

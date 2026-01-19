@@ -4,6 +4,8 @@ import { generateText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { ParsedLessonSchema, ParsedLesson } from '../schemas/index.js';
 import { logger } from '../logger.js';
+import { extractLanguageFromFooter } from './footer-parser.js';
+import { ProgrammingLanguage } from '../schemas/lesson.js';
 
 export interface ParseResult {
   data: ParsedLesson;
@@ -41,15 +43,20 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
 
   const buffer = await fs.readFile(filePath);
 
-  // Extract text and images in parallel
-  const [{ value: text }, allImages] = await Promise.all([
+  // Extract text, images, and footer language in parallel
+  const [{ value: text }, allImages, footerLanguage] = await Promise.all([
     mammoth.extractRawText({ buffer }),
     extractImages(buffer),
+    extractLanguageFromFooter(filePath),
   ]);
   logger.info(text);
   logger.info(allImages);
-
-  logger.debug(`Extracted ${text.length} characters and ${allImages.length} images`);
+  logger.info(`Extracted ${text.length} characters and ${allImages.length} images`);
+  if (footerLanguage) {
+    logger.info(`Programming language from footer: ${footerLanguage}`);
+  } else {
+    logger.warn('Footer language not found');
+  }
 
   // First image is project cover, rest are for code steps
   const projectImage = allImages.length > 0 ? allImages[0] : null;
@@ -59,11 +66,16 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
     `Found ${stepImages.length} step images, projectImage: ${projectImage ? 'yes' : 'no'}`
   );
 
+  // Create schema for LLM - omit programmingLanguage if found in footer
+  const llmSchema = footerLanguage
+    ? ParsedLessonSchema.omit({ programmingLanguage: true })
+    : ParsedLessonSchema;
+
   // Use LLM to extract structured data
   const { output } = await generateText({
     model: google('gemini-2.0-flash'),
     output: Output.object({
-      schema: ParsedLessonSchema,
+      schema: llmSchema,
     }),
     prompt: `Extract structured lesson data from this educational document.
 
@@ -80,9 +92,14 @@ ${text}`,
   logger.info(output);
   logger.info(`Successfully extracted lesson: ${output!.topic} - ${output!.project}`);
 
-  // Post-process: assign images to the extracted data
+  // Post-process: assign images and programming language to the extracted data
   const data = output as ParsedLesson;
   data.projectImage = projectImage;
+
+  // Set programming language from footer if found, otherwise use LLM's determination
+  if (footerLanguage) {
+    data.programmingLanguage = footerLanguage as ProgrammingLanguage;
+  }
 
   // Assign step images in order
   if (stepImages.length > 0 && Array.isArray(data.addYourCodeSection)) {

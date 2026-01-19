@@ -5,14 +5,17 @@
     @for (step of stepsWithImages; track $index) {
       @let splitText = step.step.split(':');
       @if (splitText.length == 2) {
-        <p class="step" style="font-weight: bold;">{{ splitText[0].toUpperCase() }}: <span style="font-weight: normal;">{{ splitText[1] }}</span></p>
+        <p class="step" style="font-weight: bold">
+          {{ splitText[0].toUpperCase() }}:
+          <span style="font-weight: normal">{{ splitText[1] }}</span>
+        </p>
       } @else {
         <p class="step">{{ step.step }}</p>
       }
 
       @if (step.image) {
         <img class="step-image" [src]="step.image" />
-        <br/>
+        <br />
       }
     }
   } @else if (stepsWithCodeBlock) {
@@ -21,6 +24,10 @@
     @for (step of stepsWithCodeBlock.steps; track $index) {
       <p class="step">{{ step }}</p>
     }
-    <pre class="code-block"><code #codeBlock>{{ stepsWithCodeBlock.codeBlock }}</code></pre>
+    <pre class="code-block"><code
+      prismHighlight
+      [code]="stepsWithCodeBlock.codeBlock"
+      [language]="programmingLanguage"
+    ></code></pre>
   }
 </section>

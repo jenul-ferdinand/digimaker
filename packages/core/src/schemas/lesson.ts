@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+export const languageEnum = z.enum([
+  'none',
+  'scratch',
+  'small-basic',
+  'javascript or html or css',
+  'python',
+  'java',
+  'c',
+]);
+
 export const StepWithImageSchema = z.object({
   step: z.string().describe('The instruction text for this step'),
   image: z.string().nullable().default(null).describe('Image reference if present, otherwise null'),
@@ -7,12 +17,6 @@ export const StepWithImageSchema = z.object({
 
 export const StepsWithCodeBlockSchema = z.object({
   codeBlock: z.string().describe('The code block that students have to write to get started'),
-  codeBlockLanguage: z
-    .enum(['none', 'small-basic', 'javascript or html or css', 'python', 'java', 'c'])
-    .default('small-basic')
-    .describe(
-      'The programming language used in the code block. Detect from syntax, "none" if unsure'
-    ),
   steps: z
     .array(z.string())
     .describe(
@@ -27,6 +31,10 @@ export const ChallengeSchema = z.object({
   task: z
     .string()
     .describe('The task for the challenge, explained as a requirement or feature to add'),
+  hintCode: z
+    .string()
+    .nullable()
+    .describe('Code that gives a hint on how to complete the challenge'),
 });
 
 export const NewProjectSchema = z.object({
@@ -51,6 +59,11 @@ export const ParsedLessonSchema = z.object({
     .string()
     .describe('A brief description explaining the programming concept being taught'),
   projectExplainer: z.string().describe('Explanation of what will be built in this lesson'),
+  programmingLanguage: languageEnum
+    .default('none')
+    .describe(
+      'The programming language used in this lesson, figurable through code visible or wording'
+    ),
   projectImage: z
     .string()
     .nullable()
@@ -87,6 +100,7 @@ export const ParsedLessonSchema = z.object({
 });
 
 // Inferred types - no manual interfaces needed!
+export type ProgrammingLanguage = z.infer<typeof languageEnum>;
 export interface StepWithImage extends z.infer<typeof StepWithImageSchema> {}
 export interface StepsWithCodeBlock extends z.infer<typeof StepsWithCodeBlockSchema> {}
 export interface Challenge extends z.infer<typeof ChallengeSchema> {}
