@@ -1,4 +1,3 @@
-
 // Removes extra new lines and stuff in code blocks
 export function normaliseCodeBlock(code: string | null): string | null {
   if (!code) return code;
