@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { normaliseCodeBlock } from '../parsing/normalise';
 
 export const languageEnum = z.enum([
   'none',
@@ -16,13 +17,18 @@ export const StepWithImageSchema = z.object({
 });
 
 export const StepsWithCodeBlockSchema = z.object({
-  codeBlock: z.string().describe('The code block that students have to write to get started'),
   steps: z
     .array(z.string())
-    .describe(
-      'The steps listed above the code block but below the "Add your code header", says "Main Program"'
-    ),
+    .describe('The steps listed above the code block but below the "Add your code" header text'),
+  codeBlock: z
+    .string()
+    .nullable()
+    .default(null)
+    .describe('The code block that students have to write to get started')
+    .transform((val) => normaliseCodeBlock(val)),
 });
+
+export const MultipleStepsWithCodeBlockSchema = z.array(StepsWithCodeBlockSchema);
 
 export const ChallengeSchema = z.object({
   name: z
@@ -30,11 +36,14 @@ export const ChallengeSchema = z.object({
     .describe('The name of the specific challenge, excluding the "- New Project" text'),
   task: z
     .string()
-    .describe('The task for the challenge, explained as a requirement or feature to add'),
+    .describe(
+      'The task for the challenge, explained as a requirement or feature to add, there could be a hint, if it is definitely not code but plain english, include it'
+    ),
   hintCode: z
     .string()
     .nullable()
-    .describe('Code that gives a hint on how to complete the challenge'),
+    .describe('Code that gives a hint on how to complete the challenge (only code allowed)')
+    .transform((val) => normaliseCodeBlock(val)),
 });
 
 export const NewProjectSchema = z.object({
@@ -77,6 +86,9 @@ export const ParsedLessonSchema = z.object({
       .array(StepWithImageSchema)
       .describe('Step-by-step coding instructions, each step may have an associated image'),
     StepsWithCodeBlockSchema.describe('A block of code given with steps on what it does'),
+    MultipleStepsWithCodeBlockSchema.describe(
+      'Multiple steps with a code block directly following each, or some without a code block'
+    ),
   ]),
   tryItOutSection: z
     .array(z.string())
@@ -103,6 +115,9 @@ export const ParsedLessonSchema = z.object({
 export type ProgrammingLanguage = z.infer<typeof languageEnum>;
 export interface StepWithImage extends z.infer<typeof StepWithImageSchema> {}
 export interface StepsWithCodeBlock extends z.infer<typeof StepsWithCodeBlockSchema> {}
+export interface MultipleStepsWithCodeBlock extends z.infer<
+  typeof MultipleStepsWithCodeBlockSchema
+> {}
 export interface Challenge extends z.infer<typeof ChallengeSchema> {}
 export interface NewProject extends z.infer<typeof NewProjectSchema> {}
 export interface ParsedLesson extends z.infer<typeof ParsedLessonSchema> {}
