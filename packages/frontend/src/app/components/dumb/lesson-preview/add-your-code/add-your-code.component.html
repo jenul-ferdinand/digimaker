@@ -1,5 +1,5 @@
 <section class="add-your-code">
-  @if (isStepWithImageArray) {
+  @if (isStepWithImage) {
     <!-- StepWithImage[]: step -> image -> step -> image -->
     <!-- This is normally for scratch lessons -->
     @for (step of stepsWithImages; track $index) {
@@ -18,15 +18,31 @@
         <br />
       }
     }
-  } @else if (stepsWithCodeBlock) {
+  } @else if (isMultipleStepsWithCodeBlock) {
+    <!-- MultipleStepsWithCodeBlock: steps list (normally one) -> code block -> steps list -> code block -> ... -->
+    <!-- Level 2 (more difficult) programming language lessons will have this format -->
+    @for (part of multipleStepsWithCodeBlock; track $index) {
+      <div class="multiple-steps-with-code-block">
+        @for (step of part.steps; track $index) {
+          <p class="step">{{ step }}</p>
+        }
+        <pre class="code-block"><code
+          prismHighlight
+          [code]="part.codeBlock"
+          [language]="programmingLanguage"
+        ></code></pre>
+      </div>
+    }
+  } @else if (isStepsWithOneCodeBlock) {
     <!-- StepsWithCodeBlock: steps list -> code block -->
     <!-- Normal programming language lessons will have this format -->
-    @for (step of stepsWithCodeBlock.steps; track $index) {
+
+    @for (step of stepsWithCodeBlock?.steps; track $index) {
       <p class="step">{{ step }}</p>
     }
     <pre class="code-block"><code
       prismHighlight
-      [code]="stepsWithCodeBlock.codeBlock"
+      [code]="stepsWithCodeBlock!.codeBlock"
       [language]="programmingLanguage"
     ></code></pre>
   }
