@@ -9,6 +9,6 @@ export {
   type Challenge,
   type NewProject,
   type ParsedLesson,
-} from './lesson';
+} from './lesson.js';
 
-export { GenerateOptionsSchema, type GenerateOptions } from './generation';
+export { GenerateOptionsSchema, type GenerateOptions } from './generation.js';

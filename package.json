@@ -15,7 +15,11 @@
     "dev:frontend": "npm run start -w @digimaker/frontend",
     "dev:cli": "npm run dev -w @digimaker/cli",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
+    "version:patch": "npm version patch --workspaces --include-workspace-root --no-git-tag-version",
+    "version:minor": "npm version minor --workspaces --include-workspace-root --no-git-tag-version",
+    "version:major": "npm version major --workspaces --include-workspace-root --no-git-tag-version",
+    "release": "node scripts/release.js"
   },
   "repository": {
     "type": "git",

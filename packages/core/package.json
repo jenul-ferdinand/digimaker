@@ -39,5 +39,20 @@
   "files": [
     "dist/**/*"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenul-ferdinand/digimaker-cli.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/jenul-ferdinand/digimaker-cli/issues"
+  },
+  "homepage": "https://github.com/jenul-ferdinand/digimaker-cli#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

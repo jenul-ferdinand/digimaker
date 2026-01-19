@@ -8,10 +8,12 @@
     "digimaker": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run bundle-frontend",
+    "bundle-frontend": "node scripts/bundle-frontend.js",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@digimaker/core": "*",
@@ -31,7 +33,23 @@
     "docx",
     "lesson-sheets",
     "digimaker",
-    "cli"
+    "cli",
+    "converter"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenul-ferdinand/digimaker-cli.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/jenul-ferdinand/digimaker-cli/issues"
+  },
+  "homepage": "https://github.com/jenul-ferdinand/digimaker-cli#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
