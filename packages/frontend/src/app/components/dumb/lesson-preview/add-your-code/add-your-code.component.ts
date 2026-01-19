@@ -1,11 +1,5 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { StepWithImage, StepsWithCodeBlock } from '@digimakers/core';
-// @ts-expect-error
-import Prism from 'prismjs';
-import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-clike';
 import { PrismHighlightDirective } from '@directives/prism-highlight.directive';
 
 @Component({
@@ -16,8 +10,6 @@ import { PrismHighlightDirective } from '@directives/prism-highlight.directive';
   templateUrl: './add-your-code.component.html',
 })
 export class AddYourCodeComponent {
-  @ViewChild('codeBlock') codeBlock!: ElementRef;
-
   @Input({ required: true }) data!: StepWithImage[] | StepsWithCodeBlock;
   @Input({ required: true }) programmingLanguage!: string;
 
