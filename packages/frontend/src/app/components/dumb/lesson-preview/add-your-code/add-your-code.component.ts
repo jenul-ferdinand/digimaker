@@ -37,7 +37,7 @@ export class AddYourCodeComponent implements AfterViewInit {
       const code = codeEl.textContent || '';
       let language: string = this.stepsWithCodeBlock.codeBlockLanguage || 'none';
       if (language === 'small-basic') language = 'visual-basic';
-      if (language === 'c' || 'java') language = 'clike';
+      if (language === 'c' || language === 'java') language = 'clike';
       if (language === 'javascript or html or css') language = 'markup';
       if (language === 'none') {
         return;
