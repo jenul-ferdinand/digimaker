@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import mammoth from 'mammoth';
 import { generateText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { ParsedLessonSchema, ParsedLesson } from '../schemas/index.js';
+import { ParsedLessonSchema, ParsedLesson, StepWithImage } from '../schemas/index.js';
 import { logger } from '../logger.js';
 import { extractLanguageFromFooter } from './footer-parser.js';
 import { ProgrammingLanguage } from '../schemas/lesson.js';
@@ -102,10 +102,17 @@ ${text}`,
   }
 
   // Assign step images in order
-  if (stepImages.length > 0 && Array.isArray(data.addYourCodeSection)) {
-    data.addYourCodeSection.forEach((step, index) => {
-      step.image = stepImages[index] ?? null;
-    });
+  const addSection = data.addYourCodeSection;
+  if (stepImages.length > 0 && Array.isArray(addSection)) {
+    const isStepWithImageArray = addSection.every(
+      (item) => typeof item === 'object' && item !== null && 'step' in item
+    );
+
+    if (isStepWithImageArray) {
+      (addSection as StepWithImage[]).forEach((step, index) => {
+        step.image = stepImages[index] ?? null;
+      });
+    }
   }
   logger.info(data);
 
