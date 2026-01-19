@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Core library for Digimaker - docx to PDF conversion",
   "type": "module",
   "main": "dist/index.js",
