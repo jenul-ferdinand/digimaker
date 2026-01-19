@@ -38,7 +38,7 @@ export const sampleJavaLesson: ParsedLesson = {
     name: 'Bingo!',
     task: 'Generate a list of 10 random numbers (between 1 and 100). Ask the player to guess a number. Check if the players guess is in the list',
   },
-  testYourself: 'What does this code print?',
+  testYourself: 'https://youtube.com',
   funFact:
     'Lists (aka arrays) let us deal with multiple values of the same kind by using only one variable!',
 };
