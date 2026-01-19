@@ -158,7 +158,9 @@ export async function convertWithConcurrency(
             result.pdfPath = pdfPath;
           } catch (err) {
             result.error = err instanceof Error ? err.message : String(err);
-            logger.error(`[${currentIndex + 1}/${files.length}] Failed: ${file.name} - ${result.error}`);
+            logger.error(
+              `[${currentIndex + 1}/${files.length}] Failed: ${file.name} - ${result.error}`
+            );
           }
 
           results[currentIndex] = result;

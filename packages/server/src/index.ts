@@ -109,10 +109,7 @@ app.post(
         if (succeeded.length === 1 && failed.length === 0) {
           const pdfBuffer = await fs.readFile(succeeded[0].pdfPath!);
           res.setHeader('Content-Type', 'application/pdf');
-          res.setHeader(
-            'Content-Disposition',
-            `attachment; filename="${succeeded[0].file}.pdf"`
-          );
+          res.setHeader('Content-Disposition', `attachment; filename="${succeeded[0].file}.pdf"`);
           res.send(pdfBuffer);
           return;
         }
