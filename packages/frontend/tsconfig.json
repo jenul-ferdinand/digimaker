@@ -23,6 +23,8 @@
     "baseUrl": "./src/",
     "paths": {
       "@components/*": ["app/components/*"],
+      "@services/*": ["app/services/*"],
+      "@directives/*": ["app/directives/*"],
       "@sample-data/*": ["app/sample-data/*"]
     }
   },
