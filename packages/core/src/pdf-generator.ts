@@ -8,7 +8,6 @@ import { parseDocx } from './parsing/index.js';
 export interface PdfGeneratorInstance {
   browser: Browser;
   generatePdf: (data: ParsedLesson, options?: GenerateOptions) => Promise<string>;
-  generateBatch: (items: { data: ParsedLesson; options: GenerateOptions }[]) => Promise<string[]>;
   close: () => Promise<void>;
 }
 
@@ -107,28 +106,13 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
     }
   }
 
-  async function generateBatch(
-    items: { data: ParsedLesson; options: GenerateOptions }[]
-  ): Promise<string[]> {
-    logger.info(`[PDF] Processing ${items.length} files with ${POOL_SIZE} parallel workers...`);
-
-    const results: string[] = [];
-    const promises = items.map(async (item, index) => {
-      const result = await generatePdf(item.data, item.options);
-      results[index] = result;
-    });
-
-    await Promise.all(promises);
-    return results;
-  }
-
   async function close(): Promise<void> {
     await browser.close();
     logger.info('[PDF] Browser closed');
   }
 
   logger.info('[PDF] Browser launched');
-  return { browser, generatePdf, generateBatch, close };
+  return { browser, generatePdf, close };
 }
 
 /**
