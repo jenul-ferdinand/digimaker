@@ -6,10 +6,18 @@ import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs/promises';
 import os from 'os';
-import { parseDocx, createPdfGenerator, startServer, stopServer, logger } from '@digimakers/core';
+import {
+  createPdfGenerator,
+  convertWithConcurrency,
+  startServer,
+  stopServer,
+  logger,
+  POOL_SIZE,
+} from '@digimakers/core';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const CONCURRENCY = parseInt(process.env.CONCURRENCY || '', 10) || POOL_SIZE;
 
 // Configure multer for file uploads
 const upload = multer({
@@ -69,18 +77,6 @@ app.post(
         });
       }
 
-      // Parse all docx files
-      logger.info('Parsing docx files...');
-      const parsedLessons = await Promise.all(
-        filePaths.map(async (file) => {
-          const result = await parseDocx(file.path);
-          return {
-            data: result.data,
-            name: file.name,
-          };
-        })
-      );
-
       // Start the template server
       logger.info('Starting template server...');
       const server = await startServer();
@@ -89,43 +85,63 @@ app.post(
         // Create PDF generator
         const generator = await createPdfGenerator(server.url);
 
-        // Generate all PDFs
-        logger.info('Generating PDFs...');
-        const pdfPaths = await generator.generateBatch(
-          parsedLessons.map((lesson) => ({
-            data: lesson.data,
-            options: {
-              outputDir,
-              filename: lesson.name,
-            },
-          }))
-        );
+        // Convert files with bounded concurrency
+        logger.info(`Converting ${filePaths.length} file(s) with concurrency ${CONCURRENCY}...`);
+        const results = await convertWithConcurrency(filePaths, generator, outputDir, CONCURRENCY);
 
         await generator.close();
 
-        // If single file, return PDF directly
-        if (pdfPaths.length === 1) {
-          const pdfBuffer = await fs.readFile(pdfPaths[0]);
+        const succeeded = results.filter((r) => r.success);
+        const failed = results.filter((r) => !r.success);
+
+        logger.info(`Conversion complete: ${succeeded.length} succeeded, ${failed.length} failed`);
+
+        // If all failed, return error
+        if (succeeded.length === 0) {
+          res.status(500).json({
+            error: 'All conversions failed',
+            failures: failed.map((f) => ({ file: f.file, error: f.error })),
+          });
+          return;
+        }
+
+        // If single file succeeded and no failures, return PDF directly
+        if (succeeded.length === 1 && failed.length === 0) {
+          const pdfBuffer = await fs.readFile(succeeded[0].pdfPath!);
           res.setHeader('Content-Type', 'application/pdf');
           res.setHeader(
             'Content-Disposition',
-            `attachment; filename="${parsedLessons[0].name}.pdf"`
+            `attachment; filename="${succeeded[0].file}.pdf"`
           );
           res.send(pdfBuffer);
           return;
         }
 
-        // Multiple files - create zip
+        // Multiple files or partial failure - create zip with manifest
         res.setHeader('Content-Type', 'application/zip');
         res.setHeader('Content-Disposition', 'attachment; filename="lessons.zip"');
 
         const archive = archiver('zip', { zlib: { level: 9 } });
         archive.pipe(res);
 
-        for (const pdfPath of pdfPaths) {
-          const filename = path.basename(pdfPath);
-          archive.file(pdfPath, { name: filename });
+        // Add successful PDFs
+        for (const result of succeeded) {
+          const filename = path.basename(result.pdfPath!);
+          archive.file(result.pdfPath!, { name: filename });
         }
+
+        // Add manifest with conversion results
+        const manifest = {
+          total: results.length,
+          succeeded: succeeded.length,
+          failed: failed.length,
+          results: results.map((r) => ({
+            file: r.file,
+            success: r.success,
+            ...(r.error && { error: r.error }),
+          })),
+        };
+        archive.append(JSON.stringify(manifest, null, 2), { name: 'manifest.json' });
 
         await archive.finalize();
       } finally {
