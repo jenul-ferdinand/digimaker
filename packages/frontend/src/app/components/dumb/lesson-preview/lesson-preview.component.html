@@ -32,8 +32,7 @@
           }
         </section>
       }
-
-      <h3>Challenge!</h3>
+      
       <app-challenge-section [challenges]="data.challengeSection" />
 
       <h3>New Project</h3>
@@ -41,9 +40,7 @@
 
       @if (data.testYourself) {
         <h3>Test Yourself</h3>
-        <section>
-          <a [href]="data.testYourself">Click me, to go to quiz</a>
-        </section>
+        <app-test-yourself [testYourselfData]="data.testYourself" />
       }
 
       @if (data.funFact) {
