@@ -1,0 +1,16 @@
+.info-container {
+  margin: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  max-width: fit-content;
+  padding: 0.3rem 1rem;
+  border-radius: 1rem;
+
+  &.run-code {
+    background-color: #3dc285;
+  }
+  &.save-code {
+    background-color: #407093;
+  }
+}
