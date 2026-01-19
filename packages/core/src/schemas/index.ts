@@ -6,6 +6,7 @@ export {
   ParsedLessonSchema,
   type StepWithImage,
   type StepsWithCodeBlock,
+  type MultipleStepsWithCodeBlock,
   type Challenge,
   type NewProject,
   type ParsedLesson,
