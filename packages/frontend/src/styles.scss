@@ -42,6 +42,11 @@ body.print-mode app-root {
   overflow: visible !important;
 }
 
+img {
+  max-height: 240mm;
+  object-fit: contain;
+}
+
 @media print {
   // Reset body for print
   body {
