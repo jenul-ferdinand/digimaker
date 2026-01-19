@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { normaliseCodeBlock } from '../parsing/normalise';
+import { normaliseCodeBlock } from '../parsing/normalise.js';
 
 export const languageEnum = z.enum([
   'none',
