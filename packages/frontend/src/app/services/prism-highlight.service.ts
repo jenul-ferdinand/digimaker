@@ -13,7 +13,7 @@ export class PrismHighlightService {
     if (!language) return null;
     const lower = language.toLowerCase().trim();
     if (lower === 'none') return null;
-    if (lower === 'small-basic') return 'visual-basic';
+    if (lower === 'small-basic') return 'clike';
     if (lower === 'javascript or html or css') return 'markup';
     if (lower === 'c' || lower === 'java') return 'clike';
     return lower;
