@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { StepWithImage, StepsWithCodeBlock } from '@digimaker/core';
+import { StepWithImage, StepsWithCodeBlock } from '@digimakers/core';
 // @ts-expect-error
 import Prism from 'prismjs';
 import 'prismjs/components/prism-java';

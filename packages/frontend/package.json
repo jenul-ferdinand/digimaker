@@ -1,5 +1,5 @@
 {
-  "name": "@digimaker/frontend",
+  "name": "@digimakers/frontend",
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
@@ -18,7 +18,7 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
-    "@digimaker/core": "*",
+    "@digimakers/core": "*",
     "prismjs": "^1.29.0",
     "pagedjs": "^0.4.3",
     "rxjs": "~7.8.0",

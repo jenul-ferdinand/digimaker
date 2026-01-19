@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Challenge } from '@digimaker/core';
+import { Challenge } from '@digimakers/core';
 
 @Component({
   selector: 'app-challenge-section',

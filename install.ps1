@@ -108,11 +108,11 @@ if (-not $npmOk) {
 }
 
 # Install the CLI
-Write-Host "Installing @digimaker/cli..."
+Write-Host "Installing @digimakers/cli..."
 Write-Host ""
 
 try {
-    npm install -g @digimaker/cli
+    npm install -g @digimakers/cli
 
     Write-Host ""
     Write-ColorOutput "Installation successful!" "Green"

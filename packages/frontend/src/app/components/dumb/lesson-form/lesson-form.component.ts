@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ParsedLesson } from '@digimaker/core';
+import { ParsedLesson } from '@digimakers/core';
 
 type ArrayKeys<T> = {
   [K in keyof T]: T[K] extends any[] ? K : never;

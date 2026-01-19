@@ -12,7 +12,7 @@ import {
   parseDocx,
   sampleLessonData,
   logger,
-} from '@digimaker/core';
+} from '@digimakers/core';
 
 const OUTPUT_DIR = path.resolve(process.cwd(), 'output');
 
@@ -109,21 +109,16 @@ async function main() {
         }
       }
     )
-    .command(
-      'serve',
-      'Start server for manual browser testing',
-      {},
-      async () => {
-        const server = await startServer();
-        logger.info(`\nOpen ${server.url} in your browser`);
-        logger.info('Press Ctrl+C to stop\n');
+    .command('serve', 'Start server for manual browser testing', {}, async () => {
+      const server = await startServer();
+      logger.info(`\nOpen ${server.url} in your browser`);
+      logger.info('Press Ctrl+C to stop\n');
 
-        process.on('SIGINT', async () => {
-          await stopServer(server);
-          process.exit(0);
-        });
-      }
-    )
+      process.on('SIGINT', async () => {
+        await stopServer(server);
+        process.exit(0);
+      });
+    })
     .demandCommand(1, 'Specify a command: convert, generate, or serve')
     .help()
     .alias('help', 'h')

@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './title-section.component.html',
-  styleUrl: './title-section.component.scss'
+  styleUrl: './title-section.component.scss',
 })
 export class TitleSectionComponent {
   @Input({ required: true }) topic!: string;

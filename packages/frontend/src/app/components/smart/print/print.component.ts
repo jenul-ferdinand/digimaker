@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { ParsedLesson } from '@digimaker/core';
+import { ParsedLesson } from '@digimakers/core';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
 
 declare global {

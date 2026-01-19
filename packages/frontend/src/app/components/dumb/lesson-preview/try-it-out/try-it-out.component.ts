@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './try-it-out.component.html',
-  styleUrl: './try-it-out.component.scss'
+  styleUrl: './try-it-out.component.scss',
 })
 export class TryItOutComponent {
   @Input({ required: true }) tryItOutData!: Array<string>;

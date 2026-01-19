@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './test-yourself.component.html',
-  styleUrl: './test-yourself.component.scss'
+  styleUrl: './test-yourself.component.scss',
 })
 export class TestYourselfComponent {
   @Input({ required: true }) testYourselfData!: string; // Should be a url

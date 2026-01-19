@@ -1,5 +1,5 @@
 {
-  "name": "@digimaker/cli",
+  "name": "@digimakers/cli",
   "version": "0.1.1",
   "description": "CLI tool to convert .docx lesson sheets into stylised PDFs",
   "type": "module",
@@ -16,7 +16,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@digimaker/core": "*",
+    "@digimakers/core": "*",
     "yargs": "18.0.0"
   },
   "devDependencies": {

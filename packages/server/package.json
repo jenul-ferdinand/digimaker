@@ -1,5 +1,5 @@
 {
-  "name": "@digimaker/server",
+  "name": "@digimakers/server",
   "version": "0.1.1",
   "description": "Express API server for Digimaker - docx to PDF conversion",
   "type": "module",
@@ -11,7 +11,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@digimaker/core": "*",
+    "@digimakers/core": "*",
     "archiver": "^7.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

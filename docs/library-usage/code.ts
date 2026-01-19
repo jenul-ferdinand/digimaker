@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Example: Using @digimaker/core as a library
+ * Example: Using @digimakers/core as a library
  *
  * This demonstrates how to use the PDF generator programmatically
  * instead of through the CLI.
@@ -15,7 +15,7 @@ import {
   type PdfGeneratorInstance,
   type ServerInstance,
   sampleLessonData,
-} from '@digimaker/core';
+} from '@digimakers/core';
 
 async function generateFromDocx() {
   // Step 1: Start the server

@@ -8,7 +8,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { ParsedLesson } from '@digimaker/core';
+import { ParsedLesson } from '@digimakers/core';
 import { AddYourCodeComponent } from './add-your-code/add-your-code.component';
 // @ts-expect-error
 import { Previewer } from 'pagedjs';

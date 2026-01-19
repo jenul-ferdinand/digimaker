@@ -155,9 +155,7 @@ async function main() {
   console.log('  3. Create GitHub release');
   console.log('');
   console.log('Monitor the release at:');
-  console.log(
-    `  https://github.com/jenul-ferdinand/digimaker-cli/actions`
-  );
+  console.log(`  https://github.com/jenul-ferdinand/digimaker-cli/actions`);
   console.log('='.repeat(50));
 
   rl.close();

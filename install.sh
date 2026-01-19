@@ -118,10 +118,10 @@ main() {
     fi
 
     # Install the CLI
-    echo "Installing @digimaker/cli..."
+    echo "Installing @digimakers/cli..."
     echo ""
 
-    if npm install -g @digimaker/cli; then
+    if npm install -g @digimakers/cli; then
         echo ""
         echo -e "${GREEN}Installation successful!${NC}"
         echo ""
@@ -140,7 +140,7 @@ main() {
         echo -e "${RED}Installation failed.${NC}"
         echo ""
         echo "Try installing with sudo:"
-        echo "  sudo npm install -g @digimaker/cli"
+        echo "  sudo npm install -g @digimakers/cli"
         echo ""
         echo "Or fix npm permissions:"
         echo "  https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally"

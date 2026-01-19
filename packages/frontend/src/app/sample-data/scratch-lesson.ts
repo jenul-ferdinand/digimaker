@@ -1,4 +1,4 @@
-import { ParsedLesson } from '@digimaker/core';
+import { ParsedLesson } from '@digimakers/core';
 
 export const sampleScratchLesson: ParsedLesson = {
   topic: 'Decisions',

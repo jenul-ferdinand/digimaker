@@ -6,13 +6,7 @@ import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs/promises';
 import os from 'os';
-import {
-  parseDocx,
-  createPdfGenerator,
-  startServer,
-  stopServer,
-  logger,
-} from '@digimaker/core';
+import { parseDocx, createPdfGenerator, startServer, stopServer, logger } from '@digimakers/core';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,8 +16,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     if (
-      file.mimetype ===
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ) {
       cb(null, true);
     } else {
@@ -44,7 +37,7 @@ app.get('/health', (req, res) => {
 });
 
 // Convert docx files to PDFs
-app.post('/api/convert', upload.array('files', 50), async (req, res) => {
+app.post('/api/convert', upload.array('files', 50) as unknown as express.RequestHandler, async (req, res) => {
   const files = req.files as Express.Multer.File[];
 
   if (!files || files.length === 0) {
@@ -111,10 +104,7 @@ app.post('/api/convert', upload.array('files', 50), async (req, res) => {
       if (pdfPaths.length === 1) {
         const pdfBuffer = await fs.readFile(pdfPaths[0]);
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader(
-          'Content-Disposition',
-          `attachment; filename="${parsedLessons[0].name}.pdf"`
-        );
+        res.setHeader('Content-Disposition', `attachment; filename="${parsedLessons[0].name}.pdf"`);
         res.send(pdfBuffer);
         return;
       }

@@ -35,13 +35,13 @@ jobs:
           chmod +x packages/cli/dist/index.js
           node packages/cli/dist/index.js --help
 
-      - name: Publish @digimaker/core to npm
-        run: npm publish -w @digimaker/core --provenance --access public
+      - name: Publish @digimakers/core to npm
+        run: npm publish -w @digimakers/core --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @digimaker/cli to npm
-        run: npm publish -w @digimaker/cli --provenance --access public
+      - name: Publish @digimakers/cli to npm
+        run: npm publish -w @digimakers/cli --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

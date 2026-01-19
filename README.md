@@ -1,4 +1,4 @@
-# @digimaker/{core,cli,server,frontend}
+# @digimakers/{core,cli,server,frontend}
 
 Monorepo for digimaker's code, the main thing here right now is the .docx lesson parser that also converts them to new stylised PDFs.
 
@@ -50,7 +50,7 @@ packages/
 
 - Windows PowerShell: `irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker-cli/main/install.ps1 | iex`
 
-- Or directly via npm: `npm install -g @digimaker/cli`
+- Or directly via npm: `npm install -g @digimakers/cli`
 
 ## Developer Information
 
@@ -88,7 +88,7 @@ import {
   stopServer,
   parseDocx,
   type ParsedLesson,
-} from '@digimaker/core';
+} from '@digimakers/core';
 
 // Start server, create generator, generate PDFs...
 ```

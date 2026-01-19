@@ -3,6 +3,7 @@
 This project is a CLI tool to automate generation of Digimaker's lesson sheets, there are .docx templates that must be converted to stylised PDFs.
 
 ## README
+
 @README.md
 
 ## How it's going to work.
@@ -11,11 +12,11 @@ This project is a CLI tool to automate generation of Digimaker's lesson sheets, 
 
 1. Start server once
 2. Loop through .docx files to convert
-    - Extract .docx text.
-    - Open a new browser tab
-    - Render angular template
-    - Save PDF
-    - Close tab
+   - Extract .docx text.
+   - Open a new browser tab
+   - Render angular template
+   - Save PDF
+   - Close tab
 3. Shutdown
 
 ### Examples
@@ -30,23 +31,15 @@ You can see some examples of `.docx` templates and the corresponding converted/s
 // Navigation & Screenshots
 mcp__playwright__browser_navigate(url); // Navigate to page
 mcp__playwright__browser_take_screenshot(); // Capture visual evidence
-mcp__playwright__browser_resize(
-  width,
-  height
-); // Test responsiveness
+mcp__playwright__browser_resize(width, height); // Test responsiveness
 
 // Interaction Testing
 mcp__playwright__browser_click(element); // Test clicks
-mcp__playwright__browser_type(
-  element,
-  text
-); // Test input
+mcp__playwright__browser_type(element, text); // Test input
 mcp__playwright__browser_hover(element); // Test hover states
 
 // Validation
 mcp__playwright__browser_console_messages(); // Check for errors
 mcp__playwright__browser_snapshot(); // Accessibility check
-mcp__playwright__browser_wait_for(
-  text / element
-); // Ensure loading
+mcp__playwright__browser_wait_for(text / element); // Ensure loading
 ```

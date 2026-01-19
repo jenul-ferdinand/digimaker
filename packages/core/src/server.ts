@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 // Resolve the frontend dist path
 // Priority order:
 // 1. DIGIMAKER_FRONTEND_PATH env var (for custom setups)
-// 2. Bundled with CLI package (npm global install): @digimaker/cli/dist/frontend/browser
+// 2. Bundled with CLI package (npm global install): @digimakers/cli/dist/frontend/browser
 // 3. Monorepo sibling (development): packages/frontend/dist/frontend/browser
 function resolveFrontendPath(): string {
   // 1. Check for environment variable override
@@ -26,9 +26,9 @@ function resolveFrontendPath(): string {
 
   // 2. Check if running from CLI package (npm global install)
   // When installed globally, the structure can vary based on npm hoisting
-  // Frontend is bundled at @digimaker/cli/dist/frontend/browser
+  // Frontend is bundled at @digimakers/cli/dist/frontend/browser
   const cliModulePaths = [
-    // npm global install (hoisted): @digimaker/core and @digimaker/cli are siblings
+    // npm global install (hoisted): @digimakers/core and @digimakers/cli are siblings
     path.resolve(__dirname, '../cli/dist/frontend/browser'),
     path.resolve(__dirname, '../../cli/dist/frontend/browser'),
     // npm global install (nested): core is inside cli's node_modules

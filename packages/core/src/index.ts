@@ -1,4 +1,4 @@
-// Public API for @digimaker/core
+// Public API for @digimakers/core
 
 // Schemas and types (single source of truth)
 export {

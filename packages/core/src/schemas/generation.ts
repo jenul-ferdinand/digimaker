@@ -5,4 +5,4 @@ export const GenerateOptionsSchema = z.object({
   filename: z.string().optional(),
 });
 
-export interface GenerateOptions extends z.infer<typeof GenerateOptionsSchema> {};
+export interface GenerateOptions extends z.infer<typeof GenerateOptionsSchema> {}

@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './get-ready-section.component.html',
-  styleUrl: './get-ready-section.component.scss'
+  styleUrl: './get-ready-section.component.scss',
 })
 export class GetReadySectionComponent {
   @Input({ required: true }) getReadySectionData!: Array<string>;
