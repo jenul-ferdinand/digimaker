@@ -86,3 +86,7 @@ import {
 ```
 
 See [library usage example](./docs/library-usage/code.ts) for full example.
+
+## Attributions
+
+Icons by [littleicons](https://www.flaticon.com/authors/littleicon), [Freepik](https://www.flaticon.com/authors/freepik), and [judanna](https://www.flaticon.com/authors/judanna) from [www.flaticon.com](www.flaticon.com)
