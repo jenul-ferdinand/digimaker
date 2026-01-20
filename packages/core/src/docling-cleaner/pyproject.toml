@@ -1,0 +1,10 @@
+[project]
+name = "docling-cleaner"
+version = "0.1.0"
+description = "Clean content output from docx files"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "docling>=2.68.0",
+    "pydantic>=2.12.5",
+]
