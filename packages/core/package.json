@@ -16,7 +16,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-docling.js",
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
   },
@@ -38,7 +38,8 @@
     "typescript": "^5.5.0"
   },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "dist/docling-cleaner/**/*"
   ],
   "license": "MIT",
   "repository": {
