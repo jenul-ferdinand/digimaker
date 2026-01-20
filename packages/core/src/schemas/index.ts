@@ -4,6 +4,7 @@ export {
   ChallengeSchema,
   NewProjectSchema,
   ParsedLessonSchema,
+  type ImageSlot,
   type StepWithImage,
   type StepsWithCodeBlock,
   type MultipleStepsWithCodeBlock,
