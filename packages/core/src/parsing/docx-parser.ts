@@ -1,11 +1,16 @@
 import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import mammoth from 'mammoth';
 import { generateText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { ParsedLessonSchema, ParsedLesson, StepWithImage } from '../schemas/index.js';
+import { ParsedLesson, StepWithImage } from '../schemas/index.js';
 import { logger } from '../logger.js';
 import { extractLanguageFromFooter } from './footer-parser.js';
-import { ProgrammingLanguage } from '../schemas/lesson.js';
+import { ParsedLessonLLMSchema, ProgrammingLanguage } from '../schemas/lesson.js';
+import { parseDoclingMarkdown, assignImagesToSlots } from './docling-parser.js';
+import { getDoclingMarkdown } from './docling-runners.js';
+import { buildDocxParserPrompt } from './prompts.js';
 
 export interface ParseResult {
   data: ParsedLesson;
@@ -43,77 +48,120 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
 
   const buffer = await fs.readFile(filePath);
 
-  // Extract text, images, and footer language in parallel
-  const [{ value: text }, allImages, footerLanguage] = await Promise.all([
-    mammoth.extractRawText({ buffer }),
+  // Extract images and footer language in parallel, try docling markdown
+  const [allImages, footerLanguage, doclingMarkdown] = await Promise.all([
     extractImages(buffer),
     extractLanguageFromFooter(filePath),
+    Promise.resolve(getDoclingMarkdown(filePath)),
+    // extractCodeBlocksFromDocx(buffer),
   ]);
-  logger.info(text);
-  logger.info(allImages);
-  logger.info(`Extracted ${text.length} characters and ${allImages.length} images`);
+
+  // Parse docling markdown to get sections with image placeholders
+  let parsedSections = null;
+  let textForLLM: string;
+
+  if (doclingMarkdown) {
+    parsedSections = parseDoclingMarkdown(doclingMarkdown);
+    assignImagesToSlots(parsedSections, allImages);
+    textForLLM = doclingMarkdown;
+    logger.info('Using docling markdown with placeholder-based image mapping');
+    logger.info(textForLLM);
+  } else {
+    const { value: text } = await mammoth.extractRawText({ buffer });
+    textForLLM = text;
+    logger.info('Falling back to mammoth text extraction');
+    logger.info(textForLLM);
+  }
+
+  logger.info(`Extracted ${textForLLM.length} characters and ${allImages.length} images`);
+  // if (codeBlocks.length > 0) {
+  //   logger.info(`Extracted ${codeBlocks.length} code block(s) from Mammoth`);
+  // }
   if (footerLanguage) {
     logger.info(`Programming language from footer: ${footerLanguage}`);
   } else {
     logger.warn('Footer language not found');
   }
 
-  // First image is project cover, rest are for code steps
-  const projectImage = allImages.length > 0 ? allImages[0] : null;
-  const stepImages = allImages.slice(1);
-
-  logger.info(
-    `Found ${stepImages.length} step images, projectImage: ${projectImage ? 'yes' : 'no'}`
-  );
-
-  // Create schema for LLM - omit programmingLanguage if found in footer
+  // If we find the programming language in the footer, we don't need the LLM
+  // to tell us.
   const llmSchema = footerLanguage
-    ? ParsedLessonSchema.omit({ programmingLanguage: true })
-    : ParsedLessonSchema;
+    ? ParsedLessonLLMSchema.omit({ programmingLanguage: true })
+    : ParsedLessonLLMSchema;
 
   // Use LLM to extract structured data
   const { output } = await generateText({
-    model: google('gemini-2.0-flash'),
+    model: google('gemini-2.5-flash'),
     output: Output.object({
       schema: llmSchema,
     }),
-    prompt: `Extract structured lesson data from this educational document.
-
-This is a programming lesson sheet for students. Extract all the relevant sections and content.
-
-If a section is not present in the document, use empty arrays for array fields, empty strings for required string fields, and null for nullable fields.
-
-For the addYourCodeSection, each step should be a clear instruction. Set image to null for all steps (images will be added separately).
-
-Document content:
-${text}`,
+    prompt: buildDocxParserPrompt(textForLLM),
   });
 
-  logger.info(output);
   logger.info(`Successfully extracted lesson: ${output!.topic} - ${output!.project}`);
 
   // Post-process: assign images and programming language to the extracted data
   const data = output as ParsedLesson;
-  data.projectImage = projectImage;
 
-  // Set programming language from footer if found, otherwise use LLM's determination
+  // Set programming language from footer if found
   if (footerLanguage) {
     data.programmingLanguage = footerLanguage as ProgrammingLanguage;
   }
 
-  // Assign step images in order
-  const addSection = data.addYourCodeSection;
-  if (stepImages.length > 0 && Array.isArray(addSection)) {
-    const isStepWithImageArray = addSection.every(
-      (item) => typeof item === 'object' && item !== null && 'step' in item
-    );
+  // Assign images using placeholder-based mapping if available
+  if (parsedSections) {
+    // Assign preface image slots
+    if (parsedSections.preface.imageSlots.length > 0) {
+      data.prefaceImageSlots = parsedSections.preface.imageSlots;
+    }
 
-    if (isStepWithImageArray) {
-      (addSection as StepWithImage[]).forEach((step, index) => {
-        step.image = stepImages[index] ?? null;
-      });
+    // Assign Add Your Code step images
+    const addSection = data.addYourCodeSection;
+    if (Array.isArray(addSection) && parsedSections.addYourCode.imageSlots.length > 0) {
+      const isStepWithImageArray = addSection.every(
+        (item) => typeof item === 'object' && item !== null && 'step' in item
+      );
+
+      if (isStepWithImageArray) {
+        const slots = parsedSections.addYourCode.imageSlots;
+        (addSection as StepWithImage[]).forEach((step, index) => {
+          if (index < slots.length) {
+            step.imageSlot = {
+              id: slots[index].id,
+              base64: slots[index].base64,
+            };
+          }
+        });
+      }
+    }
+  } else {
+    // Fallback using old behavior, first image is project, rest are steps
+    // Not good if there are multiple images in preface section
+    logger.warn('Falling back to old image assignment behaviour');
+    if (allImages.length > 0) {
+      data.prefaceImageSlots = [{ id: 'fallback_preface_img_1', base64: allImages[0] }];
+    }
+    const stepImages = allImages.slice(1);
+
+    const addSection = data.addYourCodeSection;
+    if (stepImages.length > 0 && Array.isArray(addSection)) {
+      const isStepWithImageArray = addSection.every(
+        (item) => typeof item === 'object' && item !== null && 'step' in item
+      );
+
+      if (isStepWithImageArray) {
+        (addSection as StepWithImage[]).forEach((step, index) => {
+          if (stepImages[index]) {
+            step.imageSlot = {
+              id: `fallback_img_${index + 1}`,
+              base64: stepImages[index],
+            };
+          }
+        });
+      }
     }
   }
+
   logger.info(data);
 
   return {
