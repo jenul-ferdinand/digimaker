@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { normaliseCodeBlock } from '../parsing/normalise.js';
+import { triggerAsyncId } from 'async_hooks';
 
 export const languageEnum = z.enum([
   'none',
@@ -11,9 +12,16 @@ export const languageEnum = z.enum([
   'c',
 ]);
 
+export const ImageSlotSchema = z.object({
+  id: z.string().describe('Stable image slot identifier (e.g., "addYourCode_img_1")'),
+  base64: z.string().optional().describe('Base64 data URI of the image'),
+});
+
 export const StepWithImageSchema = z.object({
   step: z.string().describe('The instruction text for this step'),
-  image: z.string().nullable().default(null).describe('Image reference if present, otherwise null'),
+  imageSlot: ImageSlotSchema.nullable()
+    .default(null)
+    .describe('Image slot with ID and base64 data if present'),
 });
 
 export const StepsWithCodeBlockSchema = z.object({
@@ -57,6 +65,8 @@ export const NewProjectSchema = z.object({
     .describe('The task for the new project, explained as a requirement or new feature to add'),
 });
 
+// Representation of any lesson that digimaker provides, dynamic fields that
+// account for all possible variations of input.
 export const ParsedLessonSchema = z.object({
   topic: z
     .string()
@@ -73,11 +83,11 @@ export const ParsedLessonSchema = z.object({
     .describe(
       'The programming language used in this lesson, figurable through code visible or wording'
     ),
-  projectImage: z
-    .string()
+  prefaceImageSlots: z
+    .array(ImageSlotSchema)
     .nullable()
     .default(null)
-    .describe('Reference to the main project image if present'),
+    .describe('Image slots for the preface, before the "Get Ready" section'),
   getReadySection: z
     .array(z.string())
     .describe('List of setup steps to prepare for the project (adding sprites, backdrops, etc.)'),
@@ -111,8 +121,22 @@ export const ParsedLessonSchema = z.object({
     .describe('An interesting fact related to the lesson topic'),
 });
 
-// Inferred types - no manual interfaces needed!
+// The fields that the LLM will not be able to see at all, when generating
+// These are populated with rule based logic
+const StepWithImageLLMSchema = StepWithImageSchema.omit({ imageSlot: true });
+export const ParsedLessonLLMSchema = ParsedLessonSchema.extend({
+  addYourCodeSection: z.union([
+    z.array(StepWithImageLLMSchema),
+    StepsWithCodeBlockSchema,
+    MultipleStepsWithCodeBlockSchema,
+  ]),
+}).omit({
+  prefaceImageSlots: true,
+});
+
+// Inferred types from zod schemas
 export type ProgrammingLanguage = z.infer<typeof languageEnum>;
+export interface ImageSlot extends z.infer<typeof ImageSlotSchema> {}
 export interface StepWithImage extends z.infer<typeof StepWithImageSchema> {}
 export interface StepsWithCodeBlock extends z.infer<typeof StepsWithCodeBlockSchema> {}
 export interface MultipleStepsWithCodeBlock extends z.infer<
