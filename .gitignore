@@ -48,3 +48,14 @@ types/*.d.ts
 
 # Environment variables
 .env
+
+# Templates
+docs/example-templates/
+docs/example-previous-lessons/
+
+# Python sidecar ignores
+.venv/
+.venv2/
+packages/core/src/docling-cleaner/bin
+packages/core/src/docling-cleaner/build
+packages/core/src/docling-cleaner/dist
