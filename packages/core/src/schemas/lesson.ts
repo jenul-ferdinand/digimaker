@@ -32,8 +32,7 @@ export const StepsWithCodeBlockSchema = z.object({
     .string()
     .nullable()
     .default(null)
-    .describe('The code block that students have to write to get started')
-    .transform((val) => normaliseCodeBlock(val)),
+    .describe('The code block that students have to write to get started'),
 });
 
 export const MultipleStepsWithCodeBlockSchema = z.array(StepsWithCodeBlockSchema);
@@ -50,8 +49,7 @@ export const ChallengeSchema = z.object({
   hintCode: z
     .string()
     .nullable()
-    .describe('Code that gives a hint on how to complete the challenge (only code allowed)')
-    .transform((val) => normaliseCodeBlock(val)),
+    .describe('Code that gives a hint on how to complete the challenge (only code allowed)'),
 });
 
 export const NewProjectSchema = z.object({
