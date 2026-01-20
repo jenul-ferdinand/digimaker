@@ -8,32 +8,32 @@ export const sampleLessonData: ParsedLesson = {
   projectExplainer:
     'In this lesson, we will create a Crossy Road style game where a penguin needs to cross the road and get to the other side without being hit by cars.',
   programmingLanguage: 'scratch',
-  projectImage: null,
+  prefaceImageSlots: null,
   getReadySection: ['Add Backdrop "street"', 'Add Sprites: Car and Penguin (set sizes to 40)'],
   addYourCodeSection: [
     {
       step: 'Car: When green flag is clicked, set Rotation style left-right, size 40%. Forever, move 5 steps, if on edge, bounce.',
-      image: null,
+      imageSlot: null,
     },
     {
       step: 'Penguin: When green flag is clicked, Forever: if UP arrow key is pressed, change y by 10.',
-      image: null,
+      imageSlot: null,
     },
     {
       step: 'Penguin: Inside Forever; If DOWN arrow key is pressed, change y by -10.',
-      image: null,
+      imageSlot: null,
     },
     {
       step: 'Penguin: Inside Forever; If RIGHT arrow key is pressed, change x by 10.',
-      image: null,
+      imageSlot: null,
     },
     {
       step: 'Penguin: Inside Forever; If LEFT arrow key is pressed, change x by -10.',
-      image: null,
+      imageSlot: null,
     },
     {
       step: 'Penguin: Inside Forever; If Penguin touches the car, say "Ouch!" and go back to its start position.',
-      image: null,
+      imageSlot: null,
     },
   ],
   tryItOutSection: [
