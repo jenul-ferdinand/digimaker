@@ -15,7 +15,7 @@ import { parseDoclingMarkdown, assignImagesToSlots } from './docling-parser.js';
 import { getDoclingMarkdown } from './docling-runners.js';
 import { buildDocxParserPrompt, docxParserSystemPrompt } from './prompts.js';
 import { formatDocumentCode } from '../agents/code-formatter.js';
-import { inferLessonType, normaliseLessonContent } from './post-processors.js';
+import { inferLessonType, normaliseLessonContent, normaliseLessonForType } from './post-processors.js';
 
 export interface ParseResult {
   data: Lesson;
@@ -124,14 +124,14 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
 
   // Infer the lesson type with heuristic
   const dataWithoutType = normaliseLessonContent(output as LessonLLM);
-  const data = {
+  const data = normaliseLessonForType({
     ...dataWithoutType,
     lessonType: inferLessonType(
       textForLLM,
       footerLanguage as ProgrammingLanguage,
       dataWithoutType
     ),
-  } as Lesson;
+  } as Lesson);
   logger.info(`Inferred lesson type as: '${data.lessonType}'`);
   logger.info(`Successfully extracted lesson: ${data.topic} - ${data.project}`);
 
