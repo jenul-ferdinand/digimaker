@@ -11,9 +11,11 @@
         [description]="data.description"
       />
 
-      <section class="oneliner">
-        <p>{{ data.projectExplainer }}</p>
-      </section>
+      @if (data.lessonType !== 'debugging lesson') {
+        <section class="oneliner">
+          <p>{{ data.projectExplainer }}</p>
+        </section>
+      }
 
       <!-- Multiple preface images -->
       @if (data.prefaceImageSlots && data.prefaceImageSlots.length > 1) {
@@ -30,26 +32,36 @@
         [imageSlot]="data.prefaceImageSlots?.length == 1 ? data.prefaceImageSlots![0] : null"
       />
 
-      <h3>Add Your Code</h3>
-      <app-add-your-code [data]="data.addYourCodeSection" [programmingLanguage]="data.programmingLanguage" />
+      @if (data.lessonType !== 'debugging lesson') {
+        <h3>Add Your Code</h3>
+        <app-add-your-code
+          [data]="data.addYourCodeSection"
+          [programmingLanguage]="data.programmingLanguage"
+        />
 
-      <!-- @if (data.tryItOutSection) { -->
-      <app-try-it-out [tryItOutData]="data.tryItOutSection!" />
-      <!-- } -->
+        <app-try-it-out [tryItOutData]="data.tryItOutSection!" />
 
-      <app-challenge-section [challenges]="data.challengeSection" [programmingLanguage]="data.programmingLanguage" />
+        @if (data.challengeSection) {
+          <app-challenge-section
+            [challenges]="data.challengeSection"
+            [programmingLanguage]="data.programmingLanguage"
+          />
+        }
 
-      <app-new-project-section [newProject]="data.newProject" />
+        @if (data.newProject) {
+          <app-new-project-section [newProject]="data.newProject" />
+        }
 
-      @if (data.testYourself) {
-        <app-test-yourself [testYourselfData]="data.testYourself" />
-      }
+        @if (data.testYourself) {
+          <app-test-yourself [testYourselfData]="data.testYourself" />
+        }
 
-      @if (data.funFact) {
-        <h3>Fun Fact!</h3>
-        <section>
-          <p>{{ data.funFact }}</p>
-        </section>
+        @if (data.funFact) {
+          <h3>Fun Fact!</h3>
+          <section>
+            <p>{{ data.funFact }}</p>
+          </section>
+        }
       }
     </main>
   </div>
