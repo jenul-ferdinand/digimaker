@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { normaliseCodeBlock } from '../parsing/normalise.js';
-import { triggerAsyncId } from 'async_hooks';
+import { normaliseCodeBlock, normaliseText } from '../parsing/normalise.js';
 
 export const languageEnum = z.enum([
   'none',
@@ -12,18 +11,13 @@ export const languageEnum = z.enum([
   'c',
 ]);
 
+// NOTE: Fields with no describe() are assigned using rule-based logic.
+
+// Reusable pieces that are apart of the standard lesson
 export const ImageSlotSchema = z.object({
-  id: z.string().describe('Stable image slot identifier (e.g., "addYourCode_img_1")'),
-  base64: z.string().optional().describe('Base64 data URI of the image'),
+  id: z.string(),
+  base64: z.string().optional(),
 });
-
-export const StepWithImageSchema = z.object({
-  step: z.string().describe('The instruction text for this step'),
-  imageSlot: ImageSlotSchema.nullable()
-    .default(null)
-    .describe('Image slot with ID and base64 data if present'),
-});
-
 export const StepsWithCodeBlockSchema = z.object({
   steps: z
     .array(z.string())
@@ -32,11 +26,10 @@ export const StepsWithCodeBlockSchema = z.object({
     .string()
     .nullable()
     .default(null)
-    .describe('The code block that students have to write to get started'),
+    .describe(
+      'The code block that students have to write to get started (white-space and new-lines preserved)'
+    ),
 });
-
-export const MultipleStepsWithCodeBlockSchema = z.array(StepsWithCodeBlockSchema);
-
 export const ChallengeSchema = z.object({
   name: z
     .string()
@@ -49,9 +42,10 @@ export const ChallengeSchema = z.object({
   hintCode: z
     .string()
     .nullable()
-    .describe('Code that gives a hint on how to complete the challenge (only code allowed)'),
+    .describe(
+      'Code that gives a hint on how to complete the challenge (only code allowed, perserve whitespace and add line breaks)'
+    ),
 });
-
 export const NewProjectSchema = z.object({
   name: z
     .string()
@@ -62,10 +56,12 @@ export const NewProjectSchema = z.object({
     .string()
     .describe('The task for the new project, explained as a requirement or new feature to add'),
 });
-
 // Representation of any lesson that digimaker provides, dynamic fields that
 // account for all possible variations of input.
-export const ParsedLessonSchema = z.object({
+
+// Programming text-based lessons
+export const ProgrammingLessonSchema = z.object({
+  lessonType: z.literal('text-based (programming) lesson'),
   topic: z
     .string()
     .describe('The main topic/category of the lesson (e.g., "Decisions", "Loops", "Variables")'),
@@ -74,7 +70,10 @@ export const ParsedLessonSchema = z.object({
     .describe('The name of the project being built (e.g., "Crossy Road", "Space Invaders")'),
   description: z
     .string()
-    .describe('A brief description explaining the programming concept being taught'),
+    .describe('A brief description explaining the programming concept being taught')
+    .transform((val) => {
+      return normaliseText(val) ?? val;
+    }),
   projectExplainer: z.string().describe('Explanation of what will be built in this lesson'),
   programmingLanguage: languageEnum
     .default('none')
@@ -84,62 +83,115 @@ export const ParsedLessonSchema = z.object({
   prefaceImageSlots: z
     .array(ImageSlotSchema)
     .nullable()
-    .default(null)
     .describe('Image slots for the preface, before the "Get Ready" section'),
   getReadySection: z
     .array(z.string())
     .describe('List of setup steps to prepare for the project (adding sprites, backdrops, etc.)'),
-  addYourCodeSection: z.union([
-    z
-      .array(StepWithImageSchema)
-      .describe('Step-by-step coding instructions, each step may have an associated image'),
-    StepsWithCodeBlockSchema.describe('A block of code given with steps on what it does'),
-    MultipleStepsWithCodeBlockSchema.describe(
-      'Multiple steps with a code block directly following each, or some without a code block'
+  addYourCodeSection: z
+    .array(StepsWithCodeBlockSchema)
+    .describe(
+      'Multiple steps with a code block directly following each, or some without a code block. If there is only one step provide it as an array with one item'
+    )
+    .nullable()
+    .describe(
+      'Section that guides students on adding the base code. Null only when it is a debugging lesson'
     ),
-  ]),
   tryItOutSection: z
     .array(z.string())
     .nullable()
-    .default(null)
-    .describe('Steps to test the project after coding'),
+    .describe('Steps to test the project after coding. Null only when it is a debugging lesson'),
   challengeSection: z
     .array(ChallengeSchema)
-    .describe('Challenge tasks for students to extend the project'),
-  newProject: NewProjectSchema.describe('Suggestion for a new project or extension activity'),
-  testYourself: z
-    .string()
     .nullable()
-    .default(null)
-    .describe('A link to the quiz, found under the "Test Yourself" header'),
-  funFact: z
-    .string()
-    .nullable()
-    .default(null)
-    .describe('An interesting fact related to the lesson topic'),
+    .describe(
+      'Challenge tasks for students to extend the project. Null only when it is a debugging lesson'
+    ),
+  newProject: NewProjectSchema.nullable().describe(
+    'Suggestion for a new project or extension activity. Null only when it is a debugging lesson'
+  ),
+  testYourself: z.string().nullable(),
+  funFact: z.string().nullable().describe('An interesting fact related to the lesson topic'),
+}); // LLM version of the same schema
+const StandardLessonLLMSchema = ProgrammingLessonSchema.omit({
+  prefaceImageSlots: true,
+  testYourself: true,
 });
 
-// The fields that the LLM will not be able to see at all, when generating
-// These are populated with rule based logic
+// Scratch lessons
+export const StepWithImageSchema = z.object({
+  step: z.string().describe('The instruction text for this step'),
+  imageSlot: ImageSlotSchema.nullable().default(null),
+});
+export const ScratchLessonSchema = ProgrammingLessonSchema.extend({
+  lessonType: z.literal('block-based (scratch) lesson'),
+  addYourCodeSection: z.array(StepWithImageSchema),
+}); // LLM version of the same schema
 const StepWithImageLLMSchema = StepWithImageSchema.omit({ imageSlot: true });
-export const ParsedLessonLLMSchema = ParsedLessonSchema.extend({
-  addYourCodeSection: z.union([
-    z.array(StepWithImageLLMSchema),
-    StepsWithCodeBlockSchema,
-    MultipleStepsWithCodeBlockSchema,
-  ]),
+export const ScratchLessonLLMSchema = ScratchLessonSchema.extend({
+  addYourCodeSection: z.array(StepWithImageLLMSchema).describe('Step-by-step coding instructions'),
 }).omit({
   prefaceImageSlots: true,
 });
 
+// Dbugging lessons
+export const DebugStepSchema = z.object({
+  linkToCode: z.url().describe('URL link to the static content'),
+  issue: z
+    .string()
+    .describe('The issue that must be fixed, preserve all original paragraph breaks and newlines'),
+});
+export const DebugLessonSchema = ProgrammingLessonSchema.extend({
+  lessonType: z.literal('debugging lesson'),
+  debugSection: z.array(DebugStepSchema).describe('Content found under the "Debug" headre'),
+}).omit({
+  projectExplainer: true,
+  addYourCodeSection: true,
+  tryItOutSection: true,
+  challengeSection: true,
+  newProject: true,
+  testYourself: true,
+  funFact: true,
+}); // LLM version of the same schema
+export const DebugLessonLLMSchema = DebugLessonSchema.omit({
+  prefaceImageSlots: true,
+});
+
+export const LessonSchema = z.discriminatedUnion('lessonType', [
+  ProgrammingLessonSchema,
+  ScratchLessonSchema,
+  DebugLessonSchema,
+]);
+
+// The fields that the LLM will not be able to see at all, when generating
+// These are populated with rule based logic
+export const LessonLLMSchema = z.discriminatedUnion('lessonType', [
+  StandardLessonLLMSchema,
+  ScratchLessonLLMSchema,
+  DebugLessonLLMSchema,
+]);
+
+// Dynamic ommision logic for the LLM for programming lanuage, see docx parser
+const StandardLessonLLMSchemaWithoutLanguage = StandardLessonLLMSchema.omit({
+  programmingLanguage: true,
+});
+const ScratchLessonLLMSchemaWithoutLanguage = ScratchLessonLLMSchema.omit({
+  programmingLanguage: true,
+});
+const DebugLessonLLMSchemaWithoutLanguage = DebugLessonLLMSchema.omit({
+  programmingLanguage: true,
+});
+
+export const LessonLLMSchemaWithoutLanguage = z.discriminatedUnion('lessonType', [
+  StandardLessonLLMSchemaWithoutLanguage,
+  ScratchLessonLLMSchemaWithoutLanguage,
+  DebugLessonLLMSchemaWithoutLanguage,
+]);
+
 // Inferred types from zod schemas
 export type ProgrammingLanguage = z.infer<typeof languageEnum>;
-export interface ImageSlot extends z.infer<typeof ImageSlotSchema> {}
-export interface StepWithImage extends z.infer<typeof StepWithImageSchema> {}
-export interface StepsWithCodeBlock extends z.infer<typeof StepsWithCodeBlockSchema> {}
-export interface MultipleStepsWithCodeBlock extends z.infer<
-  typeof MultipleStepsWithCodeBlockSchema
-> {}
-export interface Challenge extends z.infer<typeof ChallengeSchema> {}
-export interface NewProject extends z.infer<typeof NewProjectSchema> {}
-export interface ParsedLesson extends z.infer<typeof ParsedLessonSchema> {}
+export type ImageSlot = z.infer<typeof ImageSlotSchema>;
+export type StepWithImage = z.infer<typeof StepWithImageSchema>;
+export type StepsWithCodeBlock = z.infer<typeof StepsWithCodeBlockSchema>;
+export type Challenge = z.infer<typeof ChallengeSchema>;
+export type NewProject = z.infer<typeof NewProjectSchema>;
+export type Lesson = z.infer<typeof LessonSchema>;
