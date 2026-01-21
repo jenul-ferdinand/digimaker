@@ -1,19 +1,22 @@
 import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import mammoth from 'mammoth';
 import { generateText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { ParsedLesson, StepWithImage } from '../schemas/index.js';
+import { Lesson, StepWithImage } from '../schemas/index.js';
 import { logger } from '../logger.js';
 import { extractLanguageFromFooter } from './footer-parser.js';
-import { ParsedLessonLLMSchema, ProgrammingLanguage } from '../schemas/lesson.js';
+import {
+  LessonLLMSchema,
+  LessonLLMSchemaWithoutLanguage,
+  ProgrammingLanguage,
+} from '../schemas/lesson.js';
 import { parseDoclingMarkdown, assignImagesToSlots } from './docling-parser.js';
 import { getDoclingMarkdown } from './docling-runners.js';
-import { buildDocxParserPrompt } from './prompts.js';
+import { buildDocxParserPrompt, docxParserSystemPrompt } from './prompts.js';
+import { formatDocumentCode } from '../agents/code-formatter.js';
 
 export interface ParseResult {
-  data: ParsedLesson;
+  data: Lesson;
   sourcePath: string;
 }
 
@@ -53,7 +56,6 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
     extractImages(buffer),
     extractLanguageFromFooter(filePath),
     Promise.resolve(getDoclingMarkdown(filePath)),
-    // extractCodeBlocksFromDocx(buffer),
   ]);
 
   // Parse docling markdown to get sections with image placeholders
@@ -66,6 +68,9 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
     textForLLM = doclingMarkdown;
     logger.info('Using docling markdown with placeholder-based image mapping');
     logger.info(textForLLM);
+    logger.info('Formatting document code blocks with agent');
+    textForLLM = await formatDocumentCode(doclingMarkdown);
+    logger.info(textForLLM);
   } else {
     const { value: text } = await mammoth.extractRawText({ buffer });
     textForLLM = text;
@@ -74,9 +79,6 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   }
 
   logger.info(`Extracted ${textForLLM.length} characters and ${allImages.length} images`);
-  // if (codeBlocks.length > 0) {
-  //   logger.info(`Extracted ${codeBlocks.length} code block(s) from Mammoth`);
-  // }
   if (footerLanguage) {
     logger.info(`Programming language from footer: ${footerLanguage}`);
   } else {
@@ -85,9 +87,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
 
   // If we find the programming language in the footer, we don't need the LLM
   // to tell us.
-  const llmSchema = footerLanguage
-    ? ParsedLessonLLMSchema.omit({ programmingLanguage: true })
-    : ParsedLessonLLMSchema;
+  const llmSchema = footerLanguage ? LessonLLMSchemaWithoutLanguage : LessonLLMSchema;
 
   // Use LLM to extract structured data
   const { output } = await generateText({
@@ -95,13 +95,16 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
     output: Output.object({
       schema: llmSchema,
     }),
+    system: docxParserSystemPrompt,
     prompt: buildDocxParserPrompt(textForLLM),
+    temperature: 0,
+    maxRetries: 5,
   });
 
   logger.info(`Successfully extracted lesson: ${output!.topic} - ${output!.project}`);
 
   // Post-process: assign images and programming language to the extracted data
-  const data = output as ParsedLesson;
+  const data = output as Lesson;
 
   // Set programming language from footer if found
   if (footerLanguage) {
@@ -109,7 +112,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   }
 
   // Assign images using placeholder-based mapping if available
-  if (parsedSections) {
+  if (parsedSections && data.lessonType !== 'debugging lesson') {
     // Assign preface image slots
     if (parsedSections.preface.imageSlots.length > 0) {
       data.prefaceImageSlots = parsedSections.preface.imageSlots;
@@ -134,7 +137,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
         });
       }
     }
-  } else {
+  } else if (data.lessonType !== 'debugging lesson') {
     // Fallback using old behavior, first image is project, rest are steps
     // Not good if there are multiple images in preface section
     logger.warn('Falling back to old image assignment behaviour');
