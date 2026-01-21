@@ -17,15 +17,15 @@ stylised PDFs using a Node.js pipeline + Angular frontend.
   - Infers lessonType (no lessonType required in LLM output).
   - Optionally overrides programmingLanguage from footer.
 
-1) Start server once
-2) Loop through .docx files:
+1. Start server once
+2. Loop through .docx files:
    - Extract docling markdown + images
    - LLM -> structured lesson object
    - Post-process (images, lessonType, language)
    - Render Angular template in a fresh tab
    - Save PDF
    - Close tab
-3) Shutdown
+3. Shutdown
 
 ## Lesson Types
 
