@@ -1,6 +1,7 @@
-import { ParsedLesson } from '@digimakers/core';
+import { Lesson } from '@digimakers/core/schemas';
 
-export const sampleScratchLesson: ParsedLesson = {
+export const sampleScratchLesson: Lesson = {
+  lessonType: 'block-based (scratch) lesson',
   topic: 'Decisions',
   project: 'Crossy Road',
   description:

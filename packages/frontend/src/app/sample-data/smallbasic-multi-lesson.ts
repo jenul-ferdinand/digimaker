@@ -1,6 +1,7 @@
-import { ParsedLesson } from '@digimakers/core';
+import { Lesson } from '@digimakers/core/schemas';
 
-export const sampleMultiSmallBasicLesson: ParsedLesson = {
+export const sampleMultiSmallBasicLesson: Lesson = {
+  lessonType: 'text-based (programming) lesson',
   topic: 'LOOPS',
   project: 'Tile Animation',
   description:

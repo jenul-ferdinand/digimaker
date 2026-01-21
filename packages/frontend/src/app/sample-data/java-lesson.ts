@@ -1,6 +1,7 @@
-import { ParsedLesson } from '@digimakers/core';
+import { Lesson } from '@digimakers/core/schemas';
 
-export const sampleJavaLesson: ParsedLesson = {
+export const sampleJavaLesson: Lesson = {
+  lessonType: 'text-based (programming) lesson',
   topic: 'List',
   project: 'Currency Converter',
   description:
@@ -15,15 +16,17 @@ export const sampleJavaLesson: ParsedLesson = {
     },
   ],
   getReadySection: ['Get project: Click on “Code” and then click save'],
-  addYourCodeSection: {
-    codeBlock:
-      'convAmt = amt * currency[ch];\nif (ch == 1)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in US Dollars");\nelse if (ch == 2)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in British Pounds");\nelse if (ch == 3)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in Euro");\ninput.close();',
-    steps: [
-      'Main Program: Calculate converted amount. Use IF conditions – to check',
-      'if choice = 1, print conversion in US dollars',
-      'if choice = 2, print conversion in British Pounds',
-    ],
-  },
+  addYourCodeSection: [
+    {
+      codeBlock:
+        'convAmt = amt * currency[ch];\nif (ch == 1)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in US Dollars");\nelse if (ch == 2)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in British Pounds");\nelse if (ch == 3)\n\tSystem.out.println(amt + " in Aussie $ = " + convAmt + " in Euro");\ninput.close();',
+      steps: [
+        'Main Program: Calculate converted amount. Use IF conditions – to check',
+        'if choice = 1, print conversion in US dollars',
+        'if choice = 2, print conversion in British Pounds',
+      ],
+    },
+  ],
   tryItOutSection: ['Click on Save.', 'Click on Run.'],
   challengeSection: [
     {
@@ -49,4 +52,60 @@ export const sampleJavaLesson: ParsedLesson = {
   testYourself: 'https://youtube.com',
   funFact:
     'Lists (aka arrays) let us deal with multiple values of the same kind by using only one variable!',
+};
+
+export const sampleJavaL5RandomnessRollDice = {
+  lessonType: 'text-based (programming) lesson',
+  topic: 'Randomness',
+  project: 'Roll Dice',
+  description:
+    'The term random refers to any collection of data or information with no determined order, or is chosen in a way that is unknown beforehand.',
+  projectExplainer: 'Play 2-player dice roll game with the computer',
+  programmingLanguage: 'java',
+  getReadySection: ['Get project : Click on “ Code ” and then click save'],
+  addYourCodeSection: [
+    {
+      steps: [
+        'Main Program : Check if user input is between 1 – 6. If not, the computer wins. Else, computer randomly rolls the dice',
+      ],
+      codeBlock:
+        'if (ymove < 1 || ymove > 6) {\n    System.out.println("Not possible.. Computer Wins!");\n} else {\n    cmove = (int)((Math.random() * 6) + 1);\n    System.out.println("Computer rolls dice.. " + cmove);\n    //Add IF-ELSE condition to print winner\n}\n\ninput.close();',
+    },
+    {
+      steps: ['Main Program : Add IF-ELSE condition to print winner'],
+      codeBlock:
+        'if (cmove > ymove) {\n    System.out.println("Computer wins");\n} else if (cmove < ymove){\n    System.out.println("You win");\n}',
+    },
+  ],
+  tryItOutSection: ['Click on Save . Click on Run .'],
+  challengeSection: [
+    {
+      name: '8-sided dice',
+      task: 'Instead of a 6-sided dice, play with an 8-sided dice',
+      hintCode: null,
+    },
+    {
+      name: 'Deuce',
+      task: 'When dice roll is equal of player and computer, print "No winner"',
+      hintCode: null,
+    },
+    {
+      name: 'Computer game',
+      task: 'Make it a computer vs computer game',
+      hintCode: null,
+    },
+  ],
+  newProject: {
+    name: 'Spin the wheel',
+    task: 'Spin the wheel having numbers between 1-50, 5 times. Print the lowest and largest value',
+  },
+  funFact:
+    'Computing pioneer John von Neumann invented one of the first “arithmetical” computer algorithms for pseudorandom numbers',
+  prefaceImageSlots: [
+    {
+      id: 'preface_img_1',
+      base64:
+        'data:image/png;base64,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',
+    },
+  ],
 };
