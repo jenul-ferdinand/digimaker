@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ParsedLesson } from '@digimakers/core';
+import { Lesson } from '@digimakers/core/schemas';
 
 type ArrayKeys<T> = {
   [K in keyof T]: T[K] extends any[] ? K : never;
@@ -14,21 +14,21 @@ type ArrayKeys<T> = {
   styleUrl: './lesson-form.component.scss',
 })
 export class LessonFormComponent {
-  @Input({ required: true }) data!: ParsedLesson;
+  @Input({ required: true }) data!: Lesson;
 
   // Output: Emit the WHOLE object back up whenever a single field changes
-  @Output() dataChange = new EventEmitter<ParsedLesson>();
+  @Output() dataChange = new EventEmitter<Lesson>();
 
-  updateField(field: keyof ParsedLesson, value: any) {
-    const updated = { ...this.data, [field]: value };
+  updateField(field: string, value: any) {
+    const updated = { ...this.data, [field]: value } as Lesson;
     this.dataChange.emit(updated);
   }
 
   onUpdateStepSection(key: string, index: number, newValue: any) {
-    const currentValue = this.data[key as keyof ParsedLesson];
+    const currentValue = this.data[key as keyof Lesson];
     if (!Array.isArray(currentValue)) return;
     const updatedArray = [...currentValue];
     updatedArray[index] = newValue;
-    this.updateField(key as keyof ParsedLesson, updatedArray);
+    this.updateField(key, updatedArray);
   }
 }
