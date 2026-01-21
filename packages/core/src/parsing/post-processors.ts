@@ -13,10 +13,7 @@ function decodeHtmlEntities(text: string): string {
 }
 
 function stripMarkdownEmphasis(text: string): string {
-  const stripped = text
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/__([^_]+)__/g, '$1');
-  return stripped.replace(/\*\*/g, '').replace(/__/g, '');
+  return text.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/__([^_]+)__/g, '$1');
 }
 
 function normaliseLessonText(text: string | null | undefined): string | null {
