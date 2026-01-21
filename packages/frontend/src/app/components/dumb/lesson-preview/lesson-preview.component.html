@@ -11,7 +11,7 @@
         [description]="data.description"
       />
 
-      @if (data.lessonType !== 'debugging lesson' && data.projectExplainer?.trim()) {
+      @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
         <section class="oneliner">
           <p>{{ data.projectExplainer }}</p>
         </section>
