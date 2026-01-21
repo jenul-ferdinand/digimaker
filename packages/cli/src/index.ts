@@ -131,7 +131,7 @@ async function main() {
           await stopServer(server);
         }
       }
-    )
+    );
 }
 
 main().catch((error) => {

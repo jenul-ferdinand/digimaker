@@ -66,7 +66,7 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
     this.previewContainer.nativeElement.innerHTML = '';
 
     const pageStyles = `
-      @page { size: A4; margin: 5mm; }
+      @page { size: A4; margin: 10mm; }
       body { font-family: 'Poppins'; }
     `;
 

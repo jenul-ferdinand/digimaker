@@ -10,10 +10,7 @@ import { PrismHighlightDirective } from '@directives/prism-highlight.directive';
   templateUrl: './add-your-code.component.html',
 })
 export class AddYourCodeComponent {
-  @Input({ required: true }) data!:
-    | StepWithImage[]
-    | StepsWithCodeBlock[]
-    | null;
+  @Input({ required: true }) data!: StepWithImage[] | StepsWithCodeBlock[] | null;
   @Input({ required: true }) programmingLanguage!: string;
 
   get isStepWithImage(): boolean {

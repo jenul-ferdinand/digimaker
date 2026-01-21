@@ -1,4 +1,5 @@
-export const docxParserSystemPrompt = 'You are a markdown document extractor/parser. Your only job is to extract and populate object fields'
+export const docxParserSystemPrompt =
+  'You are a markdown document extractor/parser. Your only job is to extract and populate object fields';
 export const buildDocxParserPrompt = (textForLLM: string) => {
   return `Task: Extract structured lesson data from this educational document.
 
@@ -10,7 +11,8 @@ ${textForLLM}
 </DOCUMENT_CONTENT>`;
 };
 
-export const codeFormatterSystemPrompt = 'You are a professional code formatter. Your only job is to fix style'
+export const codeFormatterSystemPrompt =
+  'You are a professional code formatter. Your only job is to fix style';
 export const codeFormatterPrompt = (document: string) => {
   return `Your task: Format the code to have proper whitespacing, indentation and style.
 How you must respond: With the same document but with formatted code.
@@ -20,5 +22,5 @@ How you must respond: With the same document but with formatted code.
 
 <DOCUMENT_CONTENT>
 ${document}
-</DOCUMENT_CONTENT>`
-}
+</DOCUMENT_CONTENT>`;
+};

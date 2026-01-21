@@ -41,10 +41,7 @@ function createImageSlots(count: number, prefix: string): ImageSlot[] {
   }));
 }
 
-function splitAtHeader(
-  markdown: string,
-  headerPattern: RegExp
-): SectionSplit | null {
+function splitAtHeader(markdown: string, headerPattern: RegExp): SectionSplit | null {
   const lines = markdown.split('\n');
   for (let i = 0; i < lines.length; i++) {
     if (headerPattern.test(lines[i].trim())) {
@@ -57,11 +54,7 @@ function splitAtHeader(
   return null;
 }
 
-function extractSection(
-  markdown: string,
-  startPattern: RegExp,
-  endPatterns: RegExp[]
-): string {
+function extractSection(markdown: string, startPattern: RegExp, endPatterns: RegExp[]): string {
   const startSplit = splitAtHeader(markdown, startPattern);
   if (!startSplit) {
     return '';
@@ -98,7 +91,7 @@ export function parseDoclingMarkdown(markdown: string): DoclingParsedSections {
     sections.preface.imageSlots = createImageSlots(
       countImageMarkers(sections.preface.content),
       'preface'
-    )
+    );
   }
 
   // Extract Get Ready section, no images in this part
