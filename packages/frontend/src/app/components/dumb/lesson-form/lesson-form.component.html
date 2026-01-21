@@ -24,14 +24,16 @@
     ></textarea>
   </div>
 
-  <div class="form-group">
-    <label>Project One Liner</label>
-    <textarea
-      [ngModel]="data.projectExplainer"
-      (ngModelChange)="updateField('projectExplainer', $event)"
-      rows="3"
-    ></textarea>
-  </div>
+  @if (data.lessonType !== 'debugging lesson') {
+    <div class="form-group">
+      <label>Project One Liner</label>
+      <textarea
+        [ngModel]="data.projectExplainer"
+        (ngModelChange)="updateField('projectExplainer', $event)"
+        rows="3"
+      ></textarea>
+    </div>
+  }
 
   <div class="form-group">
     <label>Cover Image</label>
