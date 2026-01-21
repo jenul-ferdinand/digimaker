@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { ParsedLesson } from '@digimakers/core';
+import { Lesson } from '@digimakers/core/schemas';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
 
 declare global {
   interface Window {
-    PDF_DATA: ParsedLesson | null;
+    PDF_DATA: Lesson | null;
   }
 }
 
@@ -16,7 +16,7 @@ declare global {
   styleUrl: './print.component.scss',
 })
 export class PrintComponent implements OnInit, OnDestroy {
-  data: ParsedLesson | null = null;
+  data: Lesson | null = null;
   private pollInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(private ngZone: NgZone) {}
