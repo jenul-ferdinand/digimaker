@@ -13,6 +13,9 @@
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "clean": "rm -rf dist",
+    "pdf-to-png": "node scripts/pdf-to-png.js",
+    "docling-cleaner": "node scripts/run-docling-cleaner.js",
+    "docling-cleaner:save": "node scripts/run-docling-cleaner.js > output/docling-output.txt",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
