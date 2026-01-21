@@ -136,12 +136,17 @@ jobs:
           pattern: docling-cleaner-*
           path: ${{ runner.temp }}/docling-binaries
 
+      - name: Build all packages
+        run: npm run build
+        env:
+          DOCLING_SKIP_BIN_COPY: '1'
+
       - name: Place docling binaries
         shell: bash
         run: |
           for dir in "${RUNNER_TEMP}/docling-binaries"/docling-cleaner-*; do
             tag="${dir##*/docling-cleaner-}"
-            target="packages/core/src/docling-cleaner/bin/${tag}"
+            target="packages/core/dist/docling-cleaner/bin/${tag}"
             mkdir -p "${target}"
             for file in "${dir}"/*; do
               if [ -d "${file}" ]; then
@@ -154,9 +159,6 @@ jobs:
               fi
             done
           done
-
-      - name: Build all packages
-        run: npm run build
 
       - name: Verify build
         run: |
