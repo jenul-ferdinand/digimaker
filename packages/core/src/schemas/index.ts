@@ -3,14 +3,17 @@ export {
   StepsWithCodeBlockSchema,
   ChallengeSchema,
   NewProjectSchema,
-  ParsedLessonSchema,
+  ProgrammingLessonSchema,
+  ScratchLessonSchema,
+  DebugLessonSchema,
+  LessonSchema,
+  LessonLLMSchema,
   type ImageSlot,
   type StepWithImage,
   type StepsWithCodeBlock,
-  type MultipleStepsWithCodeBlock,
   type Challenge,
   type NewProject,
-  type ParsedLesson,
+  type Lesson,
 } from './lesson.js';
 
 export { GenerateOptionsSchema, type GenerateOptions } from './generation.js';
