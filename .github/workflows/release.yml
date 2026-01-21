@@ -116,9 +116,32 @@ jobs:
     needs: build-docling
     runs-on: ubuntu-latest
 
+    env:
+      # Skip browser downloads during CI install (keeps scripts enabled).
+      PUPPETEER_SKIP_DOWNLOAD: "1"
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "1"
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Show disk before
+        run: df -h
+
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Show disk after cleanup
+        run: df -h
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -127,8 +150,12 @@ jobs:
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
+      - name: Install dependencies (scripts enabled; skip puppeteer download)
         run: npm ci
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "1"
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "1"
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
 
       - name: Download docling binaries
         uses: actions/download-artifact@v4
@@ -136,8 +163,11 @@ jobs:
           pattern: docling-cleaner-*
           path: ${{ runner.temp }}/docling-binaries
 
-      - name: Build all packages
-        run: npm run build
+      - name: Build core + frontend + cli
+        run: |
+          npm run build:core
+          npm run build:frontend
+          npm run build:cli
         env:
           DOCLING_SKIP_BIN_COPY: '1'
 
@@ -154,24 +184,68 @@ jobs:
                 continue
               fi
               cp "${file}" "${target}/"
-              if [ "${{ runner.os }}" != "Windows" ]; then
-                chmod +x "${target}/$(basename "${file}")"
-              fi
+              chmod +x "${target}/$(basename "${file}")" || true
             done
           done
+
+      - name: Prune Linux CUDA libraries
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          linuxBundle="packages/core/dist/docling-cleaner/bin/linux-x64/docling-cleaner/_internal"
+          if [ -d "${linuxBundle}" ]; then
+            rm -rf "${linuxBundle}/nvidia" || true
+            find "${linuxBundle}" -type f -name 'libcud*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcusparse*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcublas*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcufft*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcurand*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcusolver*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcudnn*' -delete || true
+            find "${linuxBundle}" -type f -name 'libnvrtc*' -delete || true
+            find "${linuxBundle}" -type f -name 'libnvtx*' -delete || true
+            find "${linuxBundle}" -type f -name 'libnccl*' -delete || true
+          fi
+          if [ -d "${linuxBundle}" ]; then
+            du -sh "${linuxBundle}"
+          fi
 
       - name: Verify build
         run: |
           chmod +x packages/cli/dist/index.js
           node packages/cli/dist/index.js --help
 
+      - name: Show disk before pack
+        run: df -h
+
+      - name: Pack publish artifacts
+        id: pack
+        shell: bash
+        run: |
+          mkdir -p "${RUNNER_TEMP}/npm-packs"
+          CORE_TGZ="$(npm pack -w @digimakers/core --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          CLI_TGZ="$(npm pack -w @digimakers/cli --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          echo "CORE_TGZ=${RUNNER_TEMP}/npm-packs/${CORE_TGZ}" >> $GITHUB_OUTPUT
+          echo "CLI_TGZ=${RUNNER_TEMP}/npm-packs/${CLI_TGZ}" >> $GITHUB_OUTPUT
+          ls -lah "${RUNNER_TEMP}/npm-packs"
+
+      - name: Cleanup before publish
+        shell: bash
+        run: |
+          rm -rf "${RUNNER_TEMP}/docling-binaries" || true
+          rm -rf node_modules packages/*/node_modules || true
+          rm -rf packages/server/dist || true
+          rm -rf packages/frontend/dist || true
+          rm -rf ~/.npm/_cacache || true
+          df -h
+
       - name: Publish @digimakers/core to npm
-        run: npm publish -w @digimakers/core --provenance --access public
+        run: npm publish "${{ steps.pack.outputs.CORE_TGZ }}" --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @digimakers/cli to npm
-        run: npm publish -w @digimakers/cli --provenance --access public
+        run: npm publish "${{ steps.pack.outputs.CLI_TGZ }}" --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
