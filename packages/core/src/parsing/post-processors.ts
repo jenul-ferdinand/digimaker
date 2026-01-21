@@ -24,6 +24,18 @@ function normaliseLessonText(text: string | null | undefined): string | null {
   return stripped.trim();
 }
 
+function normaliseStepText(text: string | null | undefined): string | null {
+  const normalised = normaliseLessonText(text);
+  if (!normalised) return normalised;
+
+  const looksLikeCode =
+    /[;{}]/.test(normalised) ||
+    /System\.out|GraphicsWindow\.|printf\(|println\(|console\.|input\(|print\(/.test(normalised);
+  if (!looksLikeCode) return normalised;
+
+  return normaliseCodeBlock(normalised) ?? normalised;
+}
+
 function normaliseCodeText(text: string | null | undefined): string | null {
   if (text == null) return null;
   const decoded = decodeHtmlEntities(text);
@@ -93,11 +105,13 @@ export function normaliseLessonContent(data: LessonLLM): LessonLLM {
     if (addSection.length > 0 && typeof addSection[0] === 'object' && addSection[0] !== null) {
       if ('step' in addSection[0]) {
         addSection.forEach((step: Record<string, any>) => {
-          step.step = normaliseLessonText(step.step) ?? step.step;
+          step.step = normaliseStepText(step.step) ?? step.step;
         });
       } else if ('steps' in addSection[0]) {
         addSection.forEach((part: Record<string, any>) => {
-          part.steps = normaliseStringArray(part.steps) ?? part.steps;
+          if (Array.isArray(part.steps)) {
+            part.steps = part.steps.map((step: string) => normaliseStepText(step) ?? step);
+          }
           part.codeBlock = normaliseCodeText(part.codeBlock) ?? part.codeBlock;
         });
       }
@@ -165,6 +179,37 @@ export function normaliseLessonForType(data: Lesson): Lesson {
   if (flattenedSteps.length > 0) {
     data.addYourCodeSection = flattenedSteps as any;
   }
+
+  return data;
+}
+
+export function enrichDebugIssues(textForLLM: string, data: Lesson): Lesson {
+  if (data.lessonType !== 'debugging lesson' || !Array.isArray(data.debugSection)) {
+    return data;
+  }
+
+  const regex = /\[\*\*Debug#(\d+)\*\*\]\(([^)]+)\)\s*:\s*([\s\S]*?)(?=\n\n\[\*\*Debug#\d+\*\*\]|$)/g;
+  const byLink = new Map<string, string>();
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(textForLLM)) !== null) {
+    const link = match[2]?.trim();
+    const issue = match[3]?.trim();
+    if (link && issue) {
+      byLink.set(link, issue);
+    }
+  }
+
+  if (byLink.size === 0) return data;
+
+  data.debugSection = data.debugSection.map((step) => {
+    const issueFromDocling = byLink.get(step.linkToCode);
+    if (!issueFromDocling) return step;
+    return {
+      ...step,
+      issue: normaliseLessonText(issueFromDocling) ?? step.issue,
+    };
+  });
 
   return data;
 }

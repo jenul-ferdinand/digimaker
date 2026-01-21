@@ -15,7 +15,12 @@ import { parseDoclingMarkdown, assignImagesToSlots } from './docling-parser.js';
 import { getDoclingMarkdown } from './docling-runners.js';
 import { buildDocxParserPrompt, docxParserSystemPrompt } from './prompts.js';
 import { formatDocumentCode } from '../agents/code-formatter.js';
-import { inferLessonType, normaliseLessonContent, normaliseLessonForType } from './post-processors.js';
+import {
+  enrichDebugIssues,
+  inferLessonType,
+  normaliseLessonContent,
+  normaliseLessonForType,
+} from './post-processors.js';
 
 export interface ParseResult {
   data: Lesson;
@@ -95,7 +100,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   try {
     // Use LLM to extract structured data
     const response = await generateText({
-      model: google('gemini-2.5-flash'),
+      model: google('gemini-2.5-pro'),
       output: Output.object({
         schema: llmSchema,
       }),
@@ -124,7 +129,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
 
   // Infer the lesson type with heuristic
   const dataWithoutType = normaliseLessonContent(output as LessonLLM);
-  const data = normaliseLessonForType({
+  let data = normaliseLessonForType({
     ...dataWithoutType,
     lessonType: inferLessonType(
       textForLLM,
@@ -132,6 +137,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
       dataWithoutType
     ),
   } as Lesson);
+  data = enrichDebugIssues(textForLLM, data);
   logger.info(`Inferred lesson type as: '${data.lessonType}'`);
   logger.info(`Successfully extracted lesson: ${data.topic} - ${data.project}`);
 

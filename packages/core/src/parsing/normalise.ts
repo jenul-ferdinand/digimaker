@@ -16,6 +16,27 @@ function reflowSingleLineCode(code: string): string {
     reflowed = reflowed.replace(/:\s*/g, ':\n');
   }
 
+  if (!reflowed.includes('\n') && /GraphicsWindow\./.test(reflowed)) {
+    reflowed = reflowed.replace(/GraphicsWindow\./g, '\nGraphicsWindow.').trim();
+  }
+
+  if (
+    !reflowed.includes('\n') &&
+    /(\bfor\b|\bif\b|\bwhile\b|\bdef\b|\bclass\b|\belif\b|\belse\b)/.test(reflowed)
+  ) {
+    reflowed = reflowed.replace(
+      /(\bfor\b|\bif\b|\bwhile\b|\bdef\b|\bclass\b|\belif\b|\belse\b)/g,
+      '\n$1'
+    );
+  }
+
+  if (!reflowed.includes('\n') && /(System\.out|printf\(|println\()/.test(reflowed)) {
+    reflowed = reflowed
+      .replace(/System\.out/g, '\nSystem.out')
+      .replace(/printf\(/g, '\nprintf(')
+      .replace(/println\(/g, '\nprintln(');
+  }
+
   return reflowed;
 }
 
