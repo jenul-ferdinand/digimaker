@@ -1,6 +1,7 @@
-import { ParsedLesson } from './schemas/lesson.js';
+import { Lesson } from './schemas/lesson.js';
 
-export const sampleLessonData: ParsedLesson = {
+export const sampleLessonData: Lesson = {
+  lessonType: 'block-based (scratch) lesson',
   topic: 'Decisions',
   project: 'Crossy Road',
   description:
