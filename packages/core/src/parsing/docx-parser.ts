@@ -131,11 +131,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   const dataWithoutType = normaliseLessonContent(output as LessonLLM);
   let data = normaliseLessonForType({
     ...dataWithoutType,
-    lessonType: inferLessonType(
-      textForLLM,
-      footerLanguage as ProgrammingLanguage,
-      dataWithoutType
-    ),
+    lessonType: inferLessonType(textForLLM, footerLanguage as ProgrammingLanguage, dataWithoutType),
   } as Lesson);
   data = enrichDebugIssues(textForLLM, data);
   logger.info(`Inferred lesson type as: '${data.lessonType}'`);

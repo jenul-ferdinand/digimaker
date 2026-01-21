@@ -53,11 +53,13 @@ function firstSentence(text: string): string {
 }
 
 function normaliseForCompare(text: string): string {
-  return normaliseLessonText(text)
-    ?.toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim() ?? '';
+  return (
+    normaliseLessonText(text)
+      ?.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim() ?? ''
+  );
 }
 
 function isNearDuplicate(a: string, b: string): boolean {
@@ -85,7 +87,8 @@ export function normaliseLessonContent(data: LessonLLM): LessonLLM {
   mutable.topic = normaliseLessonText(mutable.topic) ?? mutable.topic;
   mutable.project = normaliseLessonText(mutable.project) ?? mutable.project;
   mutable.description = normaliseLessonText(mutable.description) ?? mutable.description;
-  mutable.projectExplainer = normaliseLessonText(mutable.projectExplainer) ?? mutable.projectExplainer;
+  mutable.projectExplainer =
+    normaliseLessonText(mutable.projectExplainer) ?? mutable.projectExplainer;
   mutable.getReadySection =
     normaliseStringArray(mutable.getReadySection) ?? mutable.getReadySection;
   mutable.tryItOutSection =
@@ -188,7 +191,8 @@ export function enrichDebugIssues(textForLLM: string, data: Lesson): Lesson {
     return data;
   }
 
-  const regex = /\[\*\*Debug#(\d+)\*\*\]\(([^)]+)\)\s*:\s*([\s\S]*?)(?=\n\n\[\*\*Debug#\d+\*\*\]|$)/g;
+  const regex =
+    /\[\*\*Debug#(\d+)\*\*\]\(([^)]+)\)\s*:\s*([\s\S]*?)(?=\n\n\[\*\*Debug#\d+\*\*\]|$)/g;
   const byLink = new Map<string, string>();
   let match: RegExpExecArray | null;
 
@@ -226,7 +230,7 @@ export function inferLessonType(
   if ('debugSection' in data) {
     return 'debugging lesson';
   }
-  
+
   // Scratch checks
   if (footerLanguage === 'scratch') {
     return 'block-based (scratch) lesson';

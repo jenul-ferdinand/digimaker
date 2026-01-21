@@ -50,7 +50,7 @@ async function main() {
   }
 
   const files = await readdir(OUTPUT_DIR);
-  const pdfFiles = files.filter(file => extname(file).toLowerCase() === '.pdf');
+  const pdfFiles = files.filter((file) => extname(file).toLowerCase() === '.pdf');
 
   if (pdfFiles.length === 0) {
     console.log('No PDF files found in output directory.');
@@ -67,7 +67,7 @@ async function main() {
   console.log('\n✓ All conversions complete!');
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error('Unexpected error:', error);
   process.exit(1);
 });

@@ -33,7 +33,6 @@ async function runDoclingCleaner(docxPath) {
 
     // If there are any errors, they'll be in stderr but we might want to ignore them
     // since docling might output warnings that we don't care about
-
   } catch (error) {
     console.log(`Error processing ${docxName}: ${error.message}`);
   }
@@ -63,9 +62,7 @@ async function main() {
   }
 
   const files = await readdir(TEMPLATES_DIR);
-  const docxFiles = files
-    .filter(file => extname(file).toLowerCase() === '.docx')
-    .sort();
+  const docxFiles = files.filter((file) => extname(file).toLowerCase() === '.docx').sort();
 
   if (docxFiles.length === 0) {
     console.log('No .docx files found in templates directory.');
@@ -84,7 +81,7 @@ async function main() {
   console.log('✓ All files processed!');
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error('Unexpected error:', error);
   process.exit(1);
 });
