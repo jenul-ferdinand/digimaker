@@ -67,7 +67,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ "${{ runner.os }}" = "Linux" ]; then
-            pip install --index-url https://download.pytorch.org/whl/cpu "torch==2.2.2+cpu"
+            pip install --index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
           fi
           pip install "docling==${DOCLING_VERSION}" pyinstaller
 
