@@ -87,7 +87,7 @@ import {
   startServer,
   stopServer,
   parseDocx,
-  type ParsedLesson,
+  type Lesson,
 } from '@digimakers/core';
 
 // Start server, create generator, generate PDFs...
