@@ -1,13 +1,13 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
 import fs from 'fs/promises';
-import { ParsedLesson, GenerateOptions } from './schemas/index.js';
+import { Lesson, GenerateOptions } from './schemas/index.js';
 import { logger } from './logger.js';
 import { parseDocx } from './parsing/index.js';
 
 export interface PdfGeneratorInstance {
   browser: Browser;
-  generatePdf: (data: ParsedLesson, options?: GenerateOptions) => Promise<string>;
+  generatePdf: (data: Lesson, options?: GenerateOptions) => Promise<string>;
   close: () => Promise<void>;
 }
 
@@ -23,7 +23,7 @@ export interface ConversionResult {
   error?: string;
 }
 
-export const POOL_SIZE = 4;
+export const POOL_SIZE = 2;
 const RENDER_DELAY = 100;
 const PAGE_WAIT_MS = 30_000;
 
@@ -45,7 +45,7 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
     return page;
   }
 
-  async function renderOnPage(page: Page, data: ParsedLesson): Promise<void> {
+  async function renderOnPage(page: Page, data: Lesson): Promise<void> {
     const renderToken = ++renderTokenCounter;
 
     // Set the render token
@@ -83,7 +83,7 @@ export async function createPdfGenerator(serverUrl: string): Promise<PdfGenerato
    * Each call creates a fresh page and closes it when done.
    * Paged.js cannot be safely reused, so one page = one PDF.
    */
-  async function generatePdf(data: ParsedLesson, options: GenerateOptions = {}): Promise<string> {
+  async function generatePdf(data: Lesson, options: GenerateOptions = {}): Promise<string> {
     const { outputDir = './output', filename = 'output' } = options;
     await fs.mkdir(outputDir, { recursive: true });
 
