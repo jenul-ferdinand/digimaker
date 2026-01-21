@@ -21,10 +21,10 @@
   } @else if (isStepsWithCodeBlockArray) {
     <!-- StepsWithCodeBlock[]: steps list -> code block -> steps list -> code block -> ... -->
     <!-- Programming language lessons use this format -->
-    @for (part of stepsWithCodeBlockArray; track $index) {
+    @for (part of stepsWithCodeBlockArray; track $index; let i = $index) {
       <div class="multiple-steps-with-code-block">
         @for (step of part.steps; track $index) {
-          <p class="step">{{ step }}</p>
+          <p class="step">({{ i+1 }}) {{ step }}</p>
         }
         <pre class="code-block"><code
           prismHighlight
