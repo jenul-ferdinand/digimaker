@@ -1,4 +1,10 @@
-.info-container {
+
+.info-buttons-container {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+.info-button {
   margin: 1rem;
   display: flex;
   gap: 1rem;
@@ -9,8 +15,10 @@
 
   &.run-code {
     background-color: #3dc285;
+    border: 1mm solid #30885f;
   }
   &.save-code {
     background-color: #407093;
+    border: 1mm solid #2d4658;
   }
 }
