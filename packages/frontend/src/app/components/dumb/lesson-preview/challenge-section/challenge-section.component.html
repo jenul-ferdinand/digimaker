@@ -10,13 +10,15 @@
       <div class="challenge-content">
         <h4>{{ challenge.name }}</h4>
         <p>{{ challenge.task }}</p>
-        <div class="code-block">
-          <pre><code
-            prismHighlight
-            [code]="challenge.hintCode"
-            [language]="programmingLanguage"
-          ></code></pre>
-        </div>
+        @if (challenge.hintCode) {
+          <div class="code-block">
+            <pre><code
+              prismHighlight
+              [code]="challenge.hintCode"
+              [language]="programmingLanguage"
+            ></code></pre>
+          </div>
+        }
       </div>
     </div>
   }
