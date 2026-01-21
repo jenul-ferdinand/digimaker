@@ -1,6 +1,6 @@
 import { generateText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { codeFormatterPrompt, codeFormatterSystemPrompt } from '../parsing/prompts';
+import { codeFormatterPrompt, codeFormatterSystemPrompt } from '../parsing/prompts.js';
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
