@@ -46,7 +46,10 @@
   gap: 5mm;
 
   .preface-image {
-    height: 30mm;
+    max-height: 30mm;
+    max-width: 70mm;
+    width: auto;
+    height: auto;
     object-fit: contain;
   }
 }

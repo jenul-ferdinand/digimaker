@@ -8,8 +8,10 @@
   }
 
   .get-ready-image {
-    height: 30mm;
-    max-width: 100%;
+    max-height: 30mm;
+    max-width: 70mm;
+    width: auto;
+    height: auto;
     object-fit: contain;
     filter: drop-shadow(2px 2px 2px);
   }
