@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, macos-13, windows-latest]
+        os: [ubuntu-latest, macos-latest, macos-15-intel, windows-latest]
 
     steps:
       - name: Checkout code
@@ -54,6 +54,7 @@ jobs:
       - name: Build docling cleaner binary
         working-directory: packages/core/src/docling-cleaner
         run: |
+          mkdir -p dist build
           pyinstaller --onefile cleaner.py --name docling-cleaner --distpath dist
 
       - name: Compute platform tag
