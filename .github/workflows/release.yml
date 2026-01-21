@@ -94,23 +94,20 @@ jobs:
           esac
           echo "tag=${os}-${arch}" >> $GITHUB_OUTPUT
 
-      - name: Prepare artifact
+      - name: Set docling artifact path
         shell: bash
         run: |
-          mkdir -p "${RUNNER_TEMP}/docling-artifact"
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp "${DOCLING_DIST_DIR}/docling-cleaner.exe" "${RUNNER_TEMP}/docling-artifact/"
-          elif [ "${{ runner.os }}" = "Linux" ]; then
-            cp -R "${DOCLING_DIST_DIR}/docling-cleaner" "${RUNNER_TEMP}/docling-artifact/"
+            echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner.exe" >> $GITHUB_ENV
           else
-            cp "${DOCLING_DIST_DIR}/docling-cleaner" "${RUNNER_TEMP}/docling-artifact/"
+            echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner" >> $GITHUB_ENV
           fi
 
       - name: Upload docling binary
         uses: actions/upload-artifact@v4
         with:
           name: docling-cleaner-${{ steps.platform.outputs.tag }}
-          path: ${{ runner.temp }}/docling-artifact
+          path: ${{ env.DOCLING_ARTIFACT_PATH }}
 
   release:
     needs: build-docling
