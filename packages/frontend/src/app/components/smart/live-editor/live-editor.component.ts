@@ -6,7 +6,7 @@ import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.co
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
 import { sampleScratchLesson } from '@sample-data/scratch-lesson';
 import { sampleJavaLesson } from '@sample-data/java-lesson';
-import { sampleMultiSmallBasicLesson } from '@sample-data/smallbasic-multi-lesson';
+import { sampleMultiSmallBasicLesson, sampleSmallBasicLesson3VariablesRGB } from '@sample-data/smallbasic-multi-lesson';
 
 @Component({
   selector: 'app-live-editor',
@@ -43,7 +43,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleMultiSmallBasicLesson;
+    this.activeData = sampleSmallBasicLesson3VariablesRGB;
 
     this.previewData = { ...this.activeData };
   }
