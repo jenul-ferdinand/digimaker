@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { ParsedLesson } from '@digimakers/core';
+import { Lesson } from '@digimakers/core/schemas';
 import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.component';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
 import { sampleScratchLesson } from '@sample-data/scratch-lesson';
@@ -17,11 +17,11 @@ import { sampleMultiSmallBasicLesson } from '@sample-data/smallbasic-multi-lesso
 })
 export class LiveEditorComponent {
   // Master State
-  activeData: ParsedLesson = this.getEmptyData();
-  previewData: ParsedLesson | null = null;
+  activeData: Lesson = this.getEmptyData();
+  previewData: Lesson | null = null;
 
   // Debounce Stream
-  private updateSubject = new Subject<ParsedLesson>();
+  private updateSubject = new Subject<Lesson>();
 
   ngOnInit() {
     this.loadInitialData();
@@ -34,7 +34,7 @@ export class LiveEditorComponent {
   }
 
   // Called whenever the Dumb Form emits a change
-  handleDataChange(newData: ParsedLesson) {
+  handleDataChange(newData: Lesson) {
     // 1. Update the form immediately (so inputs don't lag)
     this.activeData = newData;
 
@@ -48,7 +48,7 @@ export class LiveEditorComponent {
     this.previewData = { ...this.activeData };
   }
 
-  getEmptyData(): ParsedLesson {
+  getEmptyData(): Lesson {
     return {} as any; // simplified
   }
 }
