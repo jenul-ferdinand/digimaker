@@ -2,11 +2,21 @@
 function reflowSingleLineCode(code: string): string {
   if (code.includes('\n') || code.length < 80) return code;
 
-  return code
+  let reflowed = code
     .replace(/;\s*/g, ';\n')
     .replace(/{\s*/g, '{\n')
     .replace(/}\s*/g, '}\n')
     .replace(/\belse\b\s*/g, 'else\n');
+
+  if (
+    !reflowed.includes('\n') &&
+    /\b(for|if|while|def|class)\b/.test(reflowed) &&
+    !/https?:\/\//i.test(reflowed)
+  ) {
+    reflowed = reflowed.replace(/:\s*/g, ':\n');
+  }
+
+  return reflowed;
 }
 
 export function normaliseCodeBlock(code: string | null): string | null {
