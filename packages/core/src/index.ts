@@ -1,24 +1,5 @@
 // Public API for @digimakers/core
 
-// Schemas and types (single source of truth)
-export {
-  // Schemas
-  StepWithImageSchema,
-  StepsWithCodeBlockSchema,
-  ChallengeSchema,
-  NewProjectSchema,
-  ParsedLessonSchema,
-  GenerateOptionsSchema,
-  // Types
-  type StepWithImage,
-  type StepsWithCodeBlock,
-  type MultipleStepsWithCodeBlock,
-  type Challenge,
-  type NewProject,
-  type ParsedLesson,
-  type GenerateOptions,
-} from './schemas/index.js';
-
 // PDF generation
 export { createPdfGenerator, convertWithConcurrency, POOL_SIZE } from './pdf-generator.js';
 export type { PdfGeneratorInstance, FileToConvert, ConversionResult } from './pdf-generator.js';
