@@ -139,6 +139,36 @@ export function normaliseLessonContent(data: LessonLLM): LessonLLM {
   return data;
 }
 
+export function normaliseLessonForType(data: Lesson): Lesson {
+  if (data.lessonType !== 'block-based (scratch) lesson') {
+    return data;
+  }
+
+  const addSection = data.addYourCodeSection as unknown;
+  if (!Array.isArray(addSection) || addSection.length === 0) {
+    return data;
+  }
+
+  const firstItem = addSection[0] as Record<string, unknown>;
+  if (!firstItem || typeof firstItem !== 'object' || !('steps' in firstItem)) {
+    return data;
+  }
+
+  const flattenedSteps: { step: string; imageSlot: null }[] = [];
+  for (const part of addSection as Array<{ steps?: string[] }>) {
+    if (!Array.isArray(part.steps)) continue;
+    for (const stepText of part.steps) {
+      flattenedSteps.push({ step: stepText, imageSlot: null });
+    }
+  }
+
+  if (flattenedSteps.length > 0) {
+    data.addYourCodeSection = flattenedSteps as any;
+  }
+
+  return data;
+}
+
 export function inferLessonType(
   textForLLM: string,
   footerLanguage: ProgrammingLanguage | null,
