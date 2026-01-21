@@ -8,7 +8,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { ParsedLesson } from '@digimakers/core';
+import { Lesson } from '@digimakers/core/schemas';
 import { AddYourCodeComponent } from './add-your-code/add-your-code.component';
 // @ts-expect-error
 import { Previewer } from 'pagedjs';
@@ -36,7 +36,7 @@ import { TryItOutComponent } from './try-it-out/try-it-out.component';
   encapsulation: ViewEncapsulation.None,
 })
 export class LessonPreviewComponent implements AfterViewInit, OnChanges {
-  @Input() data: ParsedLesson | null = null;
+  @Input() data: Lesson | null = null;
 
   @ViewChild('sourceContent') sourceContent!: ElementRef;
   @ViewChild('previewContainer') previewContainer!: ElementRef;
