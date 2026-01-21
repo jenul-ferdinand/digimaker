@@ -6,6 +6,7 @@ import { Lesson, StepWithImage } from '../schemas/index.js';
 import { logger } from '../logger.js';
 import { extractLanguageFromFooter } from './footer-parser.js';
 import {
+  LessonLLM,
   LessonLLMSchema,
   LessonLLMSchemaWithoutLanguage,
   ProgrammingLanguage,
@@ -14,6 +15,7 @@ import { parseDoclingMarkdown, assignImagesToSlots } from './docling-parser.js';
 import { getDoclingMarkdown } from './docling-runners.js';
 import { buildDocxParserPrompt, docxParserSystemPrompt } from './prompts.js';
 import { formatDocumentCode } from '../agents/code-formatter.js';
+import { inferLessonType } from './post-processors.js';
 
 export interface ParseResult {
   data: Lesson;
@@ -89,22 +91,49 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   // to tell us.
   const llmSchema = footerLanguage ? LessonLLMSchemaWithoutLanguage : LessonLLMSchema;
 
-  // Use LLM to extract structured data
-  const { output } = await generateText({
-    model: google('gemini-2.5-flash'),
-    output: Output.object({
-      schema: llmSchema,
-    }),
-    system: docxParserSystemPrompt,
-    prompt: buildDocxParserPrompt(textForLLM),
-    temperature: 0,
-    maxRetries: 5,
-  });
+  let output: unknown;
+  try {
+    // Use LLM to extract structured data
+    const response = await generateText({
+      model: google('gemini-2.5-flash'),
+      output: Output.object({
+        schema: llmSchema,
+      }),
+      system: docxParserSystemPrompt,
+      prompt: buildDocxParserPrompt(textForLLM),
+      temperature: 0,
+      maxRetries: 5,
+    });
+    output = response.output;
+  } catch (error) {
+    const err = error as any;
+    logger.error({ err, filePath }, 'LLM extraction failed');
 
-  logger.info(`Successfully extracted lesson: ${output!.topic} - ${output!.project}`);
+    const issues = err?.cause?.issues ?? err?.issues;
+    if (issues) {
+      logger.error({ issues, filePath }, 'LLM schema validation issues');
+    }
 
-  // Post-process: assign images and programming language to the extracted data
-  const data = output as Lesson;
+    const value = err?.cause?.value ?? err?.value;
+    if (value) {
+      logger.error({ value, filePath }, 'LLM output that failed validation');
+    }
+
+    throw error;
+  }
+
+  // Infer the lesson type with heuristic
+  const dataWithoutType = output as LessonLLM;
+  const data = {
+    ...dataWithoutType,
+    lessonType: inferLessonType(
+      textForLLM,
+      footerLanguage as ProgrammingLanguage,
+      dataWithoutType
+    ),
+  } as Lesson;
+  logger.info(`Inferred lesson type as: '${data.lessonType}'`);
+  logger.info(`Successfully extracted lesson: ${data.topic} - ${data.project}`);
 
   // Set programming language from footer if found
   if (footerLanguage) {
