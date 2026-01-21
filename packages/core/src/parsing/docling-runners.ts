@@ -36,8 +36,24 @@ function resolveDoclingBinary(): string | null {
   return null;
 }
 
+function resolveDoclingCleanerDir(): string | null {
+  const distCleanerDir = path.resolve(__dirname, '..', 'docling-cleaner');
+  if (existsSync(path.join(distCleanerDir, 'cleaner.py'))) return distCleanerDir;
+
+  const srcCleanerDir = path.resolve(__dirname, '..', '..', 'src', 'docling-cleaner');
+  if (existsSync(path.join(srcCleanerDir, 'cleaner.py'))) return srcCleanerDir;
+
+  return null;
+}
+
 function getDoclingMarkdownFromUv(filePath: string): string | null {
-  const cleanerDir = path.resolve(__dirname, '..', '..', 'src', 'docling-cleaner');
+  const cleanerDir = resolveDoclingCleanerDir();
+  if (!cleanerDir) {
+    logger.warn(
+      'Docling cleaner assets not found. Ensure the package includes dist/docling-cleaner.'
+    );
+    return null;
+  }
   try {
     return execFileSync('uv', ['run', 'python', 'cleaner.py', filePath], {
       cwd: cleanerDir,

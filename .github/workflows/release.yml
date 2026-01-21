@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, macos-13, windows-latest]
 
     steps:
       - name: Checkout code
@@ -26,21 +26,25 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Resolve pip cache dir
+        shell: bash
+        run: echo "PIP_CACHE_DIR=$(python -m pip cache dir)" >> $GITHUB_ENV
+
       - name: Cache pip
         uses: actions/cache@v4
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('packages/core/src/docling-cleaner/pyproject.toml') }}
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: ${{ runner.os }}-${{ runner.arch }}-pip-${{ hashFiles('packages/core/src/docling-cleaner/pyproject.toml') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
+            ${{ runner.os }}-${{ runner.arch }}-pip-
 
       - name: Cache pyinstaller
         uses: actions/cache@v4
         with:
           path: packages/core/src/docling-cleaner/build
-          key: ${{ runner.os }}-pyinstaller-${{ hashFiles('packages/core/src/docling-cleaner/cleaner.py') }}
+          key: ${{ runner.os }}-${{ runner.arch }}-pyinstaller-${{ hashFiles('packages/core/src/docling-cleaner/cleaner.py') }}
           restore-keys: |
-            ${{ runner.os }}-pyinstaller-
+            ${{ runner.os }}-${{ runner.arch }}-pyinstaller-
 
       - name: Install docling build deps
         run: |
@@ -70,18 +74,18 @@ jobs:
       - name: Prepare artifact
         shell: bash
         run: |
-          mkdir -p /tmp/docling-artifact
+          mkdir -p "${RUNNER_TEMP}/docling-artifact"
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp packages/core/src/docling-cleaner/dist/docling-cleaner.exe /tmp/docling-artifact/
+            cp packages/core/src/docling-cleaner/dist/docling-cleaner.exe "${RUNNER_TEMP}/docling-artifact/"
           else
-            cp packages/core/src/docling-cleaner/dist/docling-cleaner /tmp/docling-artifact/
+            cp packages/core/src/docling-cleaner/dist/docling-cleaner "${RUNNER_TEMP}/docling-artifact/"
           fi
 
       - name: Upload docling binary
         uses: actions/upload-artifact@v4
         with:
           name: docling-cleaner-${{ steps.platform.outputs.tag }}
-          path: /tmp/docling-artifact/*
+          path: ${{ runner.temp }}/docling-artifact/*
 
   release:
     needs: build-docling
@@ -105,18 +109,20 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: docling-cleaner-*
-          path: /tmp/docling-binaries
+          path: ${{ runner.temp }}/docling-binaries
 
       - name: Place docling binaries
         shell: bash
         run: |
-          for dir in /tmp/docling-binaries/docling-cleaner-*; do
+          for dir in "${RUNNER_TEMP}/docling-binaries"/docling-cleaner-*; do
             tag="${dir##*/docling-cleaner-}"
             target="packages/core/src/docling-cleaner/bin/${tag}"
             mkdir -p "${target}"
             for file in "${dir}"/*; do
               cp "${file}" "${target}/"
-              chmod +x "${target}/$(basename "${file}")" || true
+              if [ "${{ runner.os }}" != "Windows" ]; then
+                chmod +x "${target}/$(basename "${file}")"
+              fi
             done
           done
 
