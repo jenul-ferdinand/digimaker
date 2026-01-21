@@ -11,7 +11,7 @@ import {
   startServer,
   stopServer,
   parseDocx,
-  type ParsedLesson,
+  type Lesson,
   type PdfGeneratorInstance,
   type ServerInstance,
   sampleLessonData,
@@ -53,7 +53,7 @@ async function generateWithCustomData() {
     const generator: PdfGeneratorInstance = await createPdfGenerator(server.url);
 
     // You can also provide lesson data directly
-    const lessonData: ParsedLesson = sampleLessonData;
+    const lessonData: Lesson = sampleLessonData;
 
     const pdfPath = await generator.generatePdf(lessonData, {
       outputDir: './output',
