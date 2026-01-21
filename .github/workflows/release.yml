@@ -15,7 +15,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, macos-15-intel, windows-latest]
+        include:
+          - os: ubuntu-latest
+            python-version: '3.13'
+          - os: macos-latest
+            python-version: '3.13'
+          - os: macos-15-intel
+            python-version: '3.12'
+          - os: windows-latest
+            python-version: '3.13'
     env:
       DOCLING_VERSION: 2.68.0
 
@@ -26,7 +34,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: ${{ matrix.python-version }}
 
       - name: Resolve pip cache dir
         shell: bash
@@ -55,6 +63,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-pyinstaller-
 
       - name: Install docling build deps
+        shell: bash
         run: |
           python -m pip install --upgrade pip
           pip install "docling==${DOCLING_VERSION}" pyinstaller
@@ -64,7 +73,11 @@ jobs:
         shell: bash
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
-          pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
+          else
+            pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
+          fi
 
       - name: Compute platform tag
         id: platform
@@ -87,6 +100,8 @@ jobs:
           mkdir -p "${RUNNER_TEMP}/docling-artifact"
           if [ "${{ runner.os }}" = "Windows" ]; then
             cp "${DOCLING_DIST_DIR}/docling-cleaner.exe" "${RUNNER_TEMP}/docling-artifact/"
+          elif [ "${{ runner.os }}" = "Linux" ]; then
+            cp -R "${DOCLING_DIST_DIR}/docling-cleaner" "${RUNNER_TEMP}/docling-artifact/"
           else
             cp "${DOCLING_DIST_DIR}/docling-cleaner" "${RUNNER_TEMP}/docling-artifact/"
           fi
@@ -95,7 +110,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docling-cleaner-${{ steps.platform.outputs.tag }}
-          path: ${{ runner.temp }}/docling-artifact/*
+          path: ${{ runner.temp }}/docling-artifact
 
   release:
     needs: build-docling
@@ -129,6 +144,10 @@ jobs:
             target="packages/core/src/docling-cleaner/bin/${tag}"
             mkdir -p "${target}"
             for file in "${dir}"/*; do
+              if [ -d "${file}" ]; then
+                cp -R "${file}" "${target}/"
+                continue
+              fi
               cp "${file}" "${target}/"
               if [ "${{ runner.os }}" != "Windows" ]; then
                 chmod +x "${target}/$(basename "${file}")"

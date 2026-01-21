@@ -21,6 +21,17 @@ function resolveDoclingBinary(): string | null {
   );
   if (existsSync(distBinary)) return distBinary;
 
+  const distOnedirBinary = path.resolve(
+    __dirname,
+    '..',
+    'docling-cleaner',
+    'bin',
+    platformTag,
+    'docling-cleaner',
+    binaryName
+  );
+  if (existsSync(distOnedirBinary)) return distOnedirBinary;
+
   const srcBinary = path.resolve(
     __dirname,
     '..',
@@ -32,6 +43,19 @@ function resolveDoclingBinary(): string | null {
     binaryName
   );
   if (existsSync(srcBinary)) return srcBinary;
+
+  const srcOnedirBinary = path.resolve(
+    __dirname,
+    '..',
+    '..',
+    'src',
+    'docling-cleaner',
+    'bin',
+    platformTag,
+    'docling-cleaner',
+    binaryName
+  );
+  if (existsSync(srcOnedirBinary)) return srcOnedirBinary;
 
   return null;
 }
