@@ -4,6 +4,7 @@ import 'dotenv/config';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import path from 'path';
+import readline from 'readline/promises';
 import {
   startServer,
   stopServer,
@@ -17,10 +18,46 @@ import {
 
 const OUTPUT_DIR = path.resolve(process.cwd(), 'output');
 
+async function ensureGeminiKey(): Promise<boolean> {
+  if (process.env.GEMINI_API_KEY) {
+    return true;
+  }
+
+  if (!process.stdin.isTTY || !process.stdout.isTTY) {
+    logger.error('GEMINI_API_KEY is required. Set it or pass --gemini-key.');
+    return false;
+  }
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  const key = await rl.question('Enter GEMINI_API_KEY (input will be visible): ');
+  rl.close();
+
+  const trimmed = key.trim();
+  if (!trimmed) {
+    logger.error('GEMINI_API_KEY is required. Set it or pass --gemini-key.');
+    return false;
+  }
+
+  process.env.GEMINI_API_KEY = trimmed;
+  return true;
+}
+
 async function main() {
   await yargs(hideBin(process.argv))
     .scriptName('digimaker')
     .usage('$0 <command> [options]')
+    .option('gemini-key', {
+      type: 'string',
+      description: 'Gemini API key (overrides GEMINI_API_KEY)',
+    })
+    .middleware((argv) => {
+      if (argv.geminiKey) {
+        process.env.GEMINI_API_KEY = String(argv.geminiKey);
+      }
+    })
     .command(
       'convert [path]',
       'Convert .docx files to PDF',
@@ -50,6 +87,11 @@ async function main() {
             description: 'Maximum concurrent file processing',
           }),
       async (argv) => {
+        const hasKey = await ensureGeminiKey();
+        if (!hasKey) {
+          return;
+        }
+
         const targetPath = path.resolve(argv.path);
         const files = await findDocxFiles(targetPath, { recursive: argv.recursive });
 
