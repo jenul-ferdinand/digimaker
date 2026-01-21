@@ -1,0 +1,12 @@
+<section class="debug-section">
+  <h3>Debug</h3>
+  @for (step of debugSteps; track $index; let i = $index) {
+    <div class="debug-item">
+      <div class="debug-meta">
+        <span class="debug-label">Bug {{ i + 1 }}</span>
+        <a [href]="step.linkToCode" target="_blank" rel="noopener">Open code</a>
+      </div>
+      <p class="debug-issue">{{ step.issue }}</p>
+    </div>
+  }
+</section>

@@ -11,7 +11,7 @@
         [description]="data.description"
       />
 
-      @if (data.lessonType !== 'debugging lesson') {
+      @if (data.lessonType !== 'debugging lesson' && data.projectExplainer?.trim()) {
         <section class="oneliner">
           <p>{{ data.projectExplainer }}</p>
         </section>
@@ -32,7 +32,9 @@
         [imageSlot]="data.prefaceImageSlots?.length == 1 ? data.prefaceImageSlots![0] : null"
       />
 
-      @if (data.lessonType !== 'debugging lesson') {
+      @if (data.lessonType === 'debugging lesson') {
+        <app-debug-section [debugSteps]="data.debugSection" />
+      } @else {
         <h3>Add Your Code</h3>
         <app-add-your-code
           [data]="data.addYourCodeSection"

@@ -18,6 +18,7 @@ import { ChallengeSectionComponent } from './challenge-section/challenge-section
 import { NewProjectSectionComponent } from './new-project-section/new-project-section.component';
 import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 import { TryItOutComponent } from './try-it-out/try-it-out.component';
+import { DebugSectionComponent } from './debug-section/debug-section.component';
 
 @Component({
   selector: 'app-lesson-preview',
@@ -30,6 +31,7 @@ import { TryItOutComponent } from './try-it-out/try-it-out.component';
     NewProjectSectionComponent,
     TestYourselfComponent,
     TryItOutComponent,
+    DebugSectionComponent,
   ],
   templateUrl: './lesson-preview.component.html',
   styleUrl: './lesson-preview.component.scss',
