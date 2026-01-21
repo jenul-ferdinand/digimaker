@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NewProject } from '@digimakers/core';
+import { NewProject } from '@digimakers/core/schemas';
 
 @Component({
   selector: 'app-new-project-section',
