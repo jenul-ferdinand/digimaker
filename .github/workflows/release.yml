@@ -66,6 +66,9 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            pip install --index-url https://download.pytorch.org/whl/cpu "torch==2.2.2+cpu"
+          fi
           pip install "docling==${DOCLING_VERSION}" pyinstaller
 
       - name: Build docling cleaner binary
@@ -74,7 +77,7 @@ jobs:
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
           if [ "${{ runner.os }}" = "Linux" ]; then
-            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
+            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --strip --exclude-module nvidia --exclude-module torch.cuda
           else
             pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
           fi
