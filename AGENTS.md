@@ -1,27 +1,49 @@
 # Lesson Sheet Template to Stylised PDF Converter
 
-This project is a CLI tool to automate generation of Digimaker's lesson sheets, there are .docx templates that must be converted to stylised PDFs.
+This project is a CLI tool to convert Digimaker lesson .docx templates into
+stylised PDFs using a Node.js pipeline + Angular frontend.
 
 ## README
 
 @README.md
 
-## How it's going to work.
+## Current Flow
 
-- We have a Node.js CLI that starts a local file server of the built angular project `frontend/dist/index.html` on a rendom port for the few seconds it takes to generate the PDF. It will also launch a puppeteer instance to browse and download this PDF.
+- CLI starts a local static server for the built Angular app and launches
+  Puppeteer to render PDFs.
+- Parsing prefers docling markdown, falls back to mammoth raw text.
+- LLM extracts structured lesson data, then post-processing:
+  - Assigns images to placeholders.
+  - Infers lessonType (no lessonType required in LLM output).
+  - Optionally overrides programmingLanguage from footer.
 
-1. Start server once
-2. Loop through .docx files to convert
-   - Extract .docx text.
-   - Open a new browser tab
-   - Render angular template
+1) Start server once
+2) Loop through .docx files:
+   - Extract docling markdown + images
+   - LLM -> structured lesson object
+   - Post-process (images, lessonType, language)
+   - Render Angular template in a fresh tab
    - Save PDF
    - Close tab
-3. Shutdown
+3) Shutdown
 
-### Examples
+## Lesson Types
 
-You can see some examples of `.docx` templates and the corresponding converted/stylised PDF in `docs/example-templates` and `docs/example-outputs`.
+- text-based (programming) lesson
+- block-based (scratch) lesson
+- debugging lesson
+
+## Examples / Outputs
+
+- Input templates: `docs/example-templates`
+- Generated PDFs and PNG renders:
+  `packages/cli/output`
+
+## Notes for Debugging
+
+- CLI arguments must be passed after `--`:
+  `npm run dev:cli -- convert ./docs/example-templates -- --concurrency=1`
+- Frontend static path is resolved in `packages/core/src/server.ts`.
 
 ## Playwright MCP Integration
 
