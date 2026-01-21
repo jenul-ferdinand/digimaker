@@ -8,3 +8,11 @@ export function normaliseCodeBlock(code: string | null): string | null {
     .join('\n')
     .replace(/\n{2,}/g, '\n');
 }
+
+export function normaliseText(text: string | null): string | null {
+  if (!text) return text;
+  return text
+    .replace(/```(?:\w+)?/g, '')
+    .replace(/<\/?code>/g, '')
+    .trim();
+}
