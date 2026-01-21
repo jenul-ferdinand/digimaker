@@ -164,27 +164,32 @@ export const LessonSchema = z.discriminatedUnion('lessonType', [
 
 // The fields that the LLM will not be able to see at all, when generating
 // These are populated with rule based logic
-export const LessonLLMSchema = z.discriminatedUnion('lessonType', [
-  StandardLessonLLMSchema,
-  ScratchLessonLLMSchema,
-  DebugLessonLLMSchema,
+const StandardLessonLLMSchemaNoType = StandardLessonLLMSchema.omit({
+  lessonType: true,
+}).describe(
+  'Use this for text-based programming lessons (Python, JS, Java, etc.) that follow a standard "Add your code" and "Challenge" flow.'
+);
+const ScratchLessonLLMSchemaNoType = ScratchLessonLLMSchema.omit({
+  lessonType: true,
+}).describe(
+  'Use this ONLY for Scratch/block-based lessons where instructions are tied to visual steps rather than raw code blocks.'
+);
+const DebugLessonLLMSchemaNoType = DebugLessonLLMSchema.omit({
+  lessonType: true,
+}).describe(
+  'Use this for debugging exercises where the goal is to fix an existing issues rather than building one from scratch.'
+);
+
+export const LessonLLMSchema = z.union([
+  StandardLessonLLMSchemaNoType,
+  ScratchLessonLLMSchemaNoType,
+  DebugLessonLLMSchemaNoType,
 ]);
 
-// Dynamic ommision logic for the LLM for programming lanuage, see docx parser
-const StandardLessonLLMSchemaWithoutLanguage = StandardLessonLLMSchema.omit({
-  programmingLanguage: true,
-});
-const ScratchLessonLLMSchemaWithoutLanguage = ScratchLessonLLMSchema.omit({
-  programmingLanguage: true,
-});
-const DebugLessonLLMSchemaWithoutLanguage = DebugLessonLLMSchema.omit({
-  programmingLanguage: true,
-});
-
-export const LessonLLMSchemaWithoutLanguage = z.discriminatedUnion('lessonType', [
-  StandardLessonLLMSchemaWithoutLanguage,
-  ScratchLessonLLMSchemaWithoutLanguage,
-  DebugLessonLLMSchemaWithoutLanguage,
+export const LessonLLMSchemaWithoutLanguage = z.union([
+  StandardLessonLLMSchemaNoType.omit({ programmingLanguage: true }),
+  ScratchLessonLLMSchemaNoType.omit({ programmingLanguage: true }),
+  DebugLessonLLMSchemaNoType.omit({ programmingLanguage: true }),
 ]);
 
 // Inferred types from zod schemas
@@ -195,3 +200,4 @@ export type StepsWithCodeBlock = z.infer<typeof StepsWithCodeBlockSchema>;
 export type Challenge = z.infer<typeof ChallengeSchema>;
 export type NewProject = z.infer<typeof NewProjectSchema>;
 export type Lesson = z.infer<typeof LessonSchema>;
+export type LessonLLM = z.infer<typeof LessonLLMSchema>;
