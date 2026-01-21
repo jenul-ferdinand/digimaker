@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Challenge } from '@digimakers/core';
+import { Challenge } from '@digimakers/core/schemas';
 import { PrismHighlightDirective } from '@directives/prism-highlight.directive';
 
 @Component({
