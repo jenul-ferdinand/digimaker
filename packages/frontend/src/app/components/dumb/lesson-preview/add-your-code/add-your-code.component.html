@@ -26,11 +26,13 @@
         @for (step of part.steps; track $index) {
           <p class="step">({{ i+1 }}) {{ step }}</p>
         }
-        <pre class="code-block"><code
-          prismHighlight
-          [code]="part.codeBlock"
-          [language]="programmingLanguage"
-        ></code></pre>
+        @if (part.codeBlock?.trim()) {
+          <pre class="code-block"><code
+            prismHighlight
+            [code]="part.codeBlock"
+            [language]="programmingLanguage"
+          ></code></pre>
+        }
       </div>
     }
   }
