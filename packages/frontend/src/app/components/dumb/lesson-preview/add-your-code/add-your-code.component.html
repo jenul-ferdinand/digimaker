@@ -13,8 +13,8 @@
         <p class="step">{{ step.step }}</p>
       }
 
-      @if (step.image) {
-        <img class="step-image" [src]="step.image" />
+      @if (step.imageSlot && step.imageSlot.base64) {
+        <img class="step-image" [src]="step.imageSlot.base64" />
         <br />
       }
     }

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ImageSlot } from '@digimakers/core/schemas';
 
 @Component({
   selector: 'app-get-ready-section',
@@ -9,5 +10,7 @@ import { Component, Input } from '@angular/core';
 })
 export class GetReadySectionComponent {
   @Input({ required: true }) getReadySectionData!: Array<string>;
-  @Input({ required: true }) projectImage!: string;
+
+  // Only takes one image, more than one is handled in parent
+  @Input() imageSlot!: ImageSlot | null;
 }

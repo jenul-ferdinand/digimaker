@@ -15,10 +15,19 @@
         <p>{{ data.projectExplainer }}</p>
       </section>
 
+      <!-- Multiple preface images -->
+      @if (data.prefaceImageSlots && data.prefaceImageSlots.length > 1) {
+        <div class="preface-images">
+          @for (slot of data.prefaceImageSlots; track $index) {
+            <img class="preface-image" [src]="slot.base64">
+          }
+        </div>
+      }
+
       <h3 class="get-ready-header">Get Ready</h3>
       <app-get-ready-section
         [getReadySectionData]="data.getReadySection"
-        [projectImage]="data.projectImage!"
+        [imageSlot]="data.prefaceImageSlots?.length == 1 ? data.prefaceImageSlots![0] : null"
       />
 
       <h3>Add Your Code</h3>
