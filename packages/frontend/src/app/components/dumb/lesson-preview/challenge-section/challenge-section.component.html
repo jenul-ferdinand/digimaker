@@ -4,8 +4,8 @@
     <div class="challenge-item">
       <img
         class="challenge-medal"
-        [src]="i === 0 ? 'bronze.png' : i === 1 ? 'silver.png' : 'gold.png'"
-        [alt]="i === 0 ? 'Bronze medal' : i === 1 ? 'Silver medal' : 'Gold medal'"
+        [src]="i === 0 ? 'bronze.png' : i === 1 ? 'silver.png' :  i === 2 ? 'gold.png' : 'fourth-challenge.png'"
+        [alt]="i === 0 ? 'Bronze medal' : i === 1 ? 'Silver medal' : i === 2 ? 'Gold medal' :  'Platnium medal'"
       />
       <div class="challenge-content">
         <h4>{{ challenge.name }}</h4>
