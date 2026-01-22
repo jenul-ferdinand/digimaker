@@ -270,11 +270,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          linuxTar="$(ls "${RUNNER_TEMP}/docling-release-assets"/docling-cleaner-linux-*.tar.gz | head -n 1 || true)"
-          if [ -z "${linuxTar}" ]; then
-            echo "Missing Linux tarball in release assets"
-            exit 1
-          fi
+          linuxTar="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-linux-x64.tar.gz"
           test -f "${linuxTar}"
           tar -tzf "${linuxTar}" | grep -q '^docling-cleaner/docling-cleaner$'
           tar -tzf "${linuxTar}" | grep -q '^docling-cleaner/_internal/'
@@ -295,15 +291,41 @@ jobs:
           chmod +x packages/cli/dist/index.js
           node packages/cli/dist/index.js --help
 
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release (docling cleaner binaries)
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release v${{ steps.version.outputs.VERSION }}
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, '-') }}
+          fail_on_unmatched_files: true
+          files: |
+            ${{ env.LINUX_TARBALL }}
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-x64
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-arm64
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-win32-x64.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Show disk before pack
         run: df -h
+
+      - name: Force https for GitHub git URLs
+        shell: bash
+        run: |
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://github.com/".insteadOf git@github.com:
 
       - name: Pack publish artifacts
         id: pack
         shell: bash
         run: |
           set -euo pipefail
-          
+
           mkdir -p "${RUNNER_TEMP}/npm-packs"
 
           META_TGZ="$(npm pack -w @digimakers/docling-cleaner --pack-destination "${RUNNER_TEMP}/npm-packs")"
@@ -347,22 +369,3 @@ jobs:
         run: npm publish "${{ steps.pack.outputs.CLI_TGZ }}" --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Extract version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: Release v${{ steps.version.outputs.VERSION }}
-          generate_release_notes: true
-          draft: false
-          prerelease: ${{ contains(github.ref, '-') }}
-          files: |
-            ${{ env.LINUX_TARBALL }}
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-x64
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-arm64
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-win32-x64.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
