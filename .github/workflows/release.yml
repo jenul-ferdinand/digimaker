@@ -100,11 +100,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
-          if [ "${{ runner.os }}" = "Linux" ]; then
-            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --strip --exclude-module nvidia --exclude-module torch.cuda
-          else
-            pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
-          fi
+          pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
 
       - name: Compute platform tag
         id: platform
@@ -197,87 +193,46 @@ jobs:
         env:
           DOCLING_SKIP_BIN_COPY: "1"
 
-      - name: Place docling binaries into platform packages
+      - name: Prepare docling release assets
         shell: bash
         run: |
           set -euo pipefail
 
-          # Ensure placeholders/stale artifacts don't cause file-vs-dir conflicts.
-          rm -rf packages/docling-cleaner-*/bin/docling-cleaner* || true
-
-          mkdir -p \
-            packages/docling-cleaner-linux-x64/bin \
-            packages/docling-cleaner-darwin-x64/bin \
-            packages/docling-cleaner-darwin-arm64/bin \
-            packages/docling-cleaner-win32-x64/bin
+          mkdir -p "${RUNNER_TEMP}/docling-release-assets"
 
           for dir in "${RUNNER_TEMP}/docling-binaries"/docling-cleaner-*; do
             tag="${dir##*/docling-cleaner-}"
-
             case "${tag}" in
               linux-x64)
-                pkg="packages/docling-cleaner-linux-x64"
-                if [ ! -d "${dir}/_internal" ] || [ ! -f "${dir}/docling-cleaner" ]; then
-                  echo "Unexpected Linux artifact layout in ${dir}"
-                  ls -lah "${dir}"
-                  exit 1
-                fi
-                rm -rf "${pkg}/bin/docling-cleaner"
-                mkdir -p "${pkg}/bin/docling-cleaner"
-
-                rm -rf "${pkg}/bin/docling-cleaner/_internal"
-                cp -a "${dir}/_internal" "${pkg}/bin/docling-cleaner/" || cp -R "${dir}/_internal" "${pkg}/bin/docling-cleaner/"
-                cp "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner/docling-cleaner"
-                chmod +x "${pkg}/bin/docling-cleaner/docling-cleaner" || true
+                src="${dir}/docling-cleaner"
+                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-linux-x64"
                 ;;
               darwin-x64)
-                pkg="packages/docling-cleaner-darwin-x64"
-                rm -f "${pkg}/bin/docling-cleaner"
-                cp "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner"
-                chmod +x "${pkg}/bin/docling-cleaner" || true
+                src="${dir}/docling-cleaner"
+                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64"
                 ;;
               darwin-arm64)
-                pkg="packages/docling-cleaner-darwin-arm64"
-                rm -f "${pkg}/bin/docling-cleaner"
-                cp "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner"
-                chmod +x "${pkg}/bin/docling-cleaner" || true
+                src="${dir}/docling-cleaner"
+                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64"
                 ;;
               win32-x64)
-                pkg="packages/docling-cleaner-win32-x64"
-                rm -f "${pkg}/bin/docling-cleaner.exe"
-                cp "${dir}/docling-cleaner.exe" "${pkg}/bin/docling-cleaner.exe"
+                src="${dir}/docling-cleaner.exe"
+                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-win32-x64.exe"
                 ;;
               *)
                 echo "Unknown docling tag: ${tag}"
                 exit 1
                 ;;
             esac
+
+            if [ ! -f "${src}" ]; then
+              echo "Missing docling binary at ${src}"
+              ls -lah "${dir}"
+              exit 1
+            fi
+
+            cp "${src}" "${dest}"
           done
-
-          test -x packages/docling-cleaner-linux-x64/bin/docling-cleaner/docling-cleaner
-          test -f packages/docling-cleaner-darwin-x64/bin/docling-cleaner
-          test -f packages/docling-cleaner-darwin-arm64/bin/docling-cleaner
-          test -f packages/docling-cleaner-win32-x64/bin/docling-cleaner.exe
-
-      - name: Prune Linux CUDA libraries
-        if: runner.os == 'Linux'
-        shell: bash
-        run: |
-          linuxBundle="packages/docling-cleaner-linux-x64/bin/docling-cleaner/_internal"
-          if [ -d "${linuxBundle}" ]; then
-            rm -rf "${linuxBundle}/nvidia" || true
-            find "${linuxBundle}" -type f -name 'libcud*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcusparse*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcublas*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcufft*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcurand*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcusolver*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcudnn*' -delete || true
-            find "${linuxBundle}" -type f -name 'libnvrtc*' -delete || true
-            find "${linuxBundle}" -type f -name 'libnvtx*' -delete || true
-            find "${linuxBundle}" -type f -name 'libnccl*' -delete || true
-            du -sh "${linuxBundle}" || true
-          fi
 
       - name: Verify build
         run: |
@@ -295,27 +250,14 @@ jobs:
           
           mkdir -p "${RUNNER_TEMP}/npm-packs"
 
-          LINUX_TGZ="$(npm pack ./packages/docling-cleaner-linux-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
-          DARWIN_X64_TGZ="$(npm pack ./packages/docling-cleaner-darwin-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
-          DARWIN_ARM64_TGZ="$(npm pack ./packages/docling-cleaner-darwin-arm64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
-          WIN32_X64_TGZ="$(npm pack ./packages/docling-cleaner-win32-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
-
           META_TGZ="$(npm pack -w @digimakers/docling-cleaner --pack-destination "${RUNNER_TEMP}/npm-packs")"
           CORE_TGZ="$(npm pack -w @digimakers/core --pack-destination "${RUNNER_TEMP}/npm-packs")"
           CLI_TGZ="$(npm pack -w @digimakers/cli --pack-destination "${RUNNER_TEMP}/npm-packs")"
 
-          test -f "${RUNNER_TEMP}/npm-packs/${LINUX_TGZ}"
-          test -f "${RUNNER_TEMP}/npm-packs/${DARWIN_X64_TGZ}"
-          test -f "${RUNNER_TEMP}/npm-packs/${DARWIN_ARM64_TGZ}"
-          test -f "${RUNNER_TEMP}/npm-packs/${WIN32_X64_TGZ}"
           test -f "${RUNNER_TEMP}/npm-packs/${META_TGZ}"
           test -f "${RUNNER_TEMP}/npm-packs/${CORE_TGZ}"
           test -f "${RUNNER_TEMP}/npm-packs/${CLI_TGZ}"
 
-          echo "LINUX_TGZ=${RUNNER_TEMP}/npm-packs/${LINUX_TGZ}" >> "$GITHUB_OUTPUT"
-          echo "DARWIN_X64_TGZ=${RUNNER_TEMP}/npm-packs/${DARWIN_X64_TGZ}" >> "$GITHUB_OUTPUT"
-          echo "DARWIN_ARM64_TGZ=${RUNNER_TEMP}/npm-packs/${DARWIN_ARM64_TGZ}" >> "$GITHUB_OUTPUT"
-          echo "WIN32_X64_TGZ=${RUNNER_TEMP}/npm-packs/${WIN32_X64_TGZ}" >> "$GITHUB_OUTPUT"
           echo "META_TGZ=${RUNNER_TEMP}/npm-packs/${META_TGZ}" >> "$GITHUB_OUTPUT"
           echo "CORE_TGZ=${RUNNER_TEMP}/npm-packs/${CORE_TGZ}" >> "$GITHUB_OUTPUT"
           echo "CLI_TGZ=${RUNNER_TEMP}/npm-packs/${CLI_TGZ}" >> "$GITHUB_OUTPUT"
@@ -335,13 +277,8 @@ jobs:
       - name: Show disk before publish
         run: df -h
 
-      - name: Publish docling cleaner binaries
-        run: |
-          npm publish "${{ steps.pack.outputs.LINUX_TGZ }}" --provenance --access public
-          npm publish "${{ steps.pack.outputs.DARWIN_X64_TGZ }}" --provenance --access public
-          npm publish "${{ steps.pack.outputs.DARWIN_ARM64_TGZ }}" --provenance --access public
-          npm publish "${{ steps.pack.outputs.WIN32_X64_TGZ }}" --provenance --access public
-          npm publish "${{ steps.pack.outputs.META_TGZ }}" --provenance --access public
+      - name: Publish @digimakers/docling-cleaner to npm
+        run: npm publish "${{ steps.pack.outputs.META_TGZ }}" --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -366,5 +303,10 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: ${{ contains(github.ref, '-') }}
+          files: |
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-linux-x64
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-x64
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-arm64
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-win32-x64.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

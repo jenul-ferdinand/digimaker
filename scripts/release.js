@@ -53,26 +53,7 @@ function updateDoclingMetaVersion(version) {
   const metaPath = 'packages/docling-cleaner/package.json';
   const metaPkg = JSON.parse(readFileSync(metaPath, 'utf-8'));
   metaPkg.version = version;
-  metaPkg.optionalDependencies = metaPkg.optionalDependencies || {};
-  metaPkg.optionalDependencies['@digimakers/docling-cleaner-linux-x64'] = version;
-  metaPkg.optionalDependencies['@digimakers/docling-cleaner-darwin-arm64'] = version;
-  metaPkg.optionalDependencies['@digimakers/docling-cleaner-darwin-x64'] = version;
-  metaPkg.optionalDependencies['@digimakers/docling-cleaner-win32-x64'] = version;
   writeFileSync(metaPath, `${JSON.stringify(metaPkg, null, 2)}\n`);
-}
-
-function updatePlatformPackageVersions(version) {
-  const platforms = [
-    'packages/docling-cleaner-linux-x64/package.json',
-    'packages/docling-cleaner-darwin-x64/package.json',
-    'packages/docling-cleaner-darwin-arm64/package.json',
-    'packages/docling-cleaner-win32-x64/package.json',
-  ];
-  for (const pkgPath of platforms) {
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-    pkg.version = version;
-    writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
-  }
 }
 
 async function main() {
@@ -153,7 +134,6 @@ async function main() {
   console.log('Updating docling package versions...');
   updateCoreDependency(newVersion);
   updateDoclingMetaVersion(newVersion);
-  updatePlatformPackageVersions(newVersion);
 
   // Confirm release
   const confirm = await ask(`Create release v${newVersion}? (y/N) `);
@@ -190,8 +170,8 @@ async function main() {
   console.log('');
   console.log('GitHub Actions will now:');
   console.log('  1. Build all packages');
-  console.log('  2. Publish docling-cleaner platform packages');
-  console.log('  3. Publish core + cli to npm');
+  console.log('  2. Upload docling-cleaner binaries to the GitHub release');
+  console.log('  3. Publish docling-cleaner, core, and cli to npm');
   console.log('  4. Create GitHub release');
   console.log('');
   console.log('Monitor the release at:');

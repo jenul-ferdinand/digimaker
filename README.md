@@ -66,20 +66,14 @@ npm install -g @digimakers/cli
 
 ## Docling Binaries
 
-The DOCX parser uses a small platform-specific `docling-cleaner` binary. These are published as separate npm packages and installed automatically via optional dependencies:
+The DOCX parser uses a small platform-specific `docling-cleaner` binary. The `@digimakers/docling-cleaner` package downloads the correct binary from the GitHub Release matching its version and caches it locally.
 
-- `@digimakers/docling-cleaner` (meta package)
-- `@digimakers/docling-cleaner-linux-x64`
-- `@digimakers/docling-cleaner-darwin-x64`
-- `@digimakers/docling-cleaner-darwin-arm64`
-- `@digimakers/docling-cleaner-win32-x64`
-
-If a platform binary is not available, the parser falls back to running the Python cleaner via `uv` in `packages/core/src/docling-cleaner`.
+If a platform binary is not available or download fails, the parser falls back to running the Python cleaner via `uv` in `packages/core/src/docling-cleaner`.
 
 ### Troubleshooting for developers
 
 - If DOCX parsing fails on a developer machine, run `uv sync` in `packages/core/src/docling-cleaner`.
-- If you are on an unsupported platform/arch, the optional binary package will not install; the `uv` fallback is required.
+- You can override the binary path with `DOCLING_CLEANER_PATH`, or the download base URL with `DOCLING_CLEANER_BASE_URL`.
 
 ## Developer Information
 
