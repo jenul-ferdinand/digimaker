@@ -17,8 +17,8 @@ export async function formatDocumentCode(document: string, footerLanguage: strin
       temperature: 0,
     });
     logger.debug('Done formatting document code blocks');
-    return text
+    return text;
   }
-  logger.debug('Did not format document code blcoks because it\'s a scratch lesson');
+  logger.debug("Did not format document code blcoks because it's a scratch lesson");
   return document;
 }
