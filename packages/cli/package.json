@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/cli",
-  "version": "0.3.19",
+  "version": "0.3.20",
   "description": "CLI tool to convert .docx lesson sheets into stylised PDFs",
   "type": "module",
   "main": "dist/index.js",
