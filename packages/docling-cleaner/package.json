@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/docling-cleaner",
-  "version": "0.3.14",
+  "version": "1.2.15",
   "description": "Platform docling-cleaner binaries (optional dependencies)",
   "license": "MIT",
   "repository": {
@@ -10,10 +10,10 @@
   },
   "main": "index.js",
   "optionalDependencies": {
-    "@digimakers/docling-cleaner-linux-x64": "0.3.13",
-    "@digimakers/docling-cleaner-darwin-arm64": "0.3.13",
-    "@digimakers/docling-cleaner-darwin-x64": "0.3.13",
-    "@digimakers/docling-cleaner-win32-x64": "0.3.13"
+    "@digimakers/docling-cleaner-linux-x64": "1.2.15",
+    "@digimakers/docling-cleaner-darwin-arm64": "1.2.15",
+    "@digimakers/docling-cleaner-darwin-x64": "1.2.15",
+    "@digimakers/docling-cleaner-win32-x64": "1.2.15"
   },
   "files": [
     "index.js"
