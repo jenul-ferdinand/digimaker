@@ -6,7 +6,7 @@ Monorepo for digimaker's code, the main thing here right now is the .docx lesson
 
 ### Workflow
 
-We first parse .docx files, extracting text content, code blocks, images, and structure into a clean data format (JSON). AI is used to process text with zod object validation to get content from the word documents. So developers, make sure `GEMINI_API_KEY` is set in `packages/cli/.env`.
+DOCX files are parsed using Docling to extract text content, code blocks, images, tables and structure into a clean markdown text representation. The output is passed into a LLM (gemini-2.0-flash + gemini-2.5-pro) which processes text using zod object validation to output structured data. Developesr, make sure `GEMINI_API_KEY` is set in `packages/cli/.env`.
 
 Multiple workers are spawned for each .docx file and data is then injected into a prebuilt stylised HTML/CSS template (Angular + Paged.js). There is a `/print` route in this frontend that puppeteer navigates and injects data into. Finally, once data is injected, the stylised lesson PDFs are generated and outputted.
 
