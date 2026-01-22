@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write
@@ -17,13 +17,13 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            python-version: '3.13'
+            python-version: "3.13"
           - os: macos-latest
-            python-version: '3.13'
+            python-version: "3.13"
           - os: macos-15-intel
-            python-version: '3.12'
+            python-version: "3.12"
           - os: windows-latest
-            python-version: '3.13'
+            python-version: "3.13"
     env:
       DOCLING_VERSION: 2.68.0
 
@@ -170,9 +170,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          cache: 'npm'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "20.x"
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies (scripts enabled; skip puppeteer download)
         run: |
@@ -182,10 +182,6 @@ jobs:
             -w @digimakers/server \
             -w @digimakers/frontend \
             -w @digimakers/docling-cleaner
-        env:
-          PUPPETEER_SKIP_DOWNLOAD: "1"
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "1"
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
 
       - name: Download docling binaries
         uses: actions/download-artifact@v4
@@ -199,14 +195,16 @@ jobs:
           npm run build:frontend
           npm run build:cli
         env:
-          DOCLING_SKIP_BIN_COPY: '1'
+          DOCLING_SKIP_BIN_COPY: "1"
 
       - name: Place docling binaries into platform packages
         shell: bash
         run: |
           set -euo pipefail
 
+          # Ensure placeholders/stale artifacts don't cause file-vs-dir conflicts.
           rm -rf packages/docling-cleaner-*/bin/docling-cleaner* || true
+
           mkdir -p \
             packages/docling-cleaner-linux-x64/bin \
             packages/docling-cleaner-darwin-x64/bin \
@@ -215,16 +213,21 @@ jobs:
 
           for dir in "${RUNNER_TEMP}/docling-binaries"/docling-cleaner-*; do
             tag="${dir##*/docling-cleaner-}"
+
             case "${tag}" in
               linux-x64)
                 pkg="packages/docling-cleaner-linux-x64"
-                if [ ! -d "${dir}/docling-cleaner" ]; then
-                  echo "Expected Linux onedir at ${dir}/docling-cleaner"
+                if [ ! -d "${dir}/_internal" ] || [ ! -f "${dir}/docling-cleaner" ]; then
+                  echo "Unexpected Linux artifact layout in ${dir}"
                   ls -lah "${dir}"
                   exit 1
                 fi
                 rm -rf "${pkg}/bin/docling-cleaner"
-                cp -R "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner"
+                mkdir -p "${pkg}/bin/docling-cleaner"
+
+                rm -rf "${pkg}/bin/docling-cleaner/_internal"
+                cp -a "${dir}/_internal" "${pkg}/bin/docling-cleaner/" || cp -R "${dir}/_internal" "${pkg}/bin/docling-cleaner/"
+                cp "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner/docling-cleaner"
                 chmod +x "${pkg}/bin/docling-cleaner/docling-cleaner" || true
                 ;;
               darwin-x64)
@@ -251,6 +254,11 @@ jobs:
             esac
           done
 
+          test -x packages/docling-cleaner-linux-x64/bin/docling-cleaner/docling-cleaner
+          test -f packages/docling-cleaner-darwin-x64/bin/docling-cleaner
+          test -f packages/docling-cleaner-darwin-arm64/bin/docling-cleaner
+          test -f packages/docling-cleaner-win32-x64/bin/docling-cleaner.exe
+
       - name: Prune Linux CUDA libraries
         if: runner.os == 'Linux'
         shell: bash
@@ -268,9 +276,7 @@ jobs:
             find "${linuxBundle}" -type f -name 'libnvrtc*' -delete || true
             find "${linuxBundle}" -type f -name 'libnvtx*' -delete || true
             find "${linuxBundle}" -type f -name 'libnccl*' -delete || true
-          fi
-          if [ -d "${linuxBundle}" ]; then
-            du -sh "${linuxBundle}"
+            du -sh "${linuxBundle}" || true
           fi
 
       - name: Verify build
@@ -311,6 +317,9 @@ jobs:
           rm -rf packages/frontend/dist || true
           rm -rf ~/.npm/_cacache || true
           df -h
+
+      - name: Show disk before publish
+        run: df -h
 
       - name: Publish docling cleaner binaries
         run: |
