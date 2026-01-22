@@ -25,7 +25,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm config set ignore-platform true
+          npm ci --ignore-platform
         env:
           NPM_CONFIG_IGNORE_PLATFORM: "true"
 
