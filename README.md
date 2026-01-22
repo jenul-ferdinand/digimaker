@@ -20,6 +20,10 @@ Check `packages/core` this is the source of truth and where the important stuff 
 
 - [x] SR1: The system should parse content, converting it into data.
 - [x] SR2: The system should output PDFs
+- [x] SR3: The system should parse and show text content and assign them to the right sections
+- [x] SR4: The system should parse and show image content in the right places
+- [x] SR4: The system should parse and show code blocks
+- [ ] SR5: The system should parse and show tables
 
 ### User requirements
 
@@ -29,8 +33,8 @@ Check `packages/core` this is the source of truth and where the important stuff 
 
 ### Out-of-scope requirements
 
-- [ ] OR1: The CLI tool has a terminal user interface.
-- [ ] OR2: A backend server is hosted that provides .docx upload and spits out lesson PDFs.
+- [ ] OOSR1: The CLI tool has a terminal user interface.
+- [ ] OOSR2: A backend server is hosted that provides .docx upload and spits out lesson PDFs.
 
 ## Project Structure
 
