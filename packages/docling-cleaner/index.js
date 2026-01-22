@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const https = require('https');
+const { execFileSync } = require('child_process');
 
 const PLATFORM_TAGS = {
   'linux-x64': 'linux-x64',
@@ -11,7 +12,7 @@ const PLATFORM_TAGS = {
 };
 
 const ASSET_NAMES = {
-  'linux-x64': 'docling-cleaner-linux-x64',
+  'linux-x64': 'docling-cleaner-linux-x64.tar.gz',
   'darwin-x64': 'docling-cleaner-darwin-x64',
   'darwin-arm64': 'docling-cleaner-darwin-arm64',
   'win32-x64': 'docling-cleaner-win32-x64.exe',
@@ -39,6 +40,11 @@ function getCacheDir(version) {
 
 function ensureDirSync(dir) {
   fs.mkdirSync(dir, { recursive: true });
+}
+
+function extractTarball(tarPath, destination) {
+  ensureDirSync(destination);
+  execFileSync('tar', ['-xzf', tarPath, '-C', destination], { stdio: 'ignore' });
 }
 
 function downloadFile(url, destination, redirects = 0) {
@@ -104,11 +110,17 @@ async function ensureDoclingCleaner() {
   }
 
   const version = getPackageVersion();
-  const cacheDir = getCacheDir(version);
   const assetName = ASSET_NAMES[platformTag];
+  const baseCacheDir = getCacheDir(version);
+  const cacheDir = platformTag === 'linux-x64' ? path.join(baseCacheDir, platformTag) : baseCacheDir;
   const cachedBinaryPath = path.join(cacheDir, assetName);
+  const linuxExtractedBinary = path.join(cacheDir, 'docling-cleaner', 'docling-cleaner');
 
-  if (fs.existsSync(cachedBinaryPath)) {
+  if (platformTag === 'linux-x64' && fs.existsSync(linuxExtractedBinary)) {
+    return linuxExtractedBinary;
+  }
+
+  if (platformTag !== 'linux-x64' && fs.existsSync(cachedBinaryPath)) {
     return cachedBinaryPath;
   }
 
@@ -123,6 +135,16 @@ async function ensureDoclingCleaner() {
 
   try {
     await downloadFile(downloadUrl, tempPath);
+    if (platformTag === 'linux-x64') {
+      extractTarball(tempPath, cacheDir);
+      fs.unlinkSync(tempPath);
+      if (fs.existsSync(linuxExtractedBinary)) {
+        fs.chmodSync(linuxExtractedBinary, 0o755);
+        return linuxExtractedBinary;
+      }
+      throw new Error('Extracted Linux binary not found after tar extraction');
+    }
+
     fs.renameSync(tempPath, cachedBinaryPath);
     if (process.platform !== 'win32') {
       fs.chmodSync(cachedBinaryPath, 0o755);

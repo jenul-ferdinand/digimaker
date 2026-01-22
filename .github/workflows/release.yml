@@ -100,7 +100,11 @@ jobs:
         shell: bash
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
-          pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --strip --exclude-module nvidia --exclude-module torch.cuda
+          else
+            pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
+          fi
 
       - name: Compute platform tag
         id: platform
@@ -122,9 +126,36 @@ jobs:
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
             echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner.exe" >> $GITHUB_ENV
+          elif [ "${{ runner.os }}" = "Linux" ]; then
+            echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner-linux-x64.tar.gz" >> $GITHUB_ENV
           else
             echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner" >> $GITHUB_ENV
           fi
+
+      - name: Prune and tar Linux bundle
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          linuxBundle="${DOCLING_DIST_DIR}/docling-cleaner/_internal"
+          if [ -d "${linuxBundle}" ]; then
+            rm -rf "${linuxBundle}/nvidia" || true
+            rm -rf "${linuxBundle}/cuda" || true
+            find "${linuxBundle}" -type f -name 'libcud*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcusparse*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcublas*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcufft*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcurand*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcusolver*' -delete || true
+            find "${linuxBundle}" -type f -name 'libcudnn*' -delete || true
+            find "${linuxBundle}" -type f -name 'libnvrtc*' -delete || true
+            find "${linuxBundle}" -type f -name 'libnvtx*' -delete || true
+            find "${linuxBundle}" -type f -name 'libnccl*' -delete || true
+            du -sh "${linuxBundle}" || true
+          fi
+
+          tar -C "${DOCLING_DIST_DIR}" -czf "${DOCLING_ARTIFACT_PATH}" docling-cleaner
 
       - name: Upload docling binary
         uses: actions/upload-artifact@v4
@@ -204,8 +235,8 @@ jobs:
             tag="${dir##*/docling-cleaner-}"
             case "${tag}" in
               linux-x64)
-                src="${dir}/docling-cleaner"
-                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-linux-x64"
+                src="${dir}/docling-cleaner-linux-x64.tar.gz"
+                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-linux-x64.tar.gz"
                 ;;
               darwin-x64)
                 src="${dir}/docling-cleaner"
@@ -304,7 +335,7 @@ jobs:
           draft: false
           prerelease: ${{ contains(github.ref, '-') }}
           files: |
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-linux-x64
+            ${{ runner.temp }}/docling-release-assets/docling-cleaner-linux-x64.tar.gz
             ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-x64
             ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-arm64
             ${{ runner.temp }}/docling-release-assets/docling-cleaner-win32-x64.exe
