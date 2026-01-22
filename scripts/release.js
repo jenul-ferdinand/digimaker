@@ -135,6 +135,8 @@ async function main() {
   updateCoreDependency(newVersion);
   updateDoclingMetaVersion(newVersion);
 
+  exec('npm install --package-lock-only');
+
   // Confirm release
   const confirm = await ask(`Create release v${newVersion}? (y/N) `);
   if (confirm.toLowerCase() !== 'y') {
