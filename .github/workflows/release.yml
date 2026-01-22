@@ -75,15 +75,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ runner.arch }}-pip-
 
-      - name: Cache pyinstaller
-        if: runner.os != 'Linux'
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.DOCLING_BUILD_DIR }}
-          key: ${{ runner.os }}-${{ runner.arch }}-pyinstaller-${{ hashFiles('packages/core/src/docling-cleaner/cleaner.py') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-pyinstaller-
-
       - name: Install docling build deps
         shell: bash
         run: |
@@ -272,8 +263,13 @@ jobs:
 
           linuxTar="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-linux-x64.tar.gz"
           test -f "${linuxTar}"
-          tar -tzf "${linuxTar}" | grep -q '^docling-cleaner/docling-cleaner$'
-          tar -tzf "${linuxTar}" | grep -q '^docling-cleaner/_internal/'
+
+          listFile="${RUNNER_TEMP}/docling-tar-contents.txt"
+          tar -tzf "${linuxTar}" > "${listFile}"
+
+          grep -q '^docling-cleaner/docling-cleaner$' "${listFile}"
+          grep -q '^docling-cleaner/_internal/' "${listFile}"
+
           echo "LINUX_TARBALL=${linuxTar}" >> "$GITHUB_ENV"
 
           test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64"
@@ -285,7 +281,7 @@ jobs:
           test -x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64"
 
           test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-win32-x64.exe"
-
+          
       - name: Verify build
         run: |
           chmod +x packages/cli/dist/index.js
