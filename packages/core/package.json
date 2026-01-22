@@ -33,10 +33,10 @@
     "zod": "4.3.5"
   },
   "optionalDependencies": {
-    "@digimakers/docling-cleaner-linux-x64": "0.3.13",
-    "@digimakers/docling-cleaner-darwin-x64": "0.3.13",
-    "@digimakers/docling-cleaner-darwin-arm64": "0.3.13",
-    "@digimakers/docling-cleaner-win32-x64": "0.3.13"
+    "@digimakers/docling-cleaner-linux-x64": "workspace:^",
+    "@digimakers/docling-cleaner-darwin-x64": "workspace:^",
+    "@digimakers/docling-cleaner-darwin-arm64": "workspace:^",
+    "@digimakers/docling-cleaner-win32-x64": "workspace:^"
   },
   "devDependencies": {
     "@types/express": "5.0.6",

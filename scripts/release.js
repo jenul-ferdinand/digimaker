@@ -151,8 +151,9 @@ async function main() {
   console.log('');
   console.log('GitHub Actions will now:');
   console.log('  1. Build all packages');
-  console.log('  2. Publish to npm');
-  console.log('  3. Create GitHub release');
+  console.log('  2. Publish docling-cleaner platform packages');
+  console.log('  3. Publish core + cli to npm');
+  console.log('  4. Create GitHub release');
   console.log('');
   console.log('Monitor the release at:');
   console.log(`  https://github.com/jenul-ferdinand/digimaker/actions`);
