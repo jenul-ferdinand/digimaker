@@ -3,12 +3,12 @@ import { ImageSlot } from '../schemas/lesson.js';
 const IMAGE_MARKER = '<!-- image -->';
 
 const SECTION_HEADERS = {
-  getReady: /^(?:##\s*)?Get\s*Ready/i,
-  addYourCode: /^(?:##\s*)?Add\s*Your\s*Code/i,
-  tryItOut: /^(?:##\s*)?Try\s*It\s*Out/i,
-  challenge: /^(?:##\s*)?Challenge/i,
-  testYourself: /^(?:##\s*)?Test\s*Yourself/i,
-  funFact: /^(?:##\s*)?Fun\s*Fact/i,
+  getReady: /^##\s*Get\s*Ready/i,
+  addYourCode: /^##\s*(Add\s*Your\s*Code|My\s*First\s*Program)/i,
+  tryItOut: /^##\s*Try\s*It\s*Out/i,
+  challenge: /^##\s*Challenge/i,
+  testYourself: /^##\s*Test\s*Yourself/i,
+  funFact: /^##\s*Fun\s*Fact/i,
 };
 
 export interface ParsedSection {
@@ -97,12 +97,18 @@ export function parseDoclingMarkdown(markdown: string): DoclingParsedSections {
   // Extract Get Ready section, no images in this part
   sections.getReady.content = extractSection(markdown, SECTION_HEADERS.getReady, [
     SECTION_HEADERS.addYourCode,
+    SECTION_HEADERS.tryItOut,
+    SECTION_HEADERS.challenge,
+    SECTION_HEADERS.testYourself,
+    SECTION_HEADERS.funFact,
   ]).trim();
 
   // Extract Add Your Code section, with image slots
   sections.addYourCode.content = extractSection(markdown, SECTION_HEADERS.addYourCode, [
     SECTION_HEADERS.tryItOut,
     SECTION_HEADERS.challenge,
+    SECTION_HEADERS.testYourself,
+    SECTION_HEADERS.funFact,
   ]).trim();
   sections.addYourCode.imageSlots = createImageSlots(
     countImageMarkers(sections.addYourCode.content),

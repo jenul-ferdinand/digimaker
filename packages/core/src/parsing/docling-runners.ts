@@ -2,46 +2,26 @@ import path from 'path';
 import { execFileSync } from 'child_process';
 import { existsSync, statSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
 import { logger } from '../logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const require = createRequire(import.meta.url);
-
-const PLATFORM_PACKAGE_MAP: Record<string, string> = {
-  'linux-x64': '@digimakers/docling-cleaner-linux-x64',
-  'darwin-x64': '@digimakers/docling-cleaner-darwin-x64',
-  'darwin-arm64': '@digimakers/docling-cleaner-darwin-arm64',
-  'win32-x64': '@digimakers/docling-cleaner-win32-x64',
-};
-
-function resolveDoclingBinary(): string | null {
+async function resolveDoclingBinary(): Promise<string | null> {
   const platformTag = `${process.platform}-${process.arch}`;
   const binaryName = process.platform === 'win32' ? 'docling-cleaner.exe' : 'docling-cleaner';
 
-  const packageName = PLATFORM_PACKAGE_MAP[platformTag];
-  if (packageName) {
-    try {
-      const { binaryPath } = require(packageName);
-      if (binaryPath && existsSync(binaryPath)) {
-        try {
-          if (statSync(binaryPath).isFile()) return binaryPath;
-        } catch {
-          // Ignore invalid paths.
-        }
+  try {
+    const { ensureDoclingCleaner } = await import('@digimakers/docling-cleaner');
+    const binaryPath = await ensureDoclingCleaner();
+    if (binaryPath && existsSync(binaryPath)) {
+      try {
+        if (statSync(binaryPath).isFile()) return binaryPath;
+      } catch {
+        // Ignore invalid paths.
       }
-
-      const pkgJsonPath = require.resolve(`${packageName}/package.json`);
-      const pkgDir = path.dirname(pkgJsonPath);
-      const packageBinary = path.join(pkgDir, 'bin', binaryName);
-      if (existsSync(packageBinary)) return packageBinary;
-
-      const packageOnedirBinary = path.join(pkgDir, 'bin', 'docling-cleaner', binaryName);
-      if (existsSync(packageOnedirBinary)) return packageOnedirBinary;
-    } catch {
-      // Optional dependency may not be installed for this platform.
     }
+  } catch (error) {
+    logger.warn({ err: error }, 'Docling downloader failed, trying bundled binaries');
   }
 
   const distBinary = path.resolve(
@@ -127,8 +107,8 @@ function getDoclingMarkdownFromUv(filePath: string): string | null {
   }
 }
 
-export function getDoclingMarkdown(filePath: string): string | null {
-  const binaryPath = resolveDoclingBinary();
+export async function getDoclingMarkdown(filePath: string): Promise<string | null> {
+  const binaryPath = await resolveDoclingBinary();
   if (binaryPath) {
     try {
       return execFileSync(binaryPath, [filePath], {

@@ -62,7 +62,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   const [allImages, footerLanguage, doclingMarkdown] = await Promise.all([
     extractImages(buffer),
     extractLanguageFromFooter(filePath),
-    Promise.resolve(getDoclingMarkdown(filePath)),
+    getDoclingMarkdown(filePath),
   ]);
 
   // Parse docling markdown to get sections with image placeholders
@@ -72,6 +72,14 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   if (doclingMarkdown) {
     parsedSections = parseDoclingMarkdown(doclingMarkdown);
     assignImagesToSlots(parsedSections, allImages);
+    logger.debug(
+      {
+        prefaceImageSlots: parsedSections.preface.imageSlots.length,
+        addYourCodeImageSlots: parsedSections.addYourCode.imageSlots.length,
+        totalImages: allImages.length,
+      },
+      'Docling image slots parsed'
+    );
     textForLLM = doclingMarkdown;
     logger.info('Using docling markdown with placeholder-based image mapping');
     logger.info(textForLLM);
