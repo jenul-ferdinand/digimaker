@@ -20,6 +20,9 @@ const OUTPUT_DIR = path.resolve(process.cwd(), 'output');
 
 async function ensureGeminiKey(): Promise<boolean> {
   if (process.env.GEMINI_API_KEY) {
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      process.env.GOOGLE_GENERATIVE_AI_API_KEY = process.env.GEMINI_API_KEY;
+    }
     return true;
   }
 
@@ -42,6 +45,7 @@ async function ensureGeminiKey(): Promise<boolean> {
   }
 
   process.env.GEMINI_API_KEY = trimmed;
+  process.env.GOOGLE_GENERATIVE_AI_API_KEY = trimmed;
   return true;
 }
 
