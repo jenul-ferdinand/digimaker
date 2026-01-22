@@ -127,7 +127,7 @@ jobs:
           if [ "${{ runner.os }}" = "Windows" ]; then
             echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner.exe" >> $GITHUB_ENV
           elif [ "${{ runner.os }}" = "Linux" ]; then
-            echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner-linux-x64.tar.gz" >> $GITHUB_ENV
+            echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner-${{ steps.platform.outputs.tag }}.tar.gz" >> $GITHUB_ENV
           else
             echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner" >> $GITHUB_ENV
           fi
@@ -140,8 +140,8 @@ jobs:
 
           linuxBundle="${DOCLING_DIST_DIR}/docling-cleaner/_internal"
           if [ -d "${linuxBundle}" ]; then
-            rm -rf "${linuxBundle}/nvidia" || true
-            rm -rf "${linuxBundle}/cuda" || true
+            find "${linuxBundle}" -type d -name 'nvidia' -prune -exec rm -rf {} + || true
+            find "${linuxBundle}" -type d -name 'cuda' -prune -exec rm -rf {} + || true
             find "${linuxBundle}" -type f -name 'libcud*' -delete || true
             find "${linuxBundle}" -type f -name 'libcusparse*' -delete || true
             find "${linuxBundle}" -type f -name 'libcublas*' -delete || true
@@ -234,9 +234,9 @@ jobs:
           for dir in "${RUNNER_TEMP}/docling-binaries"/docling-cleaner-*; do
             tag="${dir##*/docling-cleaner-}"
             case "${tag}" in
-              linux-x64)
-                src="${dir}/docling-cleaner-linux-x64.tar.gz"
-                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-linux-x64.tar.gz"
+              linux-*)
+                src="${dir}/docling-cleaner-${tag}.tar.gz"
+                dest="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-${tag}.tar.gz"
                 ;;
               darwin-x64)
                 src="${dir}/docling-cleaner"
@@ -264,6 +264,31 @@ jobs:
 
             cp "${src}" "${dest}"
           done
+
+      - name: Verify docling release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          linuxTar="$(ls "${RUNNER_TEMP}/docling-release-assets"/docling-cleaner-linux-*.tar.gz | head -n 1 || true)"
+          if [ -z "${linuxTar}" ]; then
+            echo "Missing Linux tarball in release assets"
+            exit 1
+          fi
+          test -f "${linuxTar}"
+          tar -tzf "${linuxTar}" | grep -q '^docling-cleaner/docling-cleaner$'
+          tar -tzf "${linuxTar}" | grep -q '^docling-cleaner/_internal/'
+          echo "LINUX_TARBALL=${linuxTar}" >> "$GITHUB_ENV"
+
+          test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64"
+          chmod +x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64" || true
+          test -x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64"
+
+          test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64"
+          chmod +x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64" || true
+          test -x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64"
+
+          test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-win32-x64.exe"
 
       - name: Verify build
         run: |
@@ -335,7 +360,7 @@ jobs:
           draft: false
           prerelease: ${{ contains(github.ref, '-') }}
           files: |
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-linux-x64.tar.gz
+            ${{ env.LINUX_TARBALL }}
             ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-x64
             ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-arm64
             ${{ runner.temp }}/docling-release-assets/docling-cleaner-win32-x64.exe

@@ -44,7 +44,16 @@ function ensureDirSync(dir) {
 
 function extractTarball(tarPath, destination) {
   ensureDirSync(destination);
-  execFileSync('tar', ['-xzf', tarPath, '-C', destination], { stdio: 'ignore' });
+  const stdio =
+    process.env.DEBUG_DOCLING_CLEANER === '1' || process.env.CI === 'true' ? 'inherit' : 'ignore';
+  execFileSync('tar', ['-xzf', tarPath, '-C', destination], { stdio });
+}
+
+function debugLog(message) {
+  if (process.env.DEBUG_DOCLING_CLEANER === '1') {
+    // eslint-disable-next-line no-console
+    console.log(message);
+  }
 }
 
 function downloadFile(url, destination, redirects = 0) {
@@ -111,16 +120,19 @@ async function ensureDoclingCleaner() {
 
   const version = getPackageVersion();
   const assetName = ASSET_NAMES[platformTag];
-  const baseCacheDir = getCacheDir(version);
-  const cacheDir = platformTag === 'linux-x64' ? path.join(baseCacheDir, platformTag) : baseCacheDir;
+  const cacheDir = path.join(getCacheDir(version), platformTag);
   const cachedBinaryPath = path.join(cacheDir, assetName);
   const linuxExtractedBinary = path.join(cacheDir, 'docling-cleaner', 'docling-cleaner');
 
   if (platformTag === 'linux-x64' && fs.existsSync(linuxExtractedBinary)) {
+    fs.chmodSync(linuxExtractedBinary, 0o755);
     return linuxExtractedBinary;
   }
 
   if (platformTag !== 'linux-x64' && fs.existsSync(cachedBinaryPath)) {
+    if (process.platform !== 'win32') {
+      fs.chmodSync(cachedBinaryPath, 0o755);
+    }
     return cachedBinaryPath;
   }
 
@@ -134,11 +146,14 @@ async function ensureDoclingCleaner() {
   const tempPath = `${cachedBinaryPath}.download`;
 
   try {
+    debugLog(`docling-cleaner download: ${downloadUrl}`);
+    debugLog(`docling-cleaner cache dir: ${cacheDir}`);
     await downloadFile(downloadUrl, tempPath);
     if (platformTag === 'linux-x64') {
       extractTarball(tempPath, cacheDir);
       fs.unlinkSync(tempPath);
       if (fs.existsSync(linuxExtractedBinary)) {
+        debugLog(`docling-cleaner extracted: ${linuxExtractedBinary}`);
         fs.chmodSync(linuxExtractedBinary, 0o755);
         return linuxExtractedBinary;
       }
