@@ -46,11 +46,36 @@ packages/
 
 ## User Installation
 
-- macOS / Linux / WSL: `curl -fsSL https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.sh | bash`
+macOS / Linux / WSL: 
+```bash
+curl -fsSL https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.sh | bash
+```
 
-- Windows PowerShell: `irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.ps1 | iex`
+Windows PowerShell: 
+```pwsh
+irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.ps1 | iex
+```
 
-- Or directly via npm: `npm install -g @digimakers/cli`
+Or directly via npm: 
+```bash
+npm install -g @digimakers/cli
+```
+
+## Docling Binaries
+
+The DOCX parser uses a small platform-specific `docling-cleaner` binary. These are published as separate npm packages and installed automatically via optional dependencies:
+
+- `@digimakers/docling-cleaner-linux-x64`
+- `@digimakers/docling-cleaner-darwin-x64`
+- `@digimakers/docling-cleaner-darwin-arm64`
+- `@digimakers/docling-cleaner-win32-x64`
+
+If a platform binary is not available, the parser falls back to running the Python cleaner via `uv` in `packages/core/src/docling-cleaner`.
+
+### Troubleshooting for developers
+
+- If DOCX parsing fails on a developer machine, run `uv sync` in `packages/core/src/docling-cleaner`.
+- If you are on an unsupported platform/arch, the optional binary package will not install; the `uv` fallback is required.
 
 ## Developer Information
 
