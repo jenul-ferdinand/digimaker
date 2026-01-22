@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.10",
+    "@digimakers/docling-cleaner": "0.3.13",
     "ai": "6.0.39",
     "dotenv": "^17.2.3",
     "express": "5.2.1",
@@ -31,12 +32,6 @@
     "puppeteer": "24.35.0",
     "word-extractor": "^1.0.4",
     "zod": "4.3.5"
-  },
-  "optionalDependencies": {
-    "@digimakers/docling-cleaner-linux-x64": "0.3.13",
-    "@digimakers/docling-cleaner-darwin-x64": "0.3.13",
-    "@digimakers/docling-cleaner-darwin-arm64": "0.3.13",
-    "@digimakers/docling-cleaner-win32-x64": "0.3.13"
   },
   "devDependencies": {
     "@types/express": "5.0.6",

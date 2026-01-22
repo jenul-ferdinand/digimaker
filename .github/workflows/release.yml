@@ -180,7 +180,8 @@ jobs:
             -w @digimakers/core \
             -w @digimakers/cli \
             -w @digimakers/server \
-            -w @digimakers/frontend
+            -w @digimakers/frontend \
+            -w @digimakers/docling-cleaner
         env:
           PUPPETEER_SKIP_DOWNLOAD: "1"
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "1"
@@ -259,16 +260,18 @@ jobs:
         shell: bash
         run: |
           mkdir -p "${RUNNER_TEMP}/npm-packs"
-          LINUX_TGZ="$(npm pack -w @digimakers/docling-cleaner-linux-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
-          DARWIN_X64_TGZ="$(npm pack -w @digimakers/docling-cleaner-darwin-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
-          DARWIN_ARM64_TGZ="$(npm pack -w @digimakers/docling-cleaner-darwin-arm64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
-          WIN32_X64_TGZ="$(npm pack -w @digimakers/docling-cleaner-win32-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          LINUX_TGZ="$(npm pack packages/docling-cleaner-linux-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          DARWIN_X64_TGZ="$(npm pack packages/docling-cleaner-darwin-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          DARWIN_ARM64_TGZ="$(npm pack packages/docling-cleaner-darwin-arm64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          WIN32_X64_TGZ="$(npm pack packages/docling-cleaner-win32-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          META_TGZ="$(npm pack -w @digimakers/docling-cleaner --pack-destination "${RUNNER_TEMP}/npm-packs")"
           CORE_TGZ="$(npm pack -w @digimakers/core --pack-destination "${RUNNER_TEMP}/npm-packs")"
           CLI_TGZ="$(npm pack -w @digimakers/cli --pack-destination "${RUNNER_TEMP}/npm-packs")"
           echo "LINUX_TGZ=${RUNNER_TEMP}/npm-packs/${LINUX_TGZ}" >> $GITHUB_OUTPUT
           echo "DARWIN_X64_TGZ=${RUNNER_TEMP}/npm-packs/${DARWIN_X64_TGZ}" >> $GITHUB_OUTPUT
           echo "DARWIN_ARM64_TGZ=${RUNNER_TEMP}/npm-packs/${DARWIN_ARM64_TGZ}" >> $GITHUB_OUTPUT
           echo "WIN32_X64_TGZ=${RUNNER_TEMP}/npm-packs/${WIN32_X64_TGZ}" >> $GITHUB_OUTPUT
+          echo "META_TGZ=${RUNNER_TEMP}/npm-packs/${META_TGZ}" >> $GITHUB_OUTPUT
           echo "CORE_TGZ=${RUNNER_TEMP}/npm-packs/${CORE_TGZ}" >> $GITHUB_OUTPUT
           echo "CLI_TGZ=${RUNNER_TEMP}/npm-packs/${CLI_TGZ}" >> $GITHUB_OUTPUT
           ls -lah "${RUNNER_TEMP}/npm-packs"
@@ -289,6 +292,7 @@ jobs:
           npm publish "${{ steps.pack.outputs.DARWIN_X64_TGZ }}" --provenance --access public
           npm publish "${{ steps.pack.outputs.DARWIN_ARM64_TGZ }}" --provenance --access public
           npm publish "${{ steps.pack.outputs.WIN32_X64_TGZ }}" --provenance --access public
+          npm publish "${{ steps.pack.outputs.META_TGZ }}" --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

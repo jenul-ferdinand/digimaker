@@ -30,7 +30,8 @@ jobs:
             -w @digimakers/core \
             -w @digimakers/cli \
             -w @digimakers/server \
-            -w @digimakers/frontend
+            -w @digimakers/frontend \
+            -w @digimakers/docling-cleaner
         env:
           NPM_CONFIG_IGNORE_PLATFORM: "true"
 

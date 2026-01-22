@@ -65,6 +65,7 @@ npm install -g @digimakers/cli
 
 The DOCX parser uses a small platform-specific `docling-cleaner` binary. These are published as separate npm packages and installed automatically via optional dependencies:
 
+- `@digimakers/docling-cleaner` (meta package)
 - `@digimakers/docling-cleaner-linux-x64`
 - `@digimakers/docling-cleaner-darwin-x64`
 - `@digimakers/docling-cleaner-darwin-arm64`

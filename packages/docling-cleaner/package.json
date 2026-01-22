@@ -1,0 +1,24 @@
+{
+  "name": "@digimakers/docling-cleaner",
+  "version": "0.3.13",
+  "description": "Platform docling-cleaner binaries (optional dependencies)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenul-ferdinand/digimaker.git",
+    "directory": "packages/docling-cleaner"
+  },
+  "main": "index.js",
+  "optionalDependencies": {
+    "@digimakers/docling-cleaner-linux-x64": "0.3.13",
+    "@digimakers/docling-cleaner-darwin-arm64": "0.3.13",
+    "@digimakers/docling-cleaner-darwin-x64": "0.3.13",
+    "@digimakers/docling-cleaner-win32-x64": "0.3.13"
+  },
+  "files": [
+    "index.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
