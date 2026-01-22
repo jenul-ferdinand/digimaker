@@ -31,6 +31,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Show disk before (Linux)
+        if: runner.os == 'Linux'
+        run: df -h
+
+      - name: Free disk space (Linux)
+        if: runner.os == 'Linux'
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Show disk after (Linux)
+        if: runner.os == 'Linux'
+        run: df -h
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -47,6 +67,7 @@ jobs:
           echo "DOCLING_BUILD_DIR=${RUNNER_TEMP}/docling-build" >> $GITHUB_ENV
 
       - name: Cache pip
+        if: runner.os != 'Linux'
         uses: actions/cache@v4
         with:
           path: ${{ env.PIP_CACHE_DIR }}
@@ -55,9 +76,10 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-pip-
 
       - name: Cache pyinstaller
+        if: runner.os != 'Linux'
         uses: actions/cache@v4
         with:
-          path: packages/core/src/docling-cleaner/build
+          path: ${{ env.DOCLING_BUILD_DIR }}
           key: ${{ runner.os }}-${{ runner.arch }}-pyinstaller-${{ hashFiles('packages/core/src/docling-cleaner/cleaner.py') }}
           restore-keys: |
             ${{ runner.os }}-${{ runner.arch }}-pyinstaller-
@@ -67,9 +89,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ "${{ runner.os }}" = "Linux" ]; then
-            pip install --index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+            pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+            pip install --no-cache-dir "docling==${DOCLING_VERSION}" pyinstaller
+          else
+            pip install "docling==${DOCLING_VERSION}" pyinstaller
           fi
-          pip install "docling==${DOCLING_VERSION}" pyinstaller
 
       - name: Build docling cleaner binary
         working-directory: packages/core/src/docling-cleaner
