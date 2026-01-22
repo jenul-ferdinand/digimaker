@@ -92,9 +92,9 @@ jobs:
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
           if [ "${{ runner.os }}" = "Linux" ]; then
-            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --strip --exclude-module nvidia --exclude-module torch.cuda
+            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --strip --exclude-module nvidia --exclude-module torch.cuda --copy-metadata docling
           else
-            pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}"
+            pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --copy-metadata docling
           fi
 
       - name: Compute platform tag
