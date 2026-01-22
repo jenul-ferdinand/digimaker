@@ -180,6 +180,7 @@ jobs:
           PUPPETEER_SKIP_DOWNLOAD: "1"
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "1"
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+          NPM_CONFIG_IGNORE_PLATFORM: "true"
 
       - name: Download docling binaries
         uses: actions/download-artifact@v4
