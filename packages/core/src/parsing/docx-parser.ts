@@ -84,7 +84,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
     logger.info('Using docling markdown with placeholder-based image mapping');
     logger.info(textForLLM);
     logger.info('Formatting document code blocks with agent');
-    textForLLM = await formatDocumentCode(doclingMarkdown);
+    textForLLM = await formatDocumentCode(doclingMarkdown, footerLanguage);
     logger.info(textForLLM);
   } else {
     const { value: text } = await mammoth.extractRawText({ buffer });
