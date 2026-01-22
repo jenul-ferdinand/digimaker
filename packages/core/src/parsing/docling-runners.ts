@@ -1,6 +1,6 @@
 import path from 'path';
 import { execFileSync } from 'child_process';
-import { existsSync } from 'fs';
+import { existsSync, statSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import { logger } from '../logger.js';
@@ -24,7 +24,13 @@ function resolveDoclingBinary(): string | null {
   if (packageName) {
     try {
       const { binaryPath } = require(packageName);
-      if (binaryPath && existsSync(binaryPath)) return binaryPath;
+      if (binaryPath && existsSync(binaryPath)) {
+        try {
+          if (statSync(binaryPath).isFile()) return binaryPath;
+        } catch {
+          // Ignore invalid paths.
+        }
+      }
 
       const pkgJsonPath = require.resolve(`${packageName}/package.json`);
       const pkgDir = path.dirname(pkgJsonPath);

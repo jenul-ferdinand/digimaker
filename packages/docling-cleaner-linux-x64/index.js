@@ -1,5 +1,5 @@
 const path = require('path');
 
 module.exports = {
-  binaryPath: path.join(__dirname, 'bin', 'docling-cleaner'),
+  binaryPath: path.join(__dirname, 'bin', 'docling-cleaner', 'docling-cleaner'),
 };
