@@ -45,7 +45,7 @@ function updateCoreDependency(version) {
   const corePath = 'packages/core/package.json';
   const corePkg = JSON.parse(readFileSync(corePath, 'utf-8'));
   corePkg.dependencies = corePkg.dependencies || {};
-  corePkg.dependencies['@digimakers/docling-cleaner'] = version;
+  corePkg.dependencies['@digimakers/docling-cleaner'] = `^${version}`;
   writeFileSync(corePath, `${JSON.stringify(corePkg, null, 2)}\n`);
 }
 
