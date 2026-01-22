@@ -46,17 +46,20 @@ packages/
 
 ## User Installation
 
-macOS / Linux / WSL: 
+macOS / Linux / WSL:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.sh | bash
 ```
 
-Windows PowerShell: 
+Windows PowerShell:
+
 ```pwsh
 irm https://raw.githubusercontent.com/jenul-ferdinand/digimaker/main/install.ps1 | iex
 ```
 
-Or directly via npm: 
+Or directly via npm:
+
 ```bash
 npm install -g @digimakers/cli
 ```
