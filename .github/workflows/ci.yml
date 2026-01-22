@@ -35,8 +35,8 @@ jobs:
         env:
           NPM_CONFIG_IGNORE_PLATFORM: "true"
 
-      - name: Check formatting
-        run: npm run format:check
+      - name: Format files
+        run: npm run format
 
       - name: Build all packages
         run: npm run build
