@@ -185,6 +185,12 @@ jobs:
       - name: Show disk after cleanup
         run: df -h
 
+      - name: Force https for GitHub git URLs
+        shell: bash
+        run: |
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://github.com/".insteadOf git@github.com:
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -261,7 +267,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          linuxTar="${RUNNER_TEMP}/docling-release-assets/docling-cleaner-linux-x64.tar.gz"
+          linuxTar="$(ls "${RUNNER_TEMP}/docling-release-assets"/docling-cleaner-linux-*.tar.gz | head -n 1)"
           test -f "${linuxTar}"
 
           listFile="${RUNNER_TEMP}/docling-tar-contents.txt"
@@ -281,7 +287,7 @@ jobs:
           test -x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64"
 
           test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-win32-x64.exe"
-          
+
       - name: Verify build
         run: |
           chmod +x packages/cli/dist/index.js
@@ -309,12 +315,6 @@ jobs:
 
       - name: Show disk before pack
         run: df -h
-
-      - name: Force https for GitHub git URLs
-        shell: bash
-        run: |
-          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
-          git config --global url."https://github.com/".insteadOf git@github.com:
 
       - name: Pack publish artifacts
         id: pack

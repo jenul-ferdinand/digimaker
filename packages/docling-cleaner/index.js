@@ -31,7 +31,7 @@ function getPlatformTag() {
 
 function getCacheDir(version) {
   if (process.platform === 'win32') {
-    const base = process.env.LOCALAPPDATA || process.env.USERPROFILE || os.homedir();
+    const base = process.env.LOCALAPPDATA || path.json(os.homedir(), 'AppData', 'Local');
     return path.join(base, 'digimaker', 'docling-cleaner', version);
   }
 
