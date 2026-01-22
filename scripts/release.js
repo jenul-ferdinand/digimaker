@@ -11,7 +11,7 @@
  */
 
 import { execSync } from 'child_process';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { createInterface } from 'readline';
 
 const rl = createInterface({
@@ -39,6 +39,17 @@ function execOutput(cmd) {
 function getCurrentVersion() {
   const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
   return pkg.version;
+}
+
+function updateCoreOptionalDeps(version) {
+  const corePath = 'packages/core/package.json';
+  const corePkg = JSON.parse(readFileSync(corePath, 'utf-8'));
+  corePkg.optionalDependencies = corePkg.optionalDependencies || {};
+  corePkg.optionalDependencies['@digimakers/docling-cleaner-linux-x64'] = version;
+  corePkg.optionalDependencies['@digimakers/docling-cleaner-darwin-x64'] = version;
+  corePkg.optionalDependencies['@digimakers/docling-cleaner-darwin-arm64'] = version;
+  corePkg.optionalDependencies['@digimakers/docling-cleaner-win32-x64'] = version;
+  writeFileSync(corePath, `${JSON.stringify(corePkg, null, 2)}\n`);
 }
 
 async function main() {
@@ -115,6 +126,9 @@ async function main() {
   console.log('');
   console.log(`New version: ${newVersion}`);
   console.log('');
+
+  console.log('Updating core optionalDependencies...');
+  updateCoreOptionalDeps(newVersion);
 
   // Confirm release
   const confirm = await ask(`Create release v${newVersion}? (y/N) `);
