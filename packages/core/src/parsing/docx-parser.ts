@@ -27,10 +27,11 @@ export interface ParseResult {
   sourcePath: string;
 }
 
-// Setup google generative ai
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
+function getGoogleClient() {
+  return createGoogleGenerativeAI({
+    apiKey: process.env.GEMINI_API_KEY,
+  });
+}
 
 // Extract images from docx as base64 data URIs
 async function extractImages(buffer: Buffer): Promise<string[]> {
@@ -108,7 +109,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   try {
     // Use LLM to extract structured data
     const response = await generateText({
-      model: google('gemini-2.5-pro'),
+      model: getGoogleClient()('gemini-2.5-pro'),
       output: Output.object({
         schema: llmSchema,
       }),

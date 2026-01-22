@@ -56,6 +56,7 @@ async function main() {
     .middleware((argv) => {
       if (argv.geminiKey) {
         process.env.GEMINI_API_KEY = String(argv.geminiKey);
+        process.env.GOOGLE_GENERATIVE_AI_API_KEY = String(argv.geminiKey);
       }
     })
     .command(
