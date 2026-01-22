@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/docling-cleaner-linux-x64",
-  "version": "1.2.15",
+  "version": "1.2.16",
   "description": "Prebuilt docling-cleaner binary for linux x64",
   "license": "MIT",
   "repository": {

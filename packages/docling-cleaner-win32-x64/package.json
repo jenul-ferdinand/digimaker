@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/docling-cleaner-win32-x64",
-  "version": "1.2.15",
+  "version": "1.2.16",
   "description": "Prebuilt docling-cleaner binary for win32 x64",
   "license": "MIT",
   "repository": {
