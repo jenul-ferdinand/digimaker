@@ -204,25 +204,51 @@ jobs:
       - name: Place docling binaries into platform packages
         shell: bash
         run: |
+          set -euo pipefail
+
+          rm -rf packages/docling-cleaner-*/bin/docling-cleaner* || true
+          mkdir -p \
+            packages/docling-cleaner-linux-x64/bin \
+            packages/docling-cleaner-darwin-x64/bin \
+            packages/docling-cleaner-darwin-arm64/bin \
+            packages/docling-cleaner-win32-x64/bin
+
           for dir in "${RUNNER_TEMP}/docling-binaries"/docling-cleaner-*; do
             tag="${dir##*/docling-cleaner-}"
             case "${tag}" in
-              linux-x64) pkg="packages/docling-cleaner-linux-x64" ;;
-              darwin-x64) pkg="packages/docling-cleaner-darwin-x64" ;;
-              darwin-arm64) pkg="packages/docling-cleaner-darwin-arm64" ;;
-              win32-x64) pkg="packages/docling-cleaner-win32-x64" ;;
-              *) echo "Unknown docling tag: ${tag}" ; exit 1 ;;
-            esac
-            mkdir -p "${pkg}/bin"
-            for file in "${dir}"/*; do
-              if [ -d "${file}" ]; then
+              linux-x64)
+                pkg="packages/docling-cleaner-linux-x64"
+                if [ ! -d "${dir}/docling-cleaner" ]; then
+                  echo "Expected Linux onedir at ${dir}/docling-cleaner"
+                  ls -lah "${dir}"
+                  exit 1
+                fi
                 rm -rf "${pkg}/bin/docling-cleaner"
-                cp -R "${file}" "${pkg}/bin/docling-cleaner"
-                continue
-              fi
-              cp "${file}" "${pkg}/bin/"
-              chmod +x "${pkg}/bin/$(basename "${file}")" || true
-            done
+                cp -R "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner"
+                chmod +x "${pkg}/bin/docling-cleaner/docling-cleaner" || true
+                ;;
+              darwin-x64)
+                pkg="packages/docling-cleaner-darwin-x64"
+                rm -f "${pkg}/bin/docling-cleaner"
+                cp "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner"
+                chmod +x "${pkg}/bin/docling-cleaner" || true
+                ;;
+              darwin-arm64)
+                pkg="packages/docling-cleaner-darwin-arm64"
+                rm -f "${pkg}/bin/docling-cleaner"
+                cp "${dir}/docling-cleaner" "${pkg}/bin/docling-cleaner"
+                chmod +x "${pkg}/bin/docling-cleaner" || true
+                ;;
+              win32-x64)
+                pkg="packages/docling-cleaner-win32-x64"
+                rm -f "${pkg}/bin/docling-cleaner.exe"
+                cp "${dir}/docling-cleaner.exe" "${pkg}/bin/docling-cleaner.exe"
+                ;;
+              *)
+                echo "Unknown docling tag: ${tag}"
+                exit 1
+                ;;
+            esac
           done
 
       - name: Prune Linux CUDA libraries
