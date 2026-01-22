@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/docling-cleaner-darwin-arm64",
-  "version": "1.2.17",
+  "version": "1.2.18",
   "description": "Prebuilt docling-cleaner binary for darwin arm64",
   "license": "MIT",
   "repository": {
