@@ -176,8 +176,11 @@ jobs:
 
       - name: Install dependencies (scripts enabled; skip puppeteer download)
         run: |
-          npm config set ignore-platform true
-          npm ci --ignore-platform
+          npm ci --include-workspace-root \
+            -w @digimakers/core \
+            -w @digimakers/cli \
+            -w @digimakers/server \
+            -w @digimakers/frontend
         env:
           PUPPETEER_SKIP_DOWNLOAD: "1"
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "1"

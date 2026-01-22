@@ -26,8 +26,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm config set ignore-platform true
-          npm ci --ignore-platform
+          npm ci --include-workspace-root \
+            -w @digimakers/core \
+            -w @digimakers/cli \
+            -w @digimakers/server \
+            -w @digimakers/frontend
         env:
           NPM_CONFIG_IGNORE_PLATFORM: "true"
 
