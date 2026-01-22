@@ -195,20 +195,27 @@ jobs:
         env:
           DOCLING_SKIP_BIN_COPY: '1'
 
-      - name: Place docling binaries
+      - name: Place docling binaries into platform packages
         shell: bash
         run: |
           for dir in "${RUNNER_TEMP}/docling-binaries"/docling-cleaner-*; do
             tag="${dir##*/docling-cleaner-}"
-            target="packages/core/dist/docling-cleaner/bin/${tag}"
-            mkdir -p "${target}"
+            case "${tag}" in
+              linux-x64) pkg="packages/docling-cleaner-linux-x64" ;;
+              darwin-x64) pkg="packages/docling-cleaner-darwin-x64" ;;
+              darwin-arm64) pkg="packages/docling-cleaner-darwin-arm64" ;;
+              win32-x64) pkg="packages/docling-cleaner-win32-x64" ;;
+              *) echo "Unknown docling tag: ${tag}" ; exit 1 ;;
+            esac
+            mkdir -p "${pkg}/bin"
             for file in "${dir}"/*; do
               if [ -d "${file}" ]; then
-                cp -R "${file}" "${target}/"
+                rm -rf "${pkg}/bin/docling-cleaner"
+                cp -R "${file}" "${pkg}/bin/docling-cleaner"
                 continue
               fi
-              cp "${file}" "${target}/"
-              chmod +x "${target}/$(basename "${file}")" || true
+              cp "${file}" "${pkg}/bin/"
+              chmod +x "${pkg}/bin/$(basename "${file}")" || true
             done
           done
 
@@ -216,7 +223,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          linuxBundle="packages/core/dist/docling-cleaner/bin/linux-x64/docling-cleaner/_internal"
+          linuxBundle="packages/docling-cleaner-linux-x64/bin/docling-cleaner/_internal"
           if [ -d "${linuxBundle}" ]; then
             rm -rf "${linuxBundle}/nvidia" || true
             find "${linuxBundle}" -type f -name 'libcud*' -delete || true
@@ -247,8 +254,16 @@ jobs:
         shell: bash
         run: |
           mkdir -p "${RUNNER_TEMP}/npm-packs"
+          LINUX_TGZ="$(npm pack -w @digimakers/docling-cleaner-linux-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          DARWIN_X64_TGZ="$(npm pack -w @digimakers/docling-cleaner-darwin-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          DARWIN_ARM64_TGZ="$(npm pack -w @digimakers/docling-cleaner-darwin-arm64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          WIN32_X64_TGZ="$(npm pack -w @digimakers/docling-cleaner-win32-x64 --pack-destination "${RUNNER_TEMP}/npm-packs")"
           CORE_TGZ="$(npm pack -w @digimakers/core --pack-destination "${RUNNER_TEMP}/npm-packs")"
           CLI_TGZ="$(npm pack -w @digimakers/cli --pack-destination "${RUNNER_TEMP}/npm-packs")"
+          echo "LINUX_TGZ=${RUNNER_TEMP}/npm-packs/${LINUX_TGZ}" >> $GITHUB_OUTPUT
+          echo "DARWIN_X64_TGZ=${RUNNER_TEMP}/npm-packs/${DARWIN_X64_TGZ}" >> $GITHUB_OUTPUT
+          echo "DARWIN_ARM64_TGZ=${RUNNER_TEMP}/npm-packs/${DARWIN_ARM64_TGZ}" >> $GITHUB_OUTPUT
+          echo "WIN32_X64_TGZ=${RUNNER_TEMP}/npm-packs/${WIN32_X64_TGZ}" >> $GITHUB_OUTPUT
           echo "CORE_TGZ=${RUNNER_TEMP}/npm-packs/${CORE_TGZ}" >> $GITHUB_OUTPUT
           echo "CLI_TGZ=${RUNNER_TEMP}/npm-packs/${CLI_TGZ}" >> $GITHUB_OUTPUT
           ls -lah "${RUNNER_TEMP}/npm-packs"
@@ -262,6 +277,15 @@ jobs:
           rm -rf packages/frontend/dist || true
           rm -rf ~/.npm/_cacache || true
           df -h
+
+      - name: Publish docling cleaner binaries
+        run: |
+          npm publish "${{ steps.pack.outputs.LINUX_TGZ }}" --provenance --access public
+          npm publish "${{ steps.pack.outputs.DARWIN_X64_TGZ }}" --provenance --access public
+          npm publish "${{ steps.pack.outputs.DARWIN_ARM64_TGZ }}" --provenance --access public
+          npm publish "${{ steps.pack.outputs.WIN32_X64_TGZ }}" --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @digimakers/core to npm
         run: npm publish "${{ steps.pack.outputs.CORE_TGZ }}" --provenance --access public

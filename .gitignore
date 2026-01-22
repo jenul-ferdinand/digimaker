@@ -62,3 +62,6 @@ packages/core/src/docling-cleaner/dist
 
 TODO.md
 docs/*.txt
+
+# Ignore binaries in docling cleaner packages (not really need but its fine)
+packages/docling-cleaner-*/bin/docling-cleaner*

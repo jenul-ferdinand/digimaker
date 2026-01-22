@@ -1,0 +1,25 @@
+{
+  "name": "@digimakers/docling-cleaner-win32-x64",
+  "version": "0.3.13",
+  "description": "Prebuilt docling-cleaner binary for win32 x64",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenul-ferdinand/digimaker.git",
+    "directory": "packages/docling-cleaner-win32-x64"
+  },
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "index.js",
+  "files": [
+    "bin/**",
+    "index.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
