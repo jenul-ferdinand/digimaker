@@ -23,9 +23,9 @@ Check `packages/core` this is the source of truth and where the important stuff 
 
 ### User requirements
 
-- [ ] UR1: Users should be able to run this in a folder with lesson templates.
-- [ ] UR2: Users should be able to download this easily through an install script or similar.
-- [ ] UR3: Users can easily use this CLI tool because it guides the user on what to do.
+- [x] UR1: Users should be able to run this in a folder with lesson templates.
+- [x] UR2: Users should be able to download this easily through an install script or similar.
+- [x] UR3: Users can easily use this CLI tool because it guides the user on what to do.
 
 ### Out-of-scope requirements
 
