@@ -1,5 +1,11 @@
 .try-it-out-section {
   break-inside: avoid;
+
+  p {
+    text-align: center;
+    color: rgb(64, 64, 64);
+    margin-bottom: 0;
+  }
 }
 .info-buttons-container {
   display: flex;
