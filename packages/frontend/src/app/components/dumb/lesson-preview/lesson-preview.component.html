@@ -5,9 +5,12 @@
       <span class="header-logo">
         <img class="lesson-logo" src="digimaker-logo.png" width="200px" />
       </span>
-      <span class="header-language">
+      <span class="header-badges">
         @if (languageBadgeSrc) {
           <img class="language-badge" [src]="languageBadgeSrc" [alt]="languageBadgeAlt" />
+        }
+        @if (levelBadgeSrc) {
+          <img class="level-badge" [src]="levelBadgeSrc" alt="Level" />
         }
       </span>
     </header>

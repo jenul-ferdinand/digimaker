@@ -59,8 +59,12 @@ h3 {
   gap: 12mm;
   width: 100%;
 }
-.header-language {
-  text-align: right;
+.header-badges {
+  display: flex;
+  align-items: flex-start;
+  gap: 4mm;
+  justify-content: flex-end;
+  margin-right: 20mm;
 }
 .lesson-logo {
   display: block;
@@ -71,7 +75,13 @@ h3 {
   height: 18mm;
   object-fit: contain;
   object-position: right top;
-  margin-right: 20mm;
+}
+.level-badge {
+  display: block;
+  width: 20mm;
+  height: 18mm;
+  object-fit: contain;
+  object-position: right top;
 }
 
 .preface-images {

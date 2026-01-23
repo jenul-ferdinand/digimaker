@@ -71,6 +71,13 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
     return raw;
   }
 
+  get levelBadgeSrc(): string | null {
+    const level = this.data?.level;
+    if (level === 1) return 'level1.png';
+    if (level === 2) return 'level2.png';
+    return null;
+  }
+
   ngAfterViewInit(): void {
     this.viewReady = true;
     // Render if data was already set before view init
