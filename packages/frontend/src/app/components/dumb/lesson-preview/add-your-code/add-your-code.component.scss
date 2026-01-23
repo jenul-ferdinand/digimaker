@@ -25,8 +25,8 @@
   background-color: var(--codeblock-background-color);
   padding: 1rem;
   border-radius: 8px;
-  font-family: 'Consolas', 'Monaco', monospace;
   font-size: 0.9rem;
+  font-family: 'Jetbrains';
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-wrap: anywhere;
@@ -35,9 +35,11 @@
 }
 
 .add-your-code .code-block code {
-  font-size: 9pt;
+  font-size: 11pt;
   tab-size: 2;
-  font-family: 'Jetbrains';
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .multiple-steps-with-code-block {
