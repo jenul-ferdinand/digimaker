@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/core",
-  "version": "0.3.26",
+  "version": "0.3.27",
   "description": "Core library for Digimaker - docx to PDF conversion",
   "type": "module",
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.10",
-    "@digimakers/docling-cleaner": "^1.2.26",
+    "@digimakers/docling-cleaner": "^1.2.27",
     "ai": "6.0.39",
     "dotenv": "^17.2.3",
     "express": "5.2.1",
