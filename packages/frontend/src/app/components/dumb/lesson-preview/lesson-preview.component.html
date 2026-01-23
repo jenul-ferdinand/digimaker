@@ -43,7 +43,6 @@
       @if (data.lessonType === 'debugging lesson') {
         <app-debug-section [debugSteps]="data.debugSection" />
       } @else {
-        <h3>Add Your Code</h3>
         <app-add-your-code
           [data]="data.addYourCodeSection"
           [programmingLanguage]="data.programmingLanguage"
