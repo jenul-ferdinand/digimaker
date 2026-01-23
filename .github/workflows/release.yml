@@ -101,16 +101,18 @@ jobs:
         shell: bash
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
+          # Copy metadata for packages that use importlib.metadata at runtime
+          METADATA_FLAGS="--copy-metadata docling --copy-metadata docling-ibm-models --copy-metadata docling-core --copy-metadata docling-parse"
           if [ "${{ runner.os }}" = "Linux" ]; then
             # Linux: use --onedir for smaller tarball distribution
             pyinstaller --onedir cleaner.py --name docling-cleaner \
               --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" \
-              --strip --copy-metadata docling
+              --strip $METADATA_FLAGS
           else
             # macOS/Windows: use --onefile for single executable
             pyinstaller --onefile cleaner.py --name docling-cleaner \
               --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" \
-              --copy-metadata docling
+              $METADATA_FLAGS
           fi
 
       - name: Compute platform tag
