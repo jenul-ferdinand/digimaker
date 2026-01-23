@@ -1,7 +1,14 @@
 <section class="get-ready">
   <div class="get-ready-steps">
     @for (step of getReadySectionData; track $index; let i = $index) {
-      <p>{{ getReadySectionData[i] }}</p>
+      @let split = splitOnSecondColon(step);
+      <p>
+        <span>{{ split.first }}</span>
+        @if (split.second) {
+          <br />
+          <span>{{ split.second }}</span>
+        }
+      </p>
     }
   </div>
   @if (imageSlot && imageSlot.base64) {
