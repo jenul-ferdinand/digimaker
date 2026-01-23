@@ -88,7 +88,6 @@ export const sampleScratchLesson: Lesson = {
     name: 'Energy Boost',
     task: 'Add sprite Robot. Make variable Energy. Using FOREVER loop, IF it touches mouse-pointer, change Energy by 1000.',
   },
-  testYourself:
-    'https://youtube.com',
+  testYourself: 'https://youtube.com',
   funFact: null,
 };
