@@ -65,3 +65,6 @@ docs/*.txt
 
 # Ignore binaries in docling cleaner packages (not really need but its fine)
 packages/docling-cleaner-*/bin/docling-cleaner*
+
+# Ignore sample data in frontend
+packages/frontend/src/app/sample-data/
