@@ -11,7 +11,7 @@
  */
 
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { createInterface } from 'readline';
 
 const rl = createInterface({
@@ -39,6 +39,26 @@ function execOutput(cmd) {
 function getCurrentVersion() {
   const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
   return pkg.version;
+}
+
+function getReleaseFilePaths() {
+  const rootPkg = JSON.parse(readFileSync('package.json', 'utf-8'));
+  const workspaces = Array.isArray(rootPkg.workspaces) ? rootPkg.workspaces : [];
+  const workspacePackageFiles = workspaces.flatMap((workspace) => [
+    `${workspace}/package.json`,
+    `${workspace}/package-lock.json`,
+  ]);
+  const releaseFiles = [
+    'package.json',
+    'package-lock.json',
+    ...workspacePackageFiles,
+  ];
+
+  return releaseFiles.filter((filePath) => existsSync(filePath));
+}
+
+function quoteShellPath(filePath) {
+  return `"${filePath.replace(/"/g, '\\"')}"`;
 }
 
 function updateCoreDependency(version) {
@@ -153,7 +173,8 @@ async function main() {
   // Commit version bump
   console.log('');
   console.log('Committing version bump...');
-  exec('git add .');
+  const releaseFiles = getReleaseFilePaths();
+  exec(`git add -- ${releaseFiles.map(quoteShellPath).join(' ')}`);
   exec(`git commit -m "chore: release v${newVersion}"`);
 
   // Create and push tag
