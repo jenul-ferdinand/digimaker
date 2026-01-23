@@ -81,20 +81,20 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          if [ "${{ runner.os }}" = "Linux" ]; then
-            CPU_INDEX_URL="https://download.pytorch.org/whl/cpu"
-            PYPI_INDEX_URL="https://pypi.org/simple"
-            TORCH_CONSTRAINT="$(mktemp)"
-            echo "torch==${TORCH_VERSION}+cpu" > "${TORCH_CONSTRAINT}"
-            echo "torchvision==${TORCHVISION_VERSION}+cpu" >> "${TORCH_CONSTRAINT}"
-            pip install --no-cache-dir --index-url "${CPU_INDEX_URL}" --extra-index-url "${PYPI_INDEX_URL}" \
+          # Install CPU-only torch for all platforms to reduce binary size
+          # and avoid CUDA dependency issues at runtime
+          CPU_INDEX_URL="https://download.pytorch.org/whl/cpu"
+          if [ "${{ runner.os }}" = "Linux" ] || [ "${{ runner.os }}" = "Windows" ]; then
+            # Linux and Windows: explicitly install CPU-only torch first
+            pip install --no-cache-dir \
+              --extra-index-url "${CPU_INDEX_URL}" \
               "torch==${TORCH_VERSION}+cpu" \
               "torchvision==${TORCHVISION_VERSION}+cpu"
-            pip install --no-cache-dir --index-url "${PYPI_INDEX_URL}" --extra-index-url "${CPU_INDEX_URL}" \
-              -c "${TORCH_CONSTRAINT}" "docling==${DOCLING_VERSION}" pyinstaller
-          else
-            pip install "docling==${DOCLING_VERSION}" pyinstaller
           fi
+          # Install docling with CPU torch preference
+          pip install --no-cache-dir \
+            --extra-index-url "${CPU_INDEX_URL}" \
+            "docling==${DOCLING_VERSION}" pyinstaller
 
       - name: Build docling cleaner binary
         working-directory: packages/core/src/docling-cleaner
@@ -102,9 +102,15 @@ jobs:
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
           if [ "${{ runner.os }}" = "Linux" ]; then
-            pyinstaller --onedir cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --strip --exclude-module nvidia --exclude-module torch.cuda --copy-metadata docling
+            # Linux: use --onedir for smaller tarball distribution
+            pyinstaller --onedir cleaner.py --name docling-cleaner \
+              --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" \
+              --strip --copy-metadata docling
           else
-            pyinstaller --onefile cleaner.py --name docling-cleaner --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" --copy-metadata docling
+            # macOS/Windows: use --onefile for single executable
+            pyinstaller --onefile cleaner.py --name docling-cleaner \
+              --distpath "${DOCLING_DIST_DIR}" --workpath "${DOCLING_BUILD_DIR}" \
+              --copy-metadata docling
           fi
 
       - name: Compute platform tag
@@ -133,29 +139,11 @@ jobs:
             echo "DOCLING_ARTIFACT_PATH=${DOCLING_DIST_DIR}/docling-cleaner" >> $GITHUB_ENV
           fi
 
-      - name: Prune and tar Linux bundle
+      - name: Tar Linux bundle
         if: runner.os == 'Linux'
         shell: bash
         run: |
           set -euo pipefail
-
-          linuxBundle="${DOCLING_DIST_DIR}/docling-cleaner/_internal"
-          if [ -d "${linuxBundle}" ]; then
-            find "${linuxBundle}" -type d -name 'nvidia' -prune -exec rm -rf {} + || true
-            find "${linuxBundle}" -type d -name 'cuda' -prune -exec rm -rf {} + || true
-            find "${linuxBundle}" -type f -name 'libcud*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcusparse*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcublas*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcufft*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcurand*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcusolver*' -delete || true
-            find "${linuxBundle}" -type f -name 'libcudnn*' -delete || true
-            find "${linuxBundle}" -type f -name 'libnvrtc*' -delete || true
-            find "${linuxBundle}" -type f -name 'libnvtx*' -delete || true
-            find "${linuxBundle}" -type f -name 'libnccl*' -delete || true
-            du -sh "${linuxBundle}" || true
-          fi
-
           tar -C "${DOCLING_DIST_DIR}" -czf "${DOCLING_ARTIFACT_PATH}" docling-cleaner
 
       - name: Upload docling binary
@@ -228,8 +216,6 @@ jobs:
           npm run build:core
           npm run build:frontend
           npm run build:cli
-        env:
-          DOCLING_SKIP_BIN_COPY: "1"
 
       - name: Prepare docling release assets
         shell: bash

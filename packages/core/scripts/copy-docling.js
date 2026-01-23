@@ -7,12 +7,9 @@ const __dirname = path.dirname(__filename);
 
 const srcDir = path.resolve(__dirname, '..', 'src', 'docling-cleaner');
 const destDir = path.resolve(__dirname, '..', 'dist', 'docling-cleaner');
-const srcBinDir = path.resolve(srcDir, 'bin');
-const destBinDir = path.resolve(destDir, 'bin');
 const cleanerScript = path.resolve(srcDir, 'cleaner.py');
 const pyprojectFile = path.resolve(srcDir, 'pyproject.toml');
 const uvLockFile = path.resolve(srcDir, 'uv.lock');
-const skipBinCopy = process.env.DOCLING_SKIP_BIN_COPY === '1';
 
 if (!fs.existsSync(srcDir)) {
   console.error(`docling-cleaner source not found at ${srcDir}`);
@@ -21,17 +18,6 @@ if (!fs.existsSync(srcDir)) {
 
 fs.rmSync(destDir, { recursive: true, force: true });
 fs.mkdirSync(destDir, { recursive: true });
-
-if (!skipBinCopy) {
-  if (fs.existsSync(srcBinDir)) {
-    fs.mkdirSync(destBinDir, { recursive: true });
-    fs.cpSync(srcBinDir, destBinDir, { recursive: true });
-  } else {
-    console.warn(`docling-cleaner bin not found at ${srcBinDir}`);
-  }
-} else {
-  console.log('Skipping docling-cleaner binary copy (DOCLING_SKIP_BIN_COPY=1).');
-}
 
 if (fs.existsSync(cleanerScript)) {
   fs.copyFileSync(cleanerScript, path.join(destDir, 'cleaner.py'));

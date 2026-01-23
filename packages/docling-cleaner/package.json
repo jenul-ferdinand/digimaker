@@ -9,9 +9,13 @@
     "directory": "packages/docling-cleaner"
   },
   "main": "index.js",
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
   "files": [
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "postinstall.js"
   ],
   "publishConfig": {
     "access": "public"

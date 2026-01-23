@@ -1,15 +1,37 @@
 import path from 'path';
 import { execFileSync } from 'child_process';
-import { existsSync, statSync } from 'fs';
+import { existsSync, readFileSync, statSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { logger } from '../logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-async function resolveDoclingBinary(): Promise<string | null> {
-  const platformTag = `${process.platform}-${process.arch}`;
-  const binaryName = process.platform === 'win32' ? 'docling-cleaner.exe' : 'docling-cleaner';
 
+/**
+ * Detect if running in development mode (monorepo).
+ * Dev mode uses uv directly instead of pre-built binaries.
+ */
+function isDevMode(): boolean {
+  // Explicit env var takes priority
+  if (process.env.DIGIMAKER_DEV === '1') return true;
+  if (process.env.DIGIMAKER_DEV === '0') return false;
+
+  // Check if we're in the monorepo by looking for root package.json with workspaces
+  try {
+    const rootPkgPath = path.resolve(__dirname, '..', '..', '..', '..', 'package.json');
+    if (existsSync(rootPkgPath)) {
+      const pkg = JSON.parse(readFileSync(rootPkgPath, 'utf-8'));
+      if (pkg.workspaces && pkg.name === 'digimaker-monorepo') {
+        return true;
+      }
+    }
+  } catch {
+    // Ignore errors, assume not dev mode
+  }
+
+  return false;
+}
+async function resolveDoclingBinary(): Promise<string | null> {
   try {
     const { ensureDoclingCleaner } = await import('@digimakers/docling-cleaner');
     const binaryPath = await ensureDoclingCleaner();
@@ -21,54 +43,8 @@ async function resolveDoclingBinary(): Promise<string | null> {
       }
     }
   } catch (error) {
-    logger.warn({ err: error }, 'Docling downloader failed, trying bundled binaries');
+    logger.warn({ err: error }, 'Docling binary download failed');
   }
-
-  const distBinary = path.resolve(
-    __dirname,
-    '..',
-    'docling-cleaner',
-    'bin',
-    platformTag,
-    binaryName
-  );
-  if (existsSync(distBinary)) return distBinary;
-
-  const distOnedirBinary = path.resolve(
-    __dirname,
-    '..',
-    'docling-cleaner',
-    'bin',
-    platformTag,
-    'docling-cleaner',
-    binaryName
-  );
-  if (existsSync(distOnedirBinary)) return distOnedirBinary;
-
-  const srcBinary = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'src',
-    'docling-cleaner',
-    'bin',
-    platformTag,
-    binaryName
-  );
-  if (existsSync(srcBinary)) return srcBinary;
-
-  const srcOnedirBinary = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'src',
-    'docling-cleaner',
-    'bin',
-    platformTag,
-    'docling-cleaner',
-    binaryName
-  );
-  if (existsSync(srcOnedirBinary)) return srcOnedirBinary;
 
   return null;
 }
@@ -113,6 +89,20 @@ function getDoclingMarkdownFromUv(filePath: string): string | null {
 }
 
 export async function getDoclingMarkdown(filePath: string): Promise<string | null> {
+  // In dev mode, always use uv to run local Python directly
+  if (isDevMode()) {
+    logger.debug('Running in dev mode, using uv for docling');
+    const result = getDoclingMarkdownFromUv(filePath);
+    if (result === null) {
+      throw new Error(
+        'Docling uv runner failed. Developers must have uv installed. ' +
+          'Run: curl -LsSf https://astral.sh/uv/install.sh | sh'
+      );
+    }
+    return result;
+  }
+
+  // Production mode: try binary first, then fall back to uv
   const binaryPath = await resolveDoclingBinary();
   if (binaryPath) {
     try {
