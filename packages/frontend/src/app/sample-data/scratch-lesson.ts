@@ -7,7 +7,7 @@ export const sampleScratchLesson: Lesson = {
   description:
     'Decision making is important when there will be situations with multiple options and an option needs to be selected based on the given conditions.',
   projectExplainer: 'Penguin to cross the road and get to the other side!',
-  programmingLanguage: 'scratch',
+  programmingLanguage: 'small-basic',
   prefaceImageSlots: [
     {
       id: 'preface_img_1',
@@ -89,6 +89,6 @@ export const sampleScratchLesson: Lesson = {
     task: 'Add sprite Robot. Make variable Energy. Using FOREVER loop, IF it touches mouse-pointer, change Energy by 1000.',
   },
   testYourself:
-    'Do these two pieces of Scratch code do the same thing after the green flag has been pressed? \n\n\n\nYes\n\nNo\n\nDo you see a decision?',
+    'https://youtube.com',
   funFact: null,
 };

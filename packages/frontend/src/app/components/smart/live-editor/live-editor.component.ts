@@ -5,7 +5,7 @@ import { Lesson } from '@digimakers/core/schemas';
 import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.component';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
 import { sampleScratchLesson } from '@sample-data/scratch-lesson';
-import { sampleJavaLesson } from '@sample-data/java-lesson';
+import { sampleJavaL5RandomnessRollDice, sampleJavaLesson } from '@sample-data/java-lesson';
 import {
   sampleMultiSmallBasicLesson,
   sampleSmallBasicLesson3VariablesRGB,
@@ -46,7 +46,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleJavaLesson;
+    this.activeData = sampleSmallBasicLesson3VariablesRGB;
 
     this.previewData = { ...this.activeData };
   }
