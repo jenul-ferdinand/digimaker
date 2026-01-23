@@ -97,9 +97,9 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
       @page {
         size: A4;
         margin: 42mm 10mm 10mm;
-        @bottom-right {
+        @bottom-center {
           content: counter(page) " / " counter(pages);
-          font-size: 9pt;
+          font-size: 12pt;
           color: #666;
         }
       }
