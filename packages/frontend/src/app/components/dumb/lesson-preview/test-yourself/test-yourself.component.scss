@@ -1,5 +1,10 @@
 .test-yourself-section {
   break-inside: avoid;
+
+  p {
+    text-align: center;
+    margin-bottom: 0;
+  }
 }
 
 .button-container {
@@ -9,15 +14,27 @@
 }
 
 .test-yourself-button {
+  margin-top: 5mm;
   display: flex;
   background-color: rgb(220, 90, 43);
-  border-radius: 1rem;
+  border: 1mm solid rgb(212, 76, 27);
+  border-radius: 10mm;
   padding: 15px 32px;
   max-width: 50%;
   cursor: pointer;
+  font-family: 'PoppinsSemiBold';
+  font-size: 13pt;
+  gap: 5mm;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08);
 
   justify-content: center;
   align-items: center;
+
+  .click-icon {
+    width: 10mm;
+  }
 
   a {
     color: white;
