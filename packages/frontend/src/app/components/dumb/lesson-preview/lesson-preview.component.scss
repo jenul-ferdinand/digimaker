@@ -44,19 +44,21 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12mm;
-  margin-bottom: 4mm;
+  width: 100%;
 }
-
+.header-language {
+  text-align: right;
+}
 .lesson-logo {
   display: block;
 }
-
 .language-badge {
   display: block;
   width: 32mm;
   height: 18mm;
   object-fit: contain;
   object-position: right top;
+  margin-right: 20mm;
 }
 
 .preface-images {
