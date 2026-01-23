@@ -95,6 +95,11 @@ function getDoclingMarkdownFromUv(filePath: string): string | null {
     return execFileSync('uv', ['run', 'python', 'cleaner.py', filePath], {
       cwd: cleanerDir,
       encoding: 'utf-8',
+      env: {
+        ...process.env,
+        PYTHONUTF8: '1',
+        PYTHONIOENCODING: 'utf-8',
+      },
       timeout: 120000,
       stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -113,6 +118,11 @@ export async function getDoclingMarkdown(filePath: string): Promise<string | nul
     try {
       return execFileSync(binaryPath, [filePath], {
         encoding: 'utf-8',
+        env: {
+          ...process.env,
+          PYTHONUTF8: '1',
+          PYTHONIOENCODING: 'utf-8',
+        },
         timeout: 120000,
         stdio: ['pipe', 'pipe', 'pipe'],
       });
