@@ -30,7 +30,7 @@ export async function extractLanguageFromFooter(filePath: string): Promise<strin
     if (!footerText || !footerText.includes('level')) {
       return null;
     }
-    logger.info(`FOOTER TEXT ======================= ${footerText}`);
+    logger.debug(`Text found in footer: ${footerText}`);
 
     const levelMatch = footerText.match(/level:\s*([A-Za-z\s-]+?)[-\d]/i);
     if (levelMatch && levelMatch[1]) {
