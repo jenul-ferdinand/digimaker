@@ -46,7 +46,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleSmallBasicLesson3VariablesRGB;
+    this.activeData = sampleJavaLesson;
 
     this.previewData = { ...this.activeData };
   }

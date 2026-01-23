@@ -69,10 +69,7 @@
         }
 
         @if (data.funFact) {
-          <h3>Fun Fact!</h3>
-          <section>
-            <p>{{ data.funFact }}</p>
-          </section>
+          <app-fun-fact [funFact]="data.funFact" />
         }
       }
     </main>

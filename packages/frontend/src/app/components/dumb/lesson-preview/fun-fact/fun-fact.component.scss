@@ -1,0 +1,77 @@
+.fun-fact-section {
+  break-inside: avoid;
+  margin-top: 8mm;
+}
+
+.fun-fact-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 4mm;
+  padding: 4mm 5mm;
+  border-radius: var(--section-card-border-radius);
+  background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+  border-left: 4mm solid #f5a623;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.fun-fact-icon {
+  flex-shrink: 0;
+  width: 12mm;
+  height: 12mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5a623 0%, #e09100 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(245, 166, 35, 0.4);
+
+  .lightbulb {
+    font-size: 16pt;
+    filter: brightness(0) invert(1);
+  }
+}
+
+.fun-fact-content {
+  flex: 1;
+  min-width: 0;
+
+  .fun-fact-label {
+    margin: 0 0 1mm 0;
+    font-family: 'PoppinsSemiBold';
+    font-size: 11pt;
+    color: #b87a00;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .fun-fact-text {
+    margin: 0;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #4a4a4a;
+    white-space: pre-wrap;
+  }
+}
+
+// Decorative sparkles
+.sparkle {
+  position: absolute;
+  font-size: 8pt;
+  opacity: 0.6;
+
+  &.sparkle-1 {
+    top: 2mm;
+    right: 4mm;
+    color: #f5a623;
+  }
+
+  &.sparkle-2 {
+    bottom: 3mm;
+    right: 12mm;
+    color: #e09100;
+    font-size: 6pt;
+  }
+}
