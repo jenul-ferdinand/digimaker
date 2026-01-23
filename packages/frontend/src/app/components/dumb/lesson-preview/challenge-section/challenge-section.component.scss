@@ -49,6 +49,7 @@
     max-width: 100%;
     width: fit-content;
     font-family: 'Jetbrains';
+    user-select: none;
     font-size: 10pt;
     border-radius: 2mm;
     background-color: var(--codeblock-background-color);
