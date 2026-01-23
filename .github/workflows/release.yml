@@ -263,26 +263,39 @@ jobs:
         run: |
           set -euo pipefail
 
-          linuxTar="$(ls "${RUNNER_TEMP}/docling-release-assets"/docling-cleaner-linux-*.tar.gz | head -n 1)"
-          test -f "${linuxTar}"
+          assetsDir="${RUNNER_TEMP}/docling-release-assets"
+          releaseFiles=""
 
-          listFile="${RUNNER_TEMP}/docling-tar-contents.txt"
-          tar -tzf "${linuxTar}" > "${listFile}"
+          # Verify and collect Linux tarball
+          if ls "${assetsDir}"/docling-cleaner-linux-*.tar.gz 1>/dev/null 2>&1; then
+            linuxTar="$(ls "${assetsDir}"/docling-cleaner-linux-*.tar.gz | head -n 1)"
+            listFile="${RUNNER_TEMP}/docling-tar-contents.txt"
+            tar -tzf "${linuxTar}" > "${listFile}"
+            grep -q '^docling-cleaner/docling-cleaner$' "${listFile}"
+            grep -q '^docling-cleaner/_internal/' "${listFile}"
+            releaseFiles="${linuxTar}"
+            echo "Found Linux tarball: ${linuxTar}"
+          fi
 
-          grep -q '^docling-cleaner/docling-cleaner$' "${listFile}"
-          grep -q '^docling-cleaner/_internal/' "${listFile}"
+          # Verify and collect macOS/Windows binaries dynamically
+          for binary in "${assetsDir}"/docling-cleaner-*; do
+            [ -f "${binary}" ] || continue
+            [[ "${binary}" == *.tar.gz ]] && continue  # Skip tarballs, already handled
+            chmod +x "${binary}" 2>/dev/null || true
+            releaseFiles="${releaseFiles}
+            ${binary}"
+            echo "Found binary: ${binary}"
+          done
 
-          echo "LINUX_TARBALL=${linuxTar}" >> "$GITHUB_ENV"
+          # Ensure we have at least one asset
+          if [ -z "${releaseFiles}" ]; then
+            echo "No release assets found!"
+            exit 1
+          fi
 
-          test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64"
-          chmod +x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64" || true
-          test -x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-x64"
-
-          test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64"
-          chmod +x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64" || true
-          test -x "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-darwin-arm64"
-
-          test -f "${RUNNER_TEMP}/docling-release-assets/docling-cleaner-win32-x64.exe"
+          echo "RELEASE_FILES<<EOF" >> "$GITHUB_ENV"
+          echo "${releaseFiles}" >> "$GITHUB_ENV"
+          echo "EOF" >> "$GITHUB_ENV"
 
       - name: Verify build
         run: |
@@ -301,11 +314,7 @@ jobs:
           draft: false
           prerelease: ${{ contains(github.ref, '-') }}
           fail_on_unmatched_files: true
-          files: |
-            ${{ env.LINUX_TARBALL }}
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-x64
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-darwin-arm64
-            ${{ runner.temp }}/docling-release-assets/docling-cleaner-win32-x64.exe
+          files: ${{ env.RELEASE_FILES }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
