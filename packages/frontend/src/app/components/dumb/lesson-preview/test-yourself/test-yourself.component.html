@@ -2,12 +2,14 @@
   <h3>Test Yourself</h3>
   <p>💡 If you're done, you can do the quiz</p>
   @if (isUrl) {
-    <div class="button-container">
-      <div class="test-yourself-button">
-        <img class="click-icon" src="click.svg">
-        <a [href]="testYourselfData" target="_blank" rel="noopener">Click me, to go to quiz</a>
+    <a [href]="testYourselfData" target="_blank">
+      <div class="button-container">
+        <div class="test-yourself-button">
+          <img class="click-icon" src="click.svg" />
+          <p>Click me, to go to quiz</p>
+        </div>
       </div>
-    </div>
+    </a>
   } @else {
     <p class="test-yourself-text">{{ testYourselfData }}</p>
   }
