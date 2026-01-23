@@ -39,6 +39,26 @@
   font-weight: bold;
 }
 
+.lesson-preview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12mm;
+  margin-bottom: 4mm;
+}
+
+.lesson-logo {
+  display: block;
+}
+
+.language-badge {
+  display: block;
+  width: 32mm;
+  height: 18mm;
+  object-fit: contain;
+  object-position: right top;
+}
+
 .preface-images {
   display: flex;
   flex-wrap: wrap;

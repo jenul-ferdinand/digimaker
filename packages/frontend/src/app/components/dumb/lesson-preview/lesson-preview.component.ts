@@ -20,6 +20,9 @@ import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 import { TryItOutComponent } from './try-it-out/try-it-out.component';
 import { DebugSectionComponent } from './debug-section/debug-section.component';
 
+const JAVASCRIPT_ALIASES = new Set(['javascript or html or css', 'javascript', 'html', 'css']);
+const SUPPORTED_LANGUAGE_BADGES = new Set(['scratch', 'small-basic', 'python', 'java', 'c']);
+
 @Component({
   selector: 'app-lesson-preview',
   standalone: true,
@@ -44,6 +47,29 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
   @ViewChild('previewContainer') previewContainer!: ElementRef;
 
   private viewReady = false;
+
+  get languageBadgeSrc(): string | null {
+    const raw = this.data?.programmingLanguage;
+    if (!raw) return null;
+    const normalized = raw.toLowerCase().trim();
+    if (normalized === 'none') return null;
+    if (JAVASCRIPT_ALIASES.has(normalized)) {
+      return 'langs/javascript.png';
+    }
+    if (!SUPPORTED_LANGUAGE_BADGES.has(normalized)) return null;
+    return `langs/${normalized}.png`;
+  }
+
+  get languageBadgeAlt(): string {
+    const raw = this.data?.programmingLanguage;
+    if (!raw) return '';
+    const normalized = raw.toLowerCase().trim();
+    if (normalized === 'none') return '';
+    if (JAVASCRIPT_ALIASES.has(normalized)) {
+      return 'JavaScript';
+    }
+    return raw;
+  }
 
   ngAfterViewInit(): void {
     this.viewReady = true;
