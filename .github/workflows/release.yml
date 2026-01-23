@@ -102,7 +102,7 @@ jobs:
         run: |
           mkdir -p "${DOCLING_DIST_DIR}" "${DOCLING_BUILD_DIR}"
           # Copy metadata for packages that use importlib.metadata at runtime
-          METADATA_FLAGS="--copy-metadata docling --copy-metadata docling-ibm-models --copy-metadata docling-core --copy-metadata docling-parse"
+          METADATA_FLAGS="--copy-metadata docling --copy-metadata docling-ibm-models --copy-metadata docling-core --copy-metadata docling-parse --copy-metadata transformers"
           if [ "${{ runner.os }}" = "Linux" ]; then
             # Linux: use --onedir for smaller tarball distribution
             pyinstaller --onedir cleaner.py --name docling-cleaner \
