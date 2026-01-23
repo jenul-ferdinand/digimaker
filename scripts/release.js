@@ -48,11 +48,7 @@ function getReleaseFilePaths() {
     `${workspace}/package.json`,
     `${workspace}/package-lock.json`,
   ]);
-  const releaseFiles = [
-    'package.json',
-    'package-lock.json',
-    ...workspacePackageFiles,
-  ];
+  const releaseFiles = ['package.json', 'package-lock.json', ...workspacePackageFiles];
 
   return releaseFiles.filter((filePath) => existsSync(filePath));
 }

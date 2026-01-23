@@ -127,7 +127,7 @@ async function main() {
         const server = await startServer();
 
         try {
-          // Start conversion and generation process 
+          // Start conversion and generation process
           const generator = await createPdfGenerator(server.url);
           const results = await convertWithConcurrency(
             files,
