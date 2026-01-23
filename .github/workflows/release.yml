@@ -26,6 +26,8 @@ jobs:
             python-version: "3.13"
     env:
       DOCLING_VERSION: 2.68.0
+      TORCH_VERSION: 2.9.1
+      TORCHVISION_VERSION: 0.24.1
 
     steps:
       - name: Checkout code
@@ -80,8 +82,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ "${{ runner.os }}" = "Linux" ]; then
-            pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
-            pip install --no-cache-dir "docling==${DOCLING_VERSION}" pyinstaller
+            CPU_INDEX_URL="https://download.pytorch.org/whl/cpu"
+            PYPI_INDEX_URL="https://pypi.org/simple"
+            TORCH_CONSTRAINT="$(mktemp)"
+            echo "torch==${TORCH_VERSION}+cpu" > "${TORCH_CONSTRAINT}"
+            echo "torchvision==${TORCHVISION_VERSION}+cpu" >> "${TORCH_CONSTRAINT}"
+            pip install --no-cache-dir --index-url "${CPU_INDEX_URL}" --extra-index-url "${PYPI_INDEX_URL}" \
+              "torch==${TORCH_VERSION}+cpu" \
+              "torchvision==${TORCHVISION_VERSION}+cpu"
+            pip install --no-cache-dir --index-url "${PYPI_INDEX_URL}" --extra-index-url "${CPU_INDEX_URL}" \
+              -c "${TORCH_CONSTRAINT}" "docling==${DOCLING_VERSION}" pyinstaller
           else
             pip install "docling==${DOCLING_VERSION}" pyinstaller
           fi
