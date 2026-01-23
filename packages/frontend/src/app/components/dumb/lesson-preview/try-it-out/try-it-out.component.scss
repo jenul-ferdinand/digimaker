@@ -1,6 +1,16 @@
 .try-it-out-section {
   break-inside: avoid;
 
+  .try-it-out-container {
+    border-radius: var(--section-card-border-radius);
+    background-color: var(--section-card-color);
+    margin-top: 3mm;
+    padding-top: 1mm;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
   p {
     text-align: center;
     color: rgb(64, 64, 64);

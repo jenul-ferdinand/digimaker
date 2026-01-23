@@ -5,8 +5,9 @@
 .add-your-code .step {
   margin: 0.5rem 0;
   padding: 0.5rem;
-  background-color: #f5f5f5;
-  border-radius: 1rem;
+  border-radius: var(--section-card-border-radius);
+  background-color: var(--section-card-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   font-size: 0.95rem;
   white-space: pre-wrap;
 }

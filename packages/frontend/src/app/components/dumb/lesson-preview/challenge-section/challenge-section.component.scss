@@ -2,7 +2,7 @@
   break-inside: avoid;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 3mm;
 }
 
 .challenge-item {
@@ -10,8 +10,9 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.5rem;
-  border-radius: 8px;
-  background-color: #f8f9fa;
+  border-radius: var(--section-card-border-radius);
+  background-color: var(--section-card-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .challenge-medal {
@@ -27,26 +28,28 @@
 
   h4 {
     margin: 0 0 0.25rem 0;
-    font-size: 0.95rem;
+    font-size: 13pt;
     font-weight: 600;
     color: #333;
   }
 
   p {
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 11pt;
     line-height: 1.4;
     white-space: pre-wrap;
-    color: #555;
+    color: #343434;
   }
 
   .code-block {
-    margin-top: 5mm;
+    margin-top: 3mm;
     margin-bottom: 5mm;
-    padding: 1mm 1cm;
+    padding: 1mm 5mm;
     max-width: 100%;
     width: fit-content;
-    border-radius: 1rem;
+    font-family: 'Jetbrains';
+    font-size: 10pt;
+    border-radius: 2mm;
     background-color: var(--codeblock-background-color);
     overflow-wrap: anywhere;
   }
