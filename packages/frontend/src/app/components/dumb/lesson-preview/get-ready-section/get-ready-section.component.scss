@@ -1,5 +1,6 @@
 .get-ready {
   display: flex;
+  align-items: flex-start;
 
   .get-ready-steps {
     p {
@@ -8,6 +9,7 @@
   }
 
   .get-ready-image {
+    margin-left: auto;
     max-height: 30mm;
     max-width: 70mm;
     width: auto;
