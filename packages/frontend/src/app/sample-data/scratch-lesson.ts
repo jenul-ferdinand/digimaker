@@ -2,6 +2,7 @@ import { Lesson } from '@digimakers/core/schemas';
 
 export const sampleScratchLesson: Lesson = {
   lessonType: 'block-based (scratch) lesson',
+  level: 1,
   topic: 'Decisions',
   project: 'Crossy Road',
   description:

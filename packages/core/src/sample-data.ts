@@ -2,6 +2,7 @@ import { Lesson } from './schemas/lesson.js';
 
 export const sampleLessonData: Lesson = {
   lessonType: 'block-based (scratch) lesson',
+  level: 1,
   topic: 'Decisions',
   project: 'Crossy Road',
   description:

@@ -2,6 +2,7 @@ import { Lesson } from '@digimakers/core/schemas';
 
 export const sampleMultiSmallBasicLesson: Lesson = {
   lessonType: 'text-based (programming) lesson',
+  level: 1,
   topic: 'LOOPS',
   project: 'Tile Animation',
   description:
@@ -70,6 +71,7 @@ export const sampleMultiSmallBasicLesson: Lesson = {
 
 export const sampleSmallBasicLesson3VariablesRGB: Lesson = {
   lessonType: 'text-based (programming) lesson',
+  level: 1,
   topic: 'Variables',
   project: 'Colour Mixer',
   description:

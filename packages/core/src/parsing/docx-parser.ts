@@ -4,7 +4,7 @@ import { generateText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { Lesson, StepWithImage } from '../schemas/index.js';
 import { logger } from '../logger.js';
-import { extractLanguageFromFooter } from './footer-parser.js';
+import { extractFooterInfo } from './footer-parser.js';
 import {
   LessonLLM,
   LessonLLMSchema,
@@ -52,11 +52,12 @@ async function extractImages(buffer: Buffer): Promise<string[]> {
 export async function parseDocx(filePath: string): Promise<ParseResult> {
   logger.info(`Parsing: ${filePath}`);
   const buffer = await fs.readFile(filePath);
-  const [allImages, footerLanguage, doclingMarkdown] = await Promise.all([
+  const [allImages, footerInfo, doclingMarkdown] = await Promise.all([
     extractImages(buffer),
-    extractLanguageFromFooter(filePath),
+    extractFooterInfo(filePath),
     getDoclingMarkdown(filePath),
   ]);
+  const { language: footerLanguage, level: footerLevel } = footerInfo;
 
   // Parse docling markdown to get sections with image placeholders
   let parsedSections = null;
@@ -137,10 +138,11 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   logger.info(`Inferred lesson type as: '${data.lessonType}'`);
   logger.info(`Successfully extracted lesson: ${data.topic} - ${data.project}`);
 
+  // Set rule-based fields from footer
   if (footerLanguage) {
-    // Set programming language from footer if found
     data.programmingLanguage = footerLanguage as ProgrammingLanguage;
   }
+  data.level = footerLevel;
 
   // Debugging lessons have no images, exit early
   if (data.lessonType === 'debugging lesson') {

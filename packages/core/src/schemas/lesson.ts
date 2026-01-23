@@ -59,9 +59,13 @@ export const NewProjectSchema = z.object({
 // Representation of any lesson that digimaker provides, dynamic fields that
 // account for all possible variations of input.
 
+// Lesson level enum (1 or 2)
+export const levelEnum = z.union([z.literal(1), z.literal(2)]).default(1);
+
 // Programming text-based lessons
 export const ProgrammingLessonSchema = z.object({
   lessonType: z.literal('text-based (programming) lesson'),
+  level: levelEnum,
   topic: z
     .string()
     .describe('The main topic/category of the lesson (e.g., "Decisions", "Loops", "Variables")'),
@@ -111,8 +115,9 @@ export const ProgrammingLessonSchema = z.object({
   ),
   testYourself: z.string().nullable(),
   funFact: z.string().nullable().describe('An interesting fact related to the lesson topic'),
-}); // LLM version of the same schema
+}); // LLM version of the same schema (omit rule-based fields)
 const StandardLessonLLMSchema = ProgrammingLessonSchema.omit({
+  level: true,
   prefaceImageSlots: true,
   testYourself: true,
 });
@@ -130,6 +135,7 @@ const StepWithImageLLMSchema = StepWithImageSchema.omit({ imageSlot: true });
 export const ScratchLessonLLMSchema = ScratchLessonSchema.extend({
   addYourCodeSection: z.array(StepWithImageLLMSchema).describe('Step-by-step coding instructions'),
 }).omit({
+  level: true,
   prefaceImageSlots: true,
 });
 
@@ -153,6 +159,7 @@ export const DebugLessonSchema = ProgrammingLessonSchema.extend({
   funFact: true,
 }); // LLM version of the same schema
 export const DebugLessonLLMSchema = DebugLessonSchema.omit({
+  level: true,
   prefaceImageSlots: true,
 });
 
@@ -194,6 +201,7 @@ export const LessonLLMSchemaWithoutLanguage = z.union([
 
 // Inferred types from zod schemas
 export type ProgrammingLanguage = z.infer<typeof languageEnum>;
+export type LessonLevel = z.infer<typeof levelEnum>;
 export type ImageSlot = z.infer<typeof ImageSlotSchema>;
 export type StepWithImage = z.infer<typeof StepWithImageSchema>;
 export type StepsWithCodeBlock = z.infer<typeof StepsWithCodeBlockSchema>;

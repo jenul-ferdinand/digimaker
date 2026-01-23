@@ -2,6 +2,7 @@ import { Lesson } from '@digimakers/core/schemas';
 
 export const sampleJavaLesson: Lesson = {
   lessonType: 'text-based (programming) lesson',
+  level: 1,
   topic: 'List',
   project: 'Currency Converter',
   description:
@@ -56,6 +57,7 @@ export const sampleJavaLesson: Lesson = {
 
 export const sampleJavaL5RandomnessRollDice: Lesson = {
   lessonType: 'text-based (programming) lesson',
+  level: 1,
   topic: 'Randomness',
   project: 'Roll Dice',
   description:
