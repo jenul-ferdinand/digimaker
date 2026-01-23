@@ -113,13 +113,12 @@ export const ProgrammingLessonSchema = z.object({
   newProject: NewProjectSchema.nullable().describe(
     'Suggestion for a new project or extension activity. Null only when it is a debugging lesson'
   ),
-  testYourself: z.string().nullable(),
+  testYourself: z.url().nullable().describe('A url under the "Test Yourself" header'),
   funFact: z.string().nullable().describe('An interesting fact related to the lesson topic'),
 }); // LLM version of the same schema (omit rule-based fields)
 const StandardLessonLLMSchema = ProgrammingLessonSchema.omit({
   level: true,
   prefaceImageSlots: true,
-  testYourself: true,
 });
 
 // Scratch lessons
