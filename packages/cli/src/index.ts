@@ -53,16 +53,32 @@ async function main() {
   await yargs(hideBin(process.argv))
     .scriptName('digimaker')
     .usage('$0 <command> [options]')
+    // Root options
     .option('gemini-key', {
       type: 'string',
       description: 'Gemini API key (overrides GEMINI_API_KEY)',
+    })
+    .option('cheaper', {
+      type: 'boolean',
+      default: false,
+      description: 'Use cheaper models or better models?',
     })
     .middleware((argv) => {
       if (argv.geminiKey) {
         process.env.GEMINI_API_KEY = String(argv.geminiKey);
         process.env.GOOGLE_GENERATIVE_AI_API_KEY = String(argv.geminiKey);
       }
+
+      if (argv.cheaper) {
+        process.env.MAIN_GEMINI_MODEL = 'gemini-2.5-flash';
+        process.env.CODE_FORMATTER_GEMINI_MODEL = 'gemini-2.0-flash';
+      } else {
+        process.env.MAIN_GEMINI_MODEL = 'gemini-2.5-pro';
+        process.env.CODE_FORMATTER_GEMINI_MODEL = 'gemini-2.5-flash-lite';
+      }
     })
+    // Main conversion command to convert docx
+    // E.g., > digimaker convert <optional-path>
     .command(
       'convert [path]',
       'Convert .docx files to PDF',
@@ -97,31 +113,31 @@ async function main() {
           return;
         }
 
+        // Find and store docx files to convert
         const targetPath = path.resolve(argv.path);
         const files = await findDocxFiles(targetPath, { recursive: argv.recursive });
-
         if (files.length === 0) {
           logger.warn('No .docx files found');
           return;
         }
-
         logger.info(`Converting ${files.length} file(s) with concurrency ${argv.concurrency}...`);
 
+        // Prepare the frontend server for data injection and PDF generation
+        // Used by puppeteer, see pdf-generator.ts
         const server = await startServer();
 
         try {
+          // Start conversion and generation process 
           const generator = await createPdfGenerator(server.url);
-
           const results = await convertWithConcurrency(
             files,
             generator,
             argv.output,
             argv.concurrency
           );
-
           await generator.close();
 
-          // Summary
+          // Log the summary of things
           const succeeded = results.filter((r) => r.success);
           const failed = results.filter((r) => !r.success);
 
@@ -129,7 +145,6 @@ async function main() {
           logger.info('=== Conversion Summary ===');
           logger.info(`Succeeded: ${succeeded.length}`);
           logger.info(`Failed: ${failed.length}`);
-
           if (failed.length > 0) {
             logger.info('');
             logger.info('Failed files:');
@@ -137,16 +152,17 @@ async function main() {
               logger.info(`  - ${f.file}: ${f.error}`);
             }
           }
-
           if (succeeded.length > 0) {
             logger.info('');
             logger.info(`PDFs saved to: ${argv.output}`);
           }
         } finally {
+          // Stop the frontend server once done
           await stopServer(server);
         }
       }
     )
+    // Command for testing PDF generation using sample data
     .command(
       'generate',
       'Generate a PDF from sample data (for testing)',

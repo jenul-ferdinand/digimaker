@@ -1,19 +1,15 @@
 import { generateText } from 'ai';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { codeFormatterPrompt, codeFormatterSystemPrompt } from '../parsing/prompts.js';
 import { logger } from '../logger.js';
-
-function getGoogleClient() {
-  return createGoogleGenerativeAI({
-    apiKey: process.env.GEMINI_API_KEY,
-  });
-}
+import { GoogleGenerativeAIModelId } from '@ai-sdk/google/internal';
+import { getGoogleClient, getGoogleModelIds } from '../google.js';
 
 export async function formatDocumentCode(document: string, footerLanguage: string | null) {
-  logger.debug('Formatting document code blocks with code formatter LLM');
   if (!footerLanguage || footerLanguage != 'scratch') {
+    const model: GoogleGenerativeAIModelId = getGoogleModelIds().codeFormatterLlm;
+    logger.debug(`Formatting the code blocks of document text using ${model} model`);
     const { text } = await generateText({
-      model: getGoogleClient()('gemini-2.0-flash'),
+      model: getGoogleClient()(model),
       system: codeFormatterSystemPrompt,
       prompt: codeFormatterPrompt(document),
       temperature: 0,
