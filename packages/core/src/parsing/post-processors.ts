@@ -13,7 +13,9 @@ function decodeHtmlEntities(text: string): string {
 }
 
 function stripMarkdownEmphasis(text: string): string {
-  return text.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/__([^_]+)__/g, '$1');
+  // Require at least one word character in the content to avoid stripping
+  // literal asterisk patterns like **\n*** or ****
+  return text.replace(/\*\*([^*]*\w[^*]*)\*\*/g, '$1').replace(/__([^_]*\w[^_]*)__/g, '$1');
 }
 
 function normaliseLessonText(text: string | null | undefined): string | null {
