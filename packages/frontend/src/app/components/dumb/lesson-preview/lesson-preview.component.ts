@@ -19,7 +19,7 @@ import { NewProjectSectionComponent } from './new-project-section/new-project-se
 import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 import { TryItOutComponent } from './try-it-out/try-it-out.component';
 import { DebugSectionComponent } from './debug-section/debug-section.component';
-import { FunFactComponent } from "./fun-fact/fun-fact.component";
+import { FunFactComponent } from './fun-fact/fun-fact.component';
 
 const JAVASCRIPT_ALIASES = new Set(['javascript or html or css', 'javascript', 'html', 'css']);
 const SUPPORTED_LANGUAGE_BADGES = new Set(['scratch', 'small-basic', 'python', 'java', 'c']);
@@ -36,8 +36,8 @@ const SUPPORTED_LANGUAGE_BADGES = new Set(['scratch', 'small-basic', 'python', '
     TestYourselfComponent,
     TryItOutComponent,
     DebugSectionComponent,
-    FunFactComponent
-],
+    FunFactComponent,
+  ],
   templateUrl: './lesson-preview.component.html',
   styleUrl: './lesson-preview.component.scss',
   encapsulation: ViewEncapsulation.None,
