@@ -1,10 +1,13 @@
-<section class="get-ready">
-  <div class="get-ready-steps">
-    @for (step of getReadySectionData; track $index; let i = $index) {
-      <p>{{ step }}</p>
+<section>
+  <h3 class="get-ready-header">Get Ready</h3>
+  <div class="get-ready-container">
+    <div class="get-ready-steps">
+      @for (step of getReadySectionData; track $index; let i = $index) {
+        <p>{{ step }}</p>
+      }
+    </div>
+    @if (imageSlot && imageSlot.base64) {
+      <img [src]="imageSlot.base64" class="get-ready-image" />
     }
   </div>
-  @if (imageSlot && imageSlot.base64) {
-    <img [src]="imageSlot.base64" class="get-ready-image" />
-  }
 </section>
