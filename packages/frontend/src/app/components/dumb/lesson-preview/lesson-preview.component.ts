@@ -123,6 +123,7 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
         z-index: 10;
       }
       .preface-section {
+        break-inside: avoid;
         margin-top: 5cm;
       }
 
