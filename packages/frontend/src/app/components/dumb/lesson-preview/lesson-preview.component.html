@@ -9,9 +9,6 @@
         @if (languageBadgeSrc) {
           <img class="language-badge" [src]="languageBadgeSrc" [alt]="languageBadgeAlt" />
         }
-        @if (levelBadgeSrc) {
-          <img class="level-badge" [src]="levelBadgeSrc" alt="Level" />
-        }
       </span>
     </header>
 
@@ -37,6 +34,20 @@
             }
           </div>
         }
+
+        <!-- Language and level -->
+        <div class="preface-language-badge">
+          @if (data.programmingLanguage !== 'scratch') {
+            <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
+          } @else {
+            <!-- Switch for scratch icon -->
+            <img class="preface-language-badge-icon" style="width: 64mm;" [src]="languageBadgeSrc" />
+          }
+          <div class="details">
+            <p>Language: {{ languageMap[data.programmingLanguage] }}</p>
+            <p>Level: {{ data.level }}</p>
+          </div>
+        </div>
       </div>
 
       <app-get-ready-section

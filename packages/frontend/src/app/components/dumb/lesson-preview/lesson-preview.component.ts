@@ -50,6 +50,15 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
 
   private viewReady = false;
 
+  languageMap: any = {
+    'javascript or html or css': 'JavaScript',
+    'small-basic': 'Small Basic',
+    python: 'Python',
+    c: 'c',
+    java: 'Java',
+    scratch: 'Scratch',
+  };
+
   get languageBadgeSrc(): string | null {
     const raw = this.data?.programmingLanguage;
     if (!raw) return null;
@@ -71,13 +80,6 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
       return 'JavaScript';
     }
     return raw;
-  }
-
-  get levelBadgeSrc(): string | null {
-    const level = this.data?.level;
-    if (level === 1) return 'level1.png';
-    if (level === 2) return 'level2.png';
-    return null;
   }
 
   ngAfterViewInit(): void {
@@ -108,7 +110,7 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
         margin: 42mm 10mm 10mm;
         @bottom-center {
           content: counter(page) " / " counter(pages);
-          font-size: 12pt;
+          font-size: 10pt;
           color: #666;
         }
       }
