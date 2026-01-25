@@ -107,10 +107,20 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
     const pageStyles = `
       @page {
         size: A4;
-        margin: 42mm 10mm 10mm;
+        margin: 42mm 7mm 10mm;
+        @bottom-left {
+          content: "Lesson: ${this.data?.topic} - ${this.data?.project}";
+          font-size: 8pt;
+          color: #666;
+        }
         @bottom-center {
           content: counter(page) " / " counter(pages);
           font-size: 10pt;
+          color: #666;
+        }
+        @bottom-right {
+          content: "${this.languageMap[this.data!.programmingLanguage]} | Level ${this.data!.level}";
+          font-size: 8pt;
           color: #666;
         }
       }

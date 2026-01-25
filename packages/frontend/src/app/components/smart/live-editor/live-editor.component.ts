@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, sample } from 'rxjs/operators';
 import { Lesson } from '@digimakers/core/schemas';
 import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.component';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
@@ -46,7 +46,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleJavaLesson;
+    this.activeData = sampleScratchLesson;
 
     this.previewData = { ...this.activeData };
   }
