@@ -16,26 +16,28 @@
     </header>
 
     <main>
-      <app-title-section
-        [topic]="data.topic"
-        [project]="data.project"
-        [description]="data.description"
-      />
+      <div class="preface-section">
+        <app-title-section
+          [topic]="data.topic"
+          [project]="data.project"
+          [description]="data.description"
+        />
 
-      @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
-        <section class="oneliner">
-          <p>{{ data.projectExplainer }}</p>
-        </section>
-      }
+        @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
+          <section class="oneliner">
+            <p>{{ data.projectExplainer }}</p>
+          </section>
+        }
 
-      <!-- Multiple preface images -->
-      @if (data.prefaceImageSlots && data.prefaceImageSlots.length > 1) {
-        <div class="preface-images">
-          @for (slot of data.prefaceImageSlots; track $index) {
-            <img class="preface-image" [src]="slot.base64" />
-          }
-        </div>
-      }
+        <!-- Multiple preface images -->
+        @if (data.prefaceImageSlots && data.prefaceImageSlots.length > 1) {
+          <div class="preface-images">
+            @for (slot of data.prefaceImageSlots; track $index) {
+              <img class="preface-image" [src]="slot.base64" />
+            }
+          </div>
+        }
+      </div>
 
       <app-get-ready-section
         [getReadySectionData]="data.getReadySection"
