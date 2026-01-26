@@ -34,23 +34,19 @@
               }
             </div>
           }
+        </div>
 
-          <!-- Language and level -->
-          <div class="preface-language-badge">
-            @if (data.programmingLanguage !== 'scratch') {
-              <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
-            } @else {
-              <!-- Switch for scratch icon -->
-              <img
-                class="preface-language-badge-icon"
-                style="width: 32mm"
-                [src]="languageBadgeSrc"
-              />
-            }
-            <div class="details">
-              <p>Language: {{ languageMap[data.programmingLanguage] }}</p>
-              <p>Level: {{ data.level }}</p>
-            </div>
+        <!-- Language and level -->
+        <div class="preface-language-badge">
+          @if (data.programmingLanguage !== 'scratch') {
+            <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
+          } @else {
+            <!-- Switch for scratch icon -->
+            <img class="preface-language-badge-icon" style="width: 32mm" [src]="languageBadgeSrc" />
+          }
+          <div class="details">
+            <p>Language: {{ languageMap[data.programmingLanguage] }}</p>
+            <p>Level: {{ data.level }}</p>
           </div>
         </div>
       </div>

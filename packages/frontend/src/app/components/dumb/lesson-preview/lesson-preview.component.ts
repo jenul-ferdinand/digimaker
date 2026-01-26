@@ -134,7 +134,7 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
       }
       .preface-section {
         break-inside: avoid;
-        margin-top: 5cm;
+        margin-top: 3cm;
       }
 
       app-get-ready-section {
