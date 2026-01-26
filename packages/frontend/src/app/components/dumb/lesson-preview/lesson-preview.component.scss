@@ -53,6 +53,13 @@ h3 {
   text-align: center;
   margin-bottom: 0.25rem;
   font-weight: bold;
+
+  .project-title {
+    text-align: center;
+    p {
+      margin: 0;
+    }
+  }
 }
 
 .lesson-preview-header {
@@ -90,7 +97,7 @@ h3 {
   align-items: center;
 
   .preface-language-badge-icon {
-    width: 28mm;
+    width: 15mm;
     object-fit: contain;
   }
 

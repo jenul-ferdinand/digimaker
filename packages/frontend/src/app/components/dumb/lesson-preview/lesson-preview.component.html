@@ -15,8 +15,10 @@
           [description]="data.description"
         />
 
+
         @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
           <section class="oneliner">
+            <p class="project-title">{{data.project}}</p>
             <p>{{ data.projectExplainer }}</p>
           </section>
         }
@@ -36,7 +38,7 @@
             <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
           } @else {
             <!-- Switch for scratch icon -->
-            <img class="preface-language-badge-icon" style="width: 64mm;" [src]="languageBadgeSrc" />
+            <img class="preface-language-badge-icon" style="width: 32mm;" [src]="languageBadgeSrc" />
           }
           <div class="details">
             <p>Language: {{ languageMap[data.programmingLanguage] }}</p>
