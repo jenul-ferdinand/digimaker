@@ -49,8 +49,13 @@ h3 {
   .details-section {
     margin-top: 5mm;
     padding-bottom: 5mm;
+    padding-top: 1mm;
     border-radius: 5mm;
-    border: 1mm solid #454545;
+    border: 1mm solid rgb(189, 189, 189);
+    background-color: var(--offwhite-color);
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
 
     .oneliner {
       margin-top: 4mm;
