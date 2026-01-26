@@ -1,8 +1,10 @@
 .add-your-code {
   margin: 1rem 0;
+  break-inside: auto; /* Allow section to break across pages */
 
   h3 {
     margin-bottom: 3mm;
+    break-after: avoid; /* Keep header with first step */
   }
 }
 
