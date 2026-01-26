@@ -9,6 +9,9 @@ export const languageEnum = z.enum([
   'python',
   'java',
   'c',
+  'pygame',
+  'ruby',
+  'lua',
 ]);
 
 // NOTE: Fields with no describe() are assigned using rule-based logic.

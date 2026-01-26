@@ -15,6 +15,9 @@ const LANGUAGE_MAP: Record<string, ProgrammingLanguage> = {
   html: 'javascript or html or css',
   css: 'javascript or html or css',
   c: 'c',
+  pygame: 'pygame',
+  ruby: 'ruby',
+  lua: 'lua',
 };
 
 export interface FooterInfo {

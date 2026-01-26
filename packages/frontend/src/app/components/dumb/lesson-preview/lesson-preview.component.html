@@ -38,11 +38,11 @@
 
         <!-- Language and level -->
         <div class="preface-language-badge">
-          @if (data.programmingLanguage !== 'scratch') {
-            <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
-          } @else {
-            <!-- Switch for scratch icon -->
+          @if (data.programmingLanguage === 'scratch' || data.programmingLanguage === 'pygame') {
+            <!-- Wide logos need larger width -->
             <img class="preface-language-badge-icon" style="width: 32mm" [src]="languageBadgeSrc" />
+          } @else {
+            <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
           }
           <div class="details">
             <p>Language: {{ languageMap[data.programmingLanguage] }}</p>

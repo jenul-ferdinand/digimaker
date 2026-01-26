@@ -22,7 +22,16 @@ import { DebugSectionComponent } from './debug-section/debug-section.component';
 import { FunFactComponent } from './fun-fact/fun-fact.component';
 
 const JAVASCRIPT_ALIASES = new Set(['javascript or html or css', 'javascript', 'html', 'css']);
-const SUPPORTED_LANGUAGE_BADGES = new Set(['scratch', 'small-basic', 'python', 'java', 'c']);
+const SUPPORTED_LANGUAGE_BADGES = new Set([
+  'scratch',
+  'small-basic',
+  'python',
+  'java',
+  'c',
+  'pygame',
+  'ruby',
+  'lua',
+]);
 
 @Component({
   selector: 'app-lesson-preview',
@@ -57,6 +66,9 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
     c: 'c',
     java: 'Java',
     scratch: 'Scratch',
+    pygame: 'Pygame',
+    ruby: 'Ruby',
+    lua: 'Lua',
   };
 
   get languageBadgeSrc(): string | null {
