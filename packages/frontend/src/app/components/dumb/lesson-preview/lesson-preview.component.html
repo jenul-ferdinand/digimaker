@@ -15,41 +15,47 @@
           [description]="data.description"
         />
 
-
-        @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
-          <section class="oneliner">
-            <p class="project-title">{{data.project}}</p>
-            <p>{{ data.projectExplainer }}</p>
-          </section>
-        }
-
-        <!-- Multiple preface images -->
-        @if (data.prefaceImageSlots) {
-          <div class="preface-images">
-            @for (slot of data.prefaceImageSlots; track $index) {
-              <img class="preface-image" [src]="slot.base64" />
-            }
-          </div>
-        }
-
-        <!-- Language and level -->
-        <div class="preface-language-badge">
-          @if (data.programmingLanguage !== 'scratch') {
-            <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
-          } @else {
-            <!-- Switch for scratch icon -->
-            <img class="preface-language-badge-icon" style="width: 32mm;" [src]="languageBadgeSrc" />
+        <div class="details-section">
+          @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
+            <section class="oneliner">
+              <p class="project-title">
+                Project this week:
+                <span style="font-family: 'Poppins'; font-weight: normal">{{ data.project }}</span>
+              </p>
+              <p>{{ data.projectExplainer }}</p>
+            </section>
           }
-          <div class="details">
-            <p>Language: {{ languageMap[data.programmingLanguage] }}</p>
-            <p>Level: {{ data.level }}</p>
+
+          <!-- Multiple preface images -->
+          @if (data.prefaceImageSlots) {
+            <div class="preface-images">
+              @for (slot of data.prefaceImageSlots; track $index) {
+                <img class="preface-image" [src]="slot.base64" />
+              }
+            </div>
+          }
+
+          <!-- Language and level -->
+          <div class="preface-language-badge">
+            @if (data.programmingLanguage !== 'scratch') {
+              <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
+            } @else {
+              <!-- Switch for scratch icon -->
+              <img
+                class="preface-language-badge-icon"
+                style="width: 32mm"
+                [src]="languageBadgeSrc"
+              />
+            }
+            <div class="details">
+              <p>Language: {{ languageMap[data.programmingLanguage] }}</p>
+              <p>Level: {{ data.level }}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <app-get-ready-section
-        [getReadySectionData]="data.getReadySection"
-      />
+      <app-get-ready-section [getReadySectionData]="data.getReadySection" />
 
       @if (data.lessonType === 'debugging lesson') {
         <app-debug-section [debugSteps]="data.debugSection" />
