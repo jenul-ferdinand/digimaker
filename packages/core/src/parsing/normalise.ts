@@ -40,12 +40,60 @@ function reflowSingleLineCode(code: string): string {
   return reflowed;
 }
 
+/**
+ * Convert \n to real newlines only outside of string literals.
+ * Preserves \n inside single or double quoted strings.
+ */
+function convertEscapedNewlinesOutsideStrings(code: string): string {
+  let result = '';
+  let inString: '"' | "'" | null = null;
+  let i = 0;
+
+  while (i < code.length) {
+    const char = code[i];
+    const nextChar = code[i + 1];
+
+    // Check for escaped characters inside strings (skip them)
+    if (inString && char === '\\' && nextChar) {
+      result += char + nextChar;
+      i += 2;
+      continue;
+    }
+
+    // Toggle string state on unescaped quotes
+    if ((char === '"' || char === "'") && !inString) {
+      inString = char;
+      result += char;
+      i++;
+      continue;
+    }
+    if (char === inString) {
+      inString = null;
+      result += char;
+      i++;
+      continue;
+    }
+
+    // Convert \n to real newline only outside strings
+    if (!inString && char === '\\' && nextChar === 'n') {
+      result += '\n';
+      i += 2;
+      continue;
+    }
+
+    result += char;
+    i++;
+  }
+
+  return result;
+}
+
 export function normaliseCodeBlock(code: string | null): string | null {
   if (!code) return code;
   const hasRealNewlines = code.includes('\n');
   const hasEscapedNewlines = code.includes('\\n');
   const normalisedInput =
-    !hasRealNewlines && hasEscapedNewlines ? code.replace(/\\n/g, '\n') : code;
+    !hasRealNewlines && hasEscapedNewlines ? convertEscapedNewlinesOutsideStrings(code) : code;
   const reflowed = reflowSingleLineCode(normalisedInput);
 
   return reflowed
