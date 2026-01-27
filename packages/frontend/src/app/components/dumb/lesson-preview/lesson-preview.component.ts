@@ -63,7 +63,7 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
     'javascript or html or css': 'JavaScript',
     'small-basic': 'Small Basic',
     python: 'Python',
-    c: 'c',
+    c: 'C',
     java: 'Java',
     scratch: 'Scratch',
     pygame: 'Pygame',
