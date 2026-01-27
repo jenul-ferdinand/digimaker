@@ -4,7 +4,7 @@ import { debounceTime, sample } from 'rxjs/operators';
 import { Lesson } from '@digimakers/core/schemas';
 import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.component';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
-import { sampleScratchLesson } from '@sample-data/scratch-lesson';
+import { sampleLesson9LoopModernArt, sampleScratchLesson } from '@sample-data/scratch-lesson';
 import { sampleJavaL5RandomnessRollDice, sampleJavaLesson } from '@sample-data/java-lesson';
 import {
   sampleMultiSmallBasicLesson,
@@ -46,7 +46,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleScratchLesson;
+    this.activeData = sampleLesson9LoopModernArt;
 
     this.previewData = { ...this.activeData };
   }

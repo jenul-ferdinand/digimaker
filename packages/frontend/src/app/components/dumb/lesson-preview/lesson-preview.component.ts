@@ -150,7 +150,18 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
       }
 
       app-get-ready-section {
+        display: block;
         break-before: page;
+        break-after: avoid;
+      }
+
+      app-add-your-code {
+        display: block;
+        break-before: avoid;
+      }
+
+      app-add-your-code h3 {
+        break-after: avoid;
       }
 
       app-challenge-section {
