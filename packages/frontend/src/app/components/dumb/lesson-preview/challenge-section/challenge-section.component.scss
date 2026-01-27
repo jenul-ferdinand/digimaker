@@ -18,7 +18,7 @@
   box-shadow:
     0 4px 6px rgba(0, 0, 0, 0.1),
     0 1px 3px rgba(0, 0, 0, 0.08);
-  break-inside: avoid; /* Keep each challenge with its hint code together */
+  break-inside: avoid;
 }
 
 .challenge-medal {
@@ -62,7 +62,7 @@
     overflow-wrap: anywhere;
   }
 
-  .code-block pre {
+  .code-block pre code {
     margin: 0;
     white-space: pre-wrap;
     word-break: break-word;
