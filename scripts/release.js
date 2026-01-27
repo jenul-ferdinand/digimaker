@@ -72,6 +72,14 @@ function updateDoclingMetaVersion(version) {
   writeFileSync(metaPath, `${JSON.stringify(metaPkg, null, 2)}\n`);
 }
 
+function updateCliCoreDependency(version) {
+  const cliPath = 'packages/cli/package.json';
+  const cliPkg = JSON.parse(readFileSync(cliPath, 'utf-8'));
+  cliPkg.dependencies = cliPkg.dependencies || {};
+  cliPkg.dependencies['@digimakers/core'] = version;
+  writeFileSync(cliPath, `${JSON.stringify(cliPkg, null, 2)}\n`);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   let bumpType = args[0];
@@ -147,9 +155,10 @@ async function main() {
   console.log(`New version: ${newVersion}`);
   console.log('');
 
-  console.log('Updating docling package versions...');
+  console.log('Updating internal dependency versions...');
   updateCoreDependency(newVersion);
   updateDoclingMetaVersion(newVersion);
+  updateCliCoreDependency(newVersion);
 
   exec('npm install --package-lock-only');
 
