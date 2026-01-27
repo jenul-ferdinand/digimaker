@@ -1,6 +1,6 @@
 {
   "name": "@digimakers/server",
-  "version": "0.3.35",
+  "version": "0.3.36",
   "description": "Express API server for Digimaker - docx to PDF conversion",
   "type": "module",
   "main": "dist/index.js",
