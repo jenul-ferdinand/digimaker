@@ -47,24 +47,4 @@
     white-space: pre-wrap;
     color: #343434;
   }
-
-  .code-block {
-    margin-top: 3mm;
-    margin-bottom: 5mm;
-    padding: 1mm 5mm;
-    max-width: 100%;
-    width: fit-content;
-    font-family: 'Jetbrains';
-    user-select: none;
-    font-size: 10pt;
-    border-radius: 2mm;
-    background-color: var(--codeblock-background-color);
-    overflow-wrap: anywhere;
-  }
-
-  .code-block pre code {
-    margin: 0;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
 }

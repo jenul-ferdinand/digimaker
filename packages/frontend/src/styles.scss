@@ -95,6 +95,43 @@ img {
   }
 }
 
+// Global code block styles
+.code-block {
+  background-color: var(--codeblock-background-color);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 11pt;
+  font-family: 'Jetbrains';
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  margin: 1rem 0;
+  user-select: none;
+
+  code {
+    font-size: 11pt;
+    tab-size: 2;
+    font-family: 'Jetbrains';
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+}
+
+// Smaller variant for inline/hint code blocks
+.code-block--small {
+  padding: 1mm 5mm;
+  font-size: 10pt;
+  border-radius: 2mm;
+  margin: 3mm 0 5mm;
+  max-width: 100%;
+  width: fit-content;
+
+  code {
+    font-size: 10pt;
+  }
+}
+
 // Setting up fonts
 @font-face {
   font-family: 'Poppins';
