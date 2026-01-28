@@ -164,9 +164,9 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
         break-after: avoid;
       }
 
-      app-challenge-section {
-        break-before: page;
-      }
+      // app-challenge-section {
+      //   break-before: page;
+      // }
       app-new-project-section {
         margin-top: 5mm;
       }

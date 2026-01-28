@@ -47,7 +47,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleCLesson3VariablesClockAngles;
+    this.activeData = sampleJavaLesson;
 
     this.previewData = { ...this.activeData };
   }
