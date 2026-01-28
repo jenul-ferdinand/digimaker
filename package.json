@@ -1,6 +1,6 @@
 {
   "name": "digimaker-monorepo",
-  "version": "1.2.37",
+  "version": "1.2.38",
   "private": true,
   "description": "Converts .docx lesson sheets into stylised PDFs",
   "workspaces": [
