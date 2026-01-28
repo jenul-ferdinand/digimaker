@@ -11,8 +11,8 @@
         <h4>{{ challenge.name }}</h4>
         <p>{{ challenge.task }}</p>
         @if (challenge.hintCode) {
-          <div class="code-block">
-            <pre><code
+          <div>
+            <pre class="code-block code-block--small"><code
               prismHighlight
               [code]="challenge.hintCode"
               [language]="programmingLanguage"
