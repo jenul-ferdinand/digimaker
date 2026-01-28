@@ -47,7 +47,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleJavaLesson;
+    this.activeData = sampleLesson9LoopModernArt;
 
     this.previewData = { ...this.activeData };
   }

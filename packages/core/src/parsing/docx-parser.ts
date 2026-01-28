@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import mammoth from 'mammoth';
 import { generateText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { Lesson, StepWithImage } from '../schemas/index.js';
+import { Lesson, StepWithImage, ScratchChallenge } from '../schemas/index.js';
 import { logger } from '../logger.js';
 import { extractFooterInfo } from './footer-parser.js';
 import {
@@ -65,10 +65,14 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
   if (doclingMarkdown) {
     parsedSections = parseDoclingMarkdown(doclingMarkdown);
     assignImagesToSlots(parsedSections, allImages);
+    logger.info(
+      `Challenge section: content length=${parsedSections.challenge.content.length}, imageSlots=${parsedSections.challenge.imageSlots.length}`
+    );
     logger.debug(
       {
         prefaceImageSlots: parsedSections.preface.imageSlots.length,
         addYourCodeImageSlots: parsedSections.addYourCode.imageSlots.length,
+        challengeImageSlots: parsedSections.challenge.imageSlots.length,
         totalImages: allImages.length,
       },
       'Docling image slots parsed'
@@ -176,6 +180,45 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
             };
           }
         });
+      }
+    }
+    // Assign challenge images (for Scratch lessons)
+    // Uses challengeImageMappings to assign images to the correct challenge by index
+    const challengeMappings = parsedSections.challenge.challengeImageMappings;
+    logger.debug(
+      {
+        lessonType: data.lessonType,
+        hasChallengeSection: Array.isArray(data.challengeSection),
+        challengeImageMappingsCount: challengeMappings.length,
+        challengeMappings: challengeMappings.map((m) => ({
+          challengeIndex: m.challengeIndex,
+          slotId: m.imageSlot.id,
+        })),
+      },
+      'Challenge image assignment check'
+    );
+    if (
+      data.lessonType === 'block-based (scratch) lesson' &&
+      Array.isArray(data.challengeSection) &&
+      challengeMappings.length > 0
+    ) {
+      logger.info(`Assigning ${challengeMappings.length} images to challenges by index mapping`);
+      // Assign each image to its mapped challenge
+      for (const mapping of challengeMappings) {
+        const challenge = (data.challengeSection as ScratchChallenge[])[mapping.challengeIndex];
+        if (challenge) {
+          challenge.imageSlot = {
+            id: mapping.imageSlot.id,
+            base64: mapping.imageSlot.base64,
+          };
+          logger.debug(
+            `Assigned image ${mapping.imageSlot.id} to challenge index ${mapping.challengeIndex}`
+          );
+        } else {
+          logger.warn(
+            `No challenge found at index ${mapping.challengeIndex} for image ${mapping.imageSlot.id}`
+          );
+        }
       }
     }
   } else {

@@ -51,3 +51,13 @@
     color: #343434;
   }
 }
+
+.challenge-image {
+  display: block;
+  max-width: 100%;
+  max-height: 80mm;
+  width: auto;
+  object-fit: contain;
+  margin-top: 3mm;
+  border-radius: 4px;
+}

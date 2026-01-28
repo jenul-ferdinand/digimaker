@@ -12,14 +12,21 @@
         <div class="challenge-content">
           <h4>{{ challenges[0].name }}</h4>
           <p>{{ challenges[0].task }}</p>
-          @if (challenges[0].hintCode) {
+          @if ($any(challenges[0]).hintCode) {
             <div>
               <pre class="code-block code-block--small"><code
                 prismHighlight
-                [code]="challenges[0].hintCode"
+                [code]="$any(challenges[0]).hintCode"
                 [language]="programmingLanguage"
               ></code></pre>
             </div>
+          }
+          @if ($any(challenges[0]).imageSlot?.base64) {
+            <img
+              class="challenge-image"
+              [src]="$any(challenges[0]).imageSlot.base64"
+              alt="Challenge illustration"
+            />
           }
         </div>
       </div>
@@ -38,14 +45,21 @@
         <div class="challenge-content">
           <h4>{{ challenge.name }}</h4>
           <p>{{ challenge.task }}</p>
-          @if (challenge.hintCode) {
+          @if ($any(challenge).hintCode) {
             <div>
               <pre class="code-block code-block--small"><code
                 prismHighlight
-                [code]="challenge.hintCode"
+                [code]="$any(challenge).hintCode"
                 [language]="programmingLanguage"
               ></code></pre>
             </div>
+          }
+          @if ($any(challenge).imageSlot?.base64) {
+            <img
+              class="challenge-image"
+              [src]="$any(challenge).imageSlot.base64"
+              alt="Challenge illustration"
+            />
           }
         </div>
       </div>
