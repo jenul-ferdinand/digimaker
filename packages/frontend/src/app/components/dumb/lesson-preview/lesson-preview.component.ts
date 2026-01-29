@@ -171,9 +171,9 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
         margin-top: 5mm;
       }
 
-      app-test-yourself {
-        break-before: page;
-      }
+      // app-test-yourself {
+      //   break-before: page;
+      // }
     `;
 
     const paged = new Previewer();
