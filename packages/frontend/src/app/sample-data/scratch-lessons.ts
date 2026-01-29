@@ -196,7 +196,7 @@ export const sampleLesson9LoopModernArt: Lesson = {
     task: 'Add balloon sprite. When ‘balloon’ sprite is clicked, play sound pop and change its color',
   },
   testYourself: 'https://www.digimaker.com.au/wp-content/uploads/quiz/src/SC1/SC1_randomness.html',
-  funFact: null,
+  funFact: 'testing',
   lessonType: 'block-based (scratch) lesson',
   programmingLanguage: 'scratch',
   prefaceImageSlots: [
