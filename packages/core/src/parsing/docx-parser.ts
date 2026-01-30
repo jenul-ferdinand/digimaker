@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
 import mammoth from 'mammoth';
 import { generateText, Output } from 'ai';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { Lesson, StepWithImage } from '../schemas/index.js';
 import { logger } from '../logger.js';
 import { extractFooterInfo } from './footer-parser.js';
