@@ -4,20 +4,22 @@
     <!-- StepWithImage[]: step -> image -> step -> image -->
     <!-- This is normally for scratch lessons -->
     @for (step of stepsWithImages; track $index; let i = $index) {
-      @let splitText = step.step.split(':');
-      @if (splitText.length == 2) {
-        <p class="step" style="font-weight: bold">
-          <span>({{ i + 1 }}) {{ splitText[0].toUpperCase() }}:</span>
-          <span style="font-weight: normal">{{ splitText[1] }}</span>
-        </p>
-      } @else {
-        <p class="step">({{ i + 1 }}) {{ step.step }}</p>
-      }
+      <div class="scratch-step-container">
+        @let splitText = step.step.split(':');
+        @if (splitText.length == 2) {
+          <p class="step" style="font-weight: bold">
+            <span>({{ i + 1 }}) {{ splitText[0].toUpperCase() }}:</span>
+            <span style="font-weight: normal">{{ splitText[1] }}</span>
+          </p>
+        } @else {
+          <p class="step">({{ i + 1 }}) {{ step.step }}</p>
+        }
 
-      @if (step.imageSlot && step.imageSlot.base64) {
-        <img class="step-image" [src]="step.imageSlot.base64" />
-        <br />
-      }
+        @if (step.imageSlot && step.imageSlot.base64) {
+          <img class="step-image" [src]="step.imageSlot.base64" />
+          <br />
+        }
+      </div>
     }
   } @else if (isStepsWithCodeBlockArray) {
     <!-- StepsWithCodeBlock[]: steps list -> code block -> steps list -> code block -> ... -->

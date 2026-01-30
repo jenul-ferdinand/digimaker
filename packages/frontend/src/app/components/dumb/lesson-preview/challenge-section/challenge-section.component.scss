@@ -1,8 +1,14 @@
 .challenge-section {
-  break-inside: avoid;
   display: flex;
   flex-direction: column;
   gap: 3mm;
+}
+
+.challenge-header-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3mm;
+  break-inside: avoid;
 }
 
 .challenge-item {
@@ -13,8 +19,9 @@
   border-radius: var(--section-card-border-radius);
   background-color: var(--section-card-color);
   box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.08);
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  break-inside: avoid;
 }
 
 .challenge-medal {
@@ -43,24 +50,14 @@
     white-space: pre-wrap;
     color: #343434;
   }
+}
 
-  .code-block {
-    margin-top: 3mm;
-    margin-bottom: 5mm;
-    padding: 1mm 5mm;
-    max-width: 100%;
-    width: fit-content;
-    font-family: 'Jetbrains';
-    user-select: none;
-    font-size: 10pt;
-    border-radius: 2mm;
-    background-color: var(--codeblock-background-color);
-    overflow-wrap: anywhere;
-  }
-
-  .code-block pre {
-    margin: 0;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
+.challenge-image {
+  display: block;
+  max-width: 100%;
+  max-height: 80mm;
+  width: auto;
+  object-fit: contain;
+  margin-top: 3mm;
+  border-radius: 4px;
 }

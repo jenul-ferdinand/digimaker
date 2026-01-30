@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Lesson } from '@digimakers/core/schemas';
 import { LessonFormComponent } from '@components/dumb/lesson-form/lesson-form.component';
 import { LessonPreviewComponent } from '@components/dumb/lesson-preview/lesson-preview.component';
-import { sampleScratchLesson } from '@sample-data/scratch-lesson';
-import { sampleJavaL5RandomnessRollDice, sampleJavaLesson } from '@sample-data/java-lesson';
+import { sampleLesson9LoopModernArt, sampleScratchLesson } from '@sample-data/scratch-lessons';
+import { sampleJavaL5RandomnessRollDice, sampleJavaLesson } from '@sample-data/java-lessons';
 import {
   sampleMultiSmallBasicLesson,
   sampleSmallBasicLesson3VariablesRGB,
-} from '@sample-data/smallbasic-multi-lesson';
+} from '@sample-data/smallbasic-lessons';
+import { sampleCLesson3VariablesClockAngles } from '@sample-data/c-lessons';
 
 @Component({
   selector: 'app-live-editor',
@@ -46,7 +47,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleJavaLesson;
+    this.activeData = sampleLesson9LoopModernArt;
 
     this.previewData = { ...this.activeData };
   }

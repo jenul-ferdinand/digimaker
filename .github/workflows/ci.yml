@@ -35,8 +35,23 @@ jobs:
         env:
           NPM_CONFIG_IGNORE_PLATFORM: "true"
 
-      - name: Check formatting
+      - name: Check formatting (only for PRs)
+        if: github.event_name == 'pull_request'
         run: npm run format:check
+
+      - name: Format and push (only for main branch)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          npm run format
+          if [ -n "$(git status --porcelain)" ]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add -A
+            git commit -m "chore: auto-format code with prettier"
+            git push
+          else
+            echo "No formatting changes needed"
+          fi
 
       - name: Build all packages
         run: npm run build

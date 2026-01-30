@@ -9,6 +9,9 @@ export const languageEnum = z.enum([
   'python',
   'java',
   'c',
+  'pygame',
+  'ruby',
+  'lua',
 ]);
 
 // NOTE: Fields with no describe() are assigned using rule-based logic.
@@ -45,6 +48,11 @@ export const ChallengeSchema = z.object({
     .describe(
       'Code that gives a hint on how to complete the challenge (only code allowed, perserve whitespace and add line breaks)'
     ),
+});
+
+// Challenge schema for Scratch lessons - no code blocks, but has optional image slot
+export const ScratchChallengeSchema = ChallengeSchema.omit({ hintCode: true }).extend({
+  imageSlot: ImageSlotSchema.nullable().default(null),
 });
 export const NewProjectSchema = z.object({
   name: z
@@ -129,10 +137,13 @@ export const StepWithImageSchema = z.object({
 export const ScratchLessonSchema = ProgrammingLessonSchema.extend({
   lessonType: z.literal('block-based (scratch) lesson'),
   addYourCodeSection: z.array(StepWithImageSchema),
+  challengeSection: z.array(ScratchChallengeSchema).nullable(),
 }); // LLM version of the same schema
 const StepWithImageLLMSchema = StepWithImageSchema.omit({ imageSlot: true });
+const ScratchChallengeLLMSchema = ScratchChallengeSchema.omit({ imageSlot: true });
 export const ScratchLessonLLMSchema = ScratchLessonSchema.extend({
   addYourCodeSection: z.array(StepWithImageLLMSchema).describe('Step-by-step coding instructions'),
+  challengeSection: z.array(ScratchChallengeLLMSchema).nullable(),
 }).omit({
   level: true,
   prefaceImageSlots: true,
@@ -205,6 +216,7 @@ export type ImageSlot = z.infer<typeof ImageSlotSchema>;
 export type StepWithImage = z.infer<typeof StepWithImageSchema>;
 export type StepsWithCodeBlock = z.infer<typeof StepsWithCodeBlockSchema>;
 export type Challenge = z.infer<typeof ChallengeSchema>;
+export type ScratchChallenge = z.infer<typeof ScratchChallengeSchema>;
 export type NewProject = z.infer<typeof NewProjectSchema>;
 export type Lesson = z.infer<typeof LessonSchema>;
 export type LessonLLM = z.infer<typeof LessonLLMSchema>;

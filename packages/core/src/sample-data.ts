@@ -44,12 +44,20 @@ export const sampleLessonData: Lesson = {
     'Check if the car bounces at the edges',
   ],
   challengeSection: [
-    { name: 'Bruise Penguin', task: 'Add sound effects when the penguin gets hit', hintCode: null },
-    { name: 'Add more cars', task: 'Add more cars moving at different speeds', hintCode: null },
+    {
+      name: 'Bruise Penguin',
+      task: 'Add sound effects when the penguin gets hit',
+      imageSlot: null,
+    },
+    {
+      name: 'Add more cars',
+      task: 'Add more cars moving at different speeds',
+      imageSlot: null,
+    },
     {
       name: 'Multiple Levels',
       task: 'Create multiple levels with increasing difficulty',
-      hintCode: null,
+      imageSlot: null,
     },
   ],
   newProject: {

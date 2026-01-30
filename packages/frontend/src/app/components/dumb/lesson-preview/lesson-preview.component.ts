@@ -22,7 +22,16 @@ import { DebugSectionComponent } from './debug-section/debug-section.component';
 import { FunFactComponent } from './fun-fact/fun-fact.component';
 
 const JAVASCRIPT_ALIASES = new Set(['javascript or html or css', 'javascript', 'html', 'css']);
-const SUPPORTED_LANGUAGE_BADGES = new Set(['scratch', 'small-basic', 'python', 'java', 'c']);
+const SUPPORTED_LANGUAGE_BADGES = new Set([
+  'scratch',
+  'small-basic',
+  'python',
+  'java',
+  'c',
+  'pygame',
+  'ruby',
+  'lua',
+]);
 
 @Component({
   selector: 'app-lesson-preview',
@@ -50,6 +59,18 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
 
   private viewReady = false;
 
+  languageMap: any = {
+    'javascript or html or css': 'JavaScript',
+    'small-basic': 'Small Basic',
+    python: 'Python',
+    c: 'C',
+    java: 'Java',
+    scratch: 'Scratch',
+    pygame: 'Pygame',
+    ruby: 'Ruby',
+    lua: 'Lua',
+  };
+
   get languageBadgeSrc(): string | null {
     const raw = this.data?.programmingLanguage;
     if (!raw) return null;
@@ -71,13 +92,6 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
       return 'JavaScript';
     }
     return raw;
-  }
-
-  get levelBadgeSrc(): string | null {
-    const level = this.data?.level;
-    if (level === 1) return 'level1.png';
-    if (level === 2) return 'level2.png';
-    return null;
   }
 
   ngAfterViewInit(): void {
@@ -105,10 +119,20 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
     const pageStyles = `
       @page {
         size: A4;
-        margin: 42mm 10mm 10mm;
+        margin: 42mm 7mm 10mm;
+        @bottom-left {
+          content: "Lesson: ${this.data?.topic} - ${this.data?.project}";
+          font-size: 8pt;
+          color: #666;
+        }
         @bottom-center {
           content: counter(page) " / " counter(pages);
-          font-size: 12pt;
+          font-size: 10pt;
+          color: #666;
+        }
+        @bottom-right {
+          content: "${this.languageMap[this.data!.programmingLanguage]} | Level ${this.data!.level}";
+          font-size: 8pt;
           color: #666;
         }
       }
@@ -121,23 +145,35 @@ export class LessonPreviewComponent implements AfterViewInit, OnChanges {
         z-index: 10;
       }
       .preface-section {
-        margin-top: 5cm;
+        break-inside: avoid;
+        margin-top: 3cm;
       }
 
       app-get-ready-section {
+        display: block;
         break-before: page;
+        break-after: avoid;
       }
 
-      app-challenge-section {
-        break-before: page;
+      app-add-your-code {
+        display: block;
+        break-before: avoid;
       }
+
+      app-add-your-code h3 {
+        break-after: avoid;
+      }
+
+      // app-challenge-section {
+      //   break-before: page;
+      // }
       app-new-project-section {
         margin-top: 5mm;
       }
 
-      app-test-yourself {
-        break-before: page;
-      }
+      // app-test-yourself {
+      //   break-before: page;
+      // }
     `;
 
     const paged = new Previewer();

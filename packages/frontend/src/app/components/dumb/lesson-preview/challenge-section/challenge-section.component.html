@@ -1,25 +1,68 @@
 <section class="challenge-section">
-  <h3>Challenges!</h3>
-  @for (challenge of challenges; track $index; let i = $index) {
-    <div class="challenge-item">
-      <img
-        class="challenge-medal"
-        [src]="i === 0 ? 'bronze.png' : i === 1 ? 'silver.png' :  i === 2 ? 'gold.png' : 'fourth-challenge.png'"
-        [alt]="i === 0 ? 'Bronze medal' : i === 1 ? 'Silver medal' : i === 2 ? 'Gold medal' :  'Platnium medal'"
-      />
-      <div class="challenge-content">
-        <h4>{{ challenge.name }}</h4>
-        <p>{{ challenge.task }}</p>
-        @if (challenge.hintCode) {
-          <div class="code-block">
-            <pre><code
-              prismHighlight
-              [code]="challenge.hintCode"
-              [language]="programmingLanguage"
-            ></code></pre>
-          </div>
-        }
+  <!-- Header + first challenge wrapped together to prevent orphaned header -->
+  @if (challenges.length > 0) {
+    <div class="challenge-header-group">
+      <h3>Challenges!</h3>
+      <div class="challenge-item">
+        <img
+          class="challenge-medal"
+          src="bronze.png"
+          alt="Bronze medal"
+        />
+        <div class="challenge-content">
+          <h4>{{ challenges[0].name }}</h4>
+          <p>{{ challenges[0].task }}</p>
+          @if ($any(challenges[0]).hintCode) {
+            <div>
+              <pre class="code-block code-block--small"><code
+                prismHighlight
+                [code]="$any(challenges[0]).hintCode"
+                [language]="programmingLanguage"
+              ></code></pre>
+            </div>
+          }
+          @if ($any(challenges[0]).imageSlot?.base64) {
+            <img
+              class="challenge-image"
+              [src]="$any(challenges[0]).imageSlot.base64"
+              alt="Challenge illustration"
+            />
+          }
+        </div>
       </div>
     </div>
+  }
+
+  <!-- Remaining challenges -->
+  @for (challenge of challenges; track $index; let i = $index) {
+    @if (i > 0) {
+      <div class="challenge-item">
+        <img
+          class="challenge-medal"
+          [src]="i === 1 ? 'silver.png' : i === 2 ? 'gold.png' : 'fourth-challenge.png'"
+          [alt]="i === 1 ? 'Silver medal' : i === 2 ? 'Gold medal' : 'Platinum medal'"
+        />
+        <div class="challenge-content">
+          <h4>{{ challenge.name }}</h4>
+          <p>{{ challenge.task }}</p>
+          @if ($any(challenge).hintCode) {
+            <div>
+              <pre class="code-block code-block--small"><code
+                prismHighlight
+                [code]="$any(challenge).hintCode"
+                [language]="programmingLanguage"
+              ></code></pre>
+            </div>
+          }
+          @if ($any(challenge).imageSlot?.base64) {
+            <img
+              class="challenge-image"
+              [src]="$any(challenge).imageSlot.base64"
+              alt="Challenge illustration"
+            />
+          }
+        </div>
+      </div>
+    }
   }
 </section>

@@ -20,15 +20,15 @@
   background-color: rgb(220, 90, 43);
   border: 1mm solid rgb(212, 76, 27);
   border-radius: 10mm;
-  padding: 15px 32px;
+  padding: 4mm 15mm;
   max-width: 50%;
   cursor: pointer;
   font-family: 'PoppinsSemiBold';
   font-size: 13pt;
   gap: 5mm;
   box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.08);
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.04);
 
   justify-content: center;
   align-items: center;
@@ -42,6 +42,9 @@
     margin: 0;
     color: white;
   }
+}
+test-yourself-button-test {
+  height: fit-content;
 }
 
 .test-yourself-text {

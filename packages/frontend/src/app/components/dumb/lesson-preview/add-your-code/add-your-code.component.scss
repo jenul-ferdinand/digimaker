@@ -1,19 +1,24 @@
 .add-your-code {
   margin: 1rem 0;
+  break-inside: auto; /* Allow section to break across pages */
 
   h3 {
     margin-bottom: 3mm;
+    break-after: avoid; /* Keep header with first step */
   }
 }
 
+.scratch-step-container {
+  break-inside: avoid;
+}
 .add-your-code .step {
   margin: 0.5rem 0;
   padding: 0.5rem;
   border-radius: var(--section-card-border-radius);
   background-color: var(--section-card-color);
   box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.08);
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.04);
   font-size: 0.95rem;
   white-space: pre-wrap;
 }
@@ -26,28 +31,6 @@
   object-fit: contain;
   margin: 0.5rem auto;
   border-radius: 4px;
-}
-
-.add-your-code .code-block {
-  background-color: var(--codeblock-background-color);
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 11pt;
-  font-family: 'Jetbrains';
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
-  margin: 1rem 0;
-  user-select: none;
-}
-
-.add-your-code .code-block code {
-  font-size: 11pt;
-  tab-size: 2;
-  font-family: 'Jetbrains';
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-wrap: anywhere;
 }
 
 .multiple-steps-with-code-block {

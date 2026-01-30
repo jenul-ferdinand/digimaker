@@ -5,14 +5,6 @@
       <span class="header-logo">
         <img class="lesson-logo" src="digimaker-logo.png" width="200px" />
       </span>
-      <span class="header-badges">
-        @if (languageBadgeSrc) {
-          <img class="language-badge" [src]="languageBadgeSrc" [alt]="languageBadgeAlt" />
-        }
-        @if (levelBadgeSrc) {
-          <img class="level-badge" [src]="levelBadgeSrc" alt="Level" />
-        }
-      </span>
     </header>
 
     <main>
@@ -23,26 +15,43 @@
           [description]="data.description"
         />
 
-        @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
-          <section class="oneliner">
-            <p>{{ data.projectExplainer }}</p>
-          </section>
-        }
+        <div class="details-section">
+          @if (data.lessonType !== 'debugging lesson' && data.projectExplainer.trim()) {
+            <section class="oneliner">
+              <p class="project-title">
+                Project this week:
+                <span style="font-family: 'Poppins'; font-weight: normal">{{ data.project }}</span>
+              </p>
+              <p>{{ data.projectExplainer }}</p>
+            </section>
+          }
 
-        <!-- Multiple preface images -->
-        @if (data.prefaceImageSlots && data.prefaceImageSlots.length > 1) {
-          <div class="preface-images">
-            @for (slot of data.prefaceImageSlots; track $index) {
-              <img class="preface-image" [src]="slot.base64" />
-            }
+          <!-- Multiple preface images -->
+          @if (data.prefaceImageSlots) {
+            <div class="preface-images">
+              @for (slot of data.prefaceImageSlots; track $index) {
+                <img class="preface-image" [src]="slot.base64" />
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Language and level -->
+        <div class="preface-language-badge">
+          @if (data.programmingLanguage === 'scratch' || data.programmingLanguage === 'pygame') {
+            <!-- Wide logos need larger width -->
+            <img class="preface-language-badge-icon" style="width: 32mm" [src]="languageBadgeSrc" />
+          } @else {
+            <img class="preface-language-badge-icon" [src]="languageBadgeSrc" />
+          }
+          <div class="details">
+            <p>Language: {{ languageMap[data.programmingLanguage] }}</p>
+            <p>Level: {{ data.level }}</p>
           </div>
-        }
+        </div>
       </div>
 
-      <app-get-ready-section
-        [getReadySectionData]="data.getReadySection"
-        [imageSlot]="data.prefaceImageSlots?.length == 1 ? data.prefaceImageSlots![0] : null"
-      />
+      <app-get-ready-section [getReadySectionData]="data.getReadySection" />
 
       @if (data.lessonType === 'debugging lesson') {
         <app-debug-section [debugSteps]="data.debugSection" />

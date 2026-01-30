@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Challenge } from '@digimakers/core/schemas';
+import { Challenge, ScratchChallenge } from '@digimakers/core/schemas';
 import { PrismHighlightDirective } from '@directives/prism-highlight.directive';
 
 @Component({
@@ -10,6 +10,6 @@ import { PrismHighlightDirective } from '@directives/prism-highlight.directive';
   styleUrl: './challenge-section.component.scss',
 })
 export class ChallengeSectionComponent {
-  @Input({ required: true }) challenges!: Challenge[];
+  @Input({ required: true }) challenges!: (Challenge | ScratchChallenge)[];
   @Input({ required: true }) programmingLanguage!: string;
 }

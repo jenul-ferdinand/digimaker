@@ -17,9 +17,15 @@
   gap: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 50%, #ddd6fe 100%);
+  // background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 50%, #ddd6fe 100%);
+  background: #e9d5ff;
   border: 2px solid #a855f7;
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.08);
+}
+.test-card {
+  background: gray;
+  padding: 1mm;
+  border-radius: 1mm;
 }
 
 .new-project-star {
@@ -36,7 +42,7 @@
   h4 {
     margin: 0 0 0.35rem 0;
     font-size: 13pt;
-    color: #6b21a8;
+    color: rgb(107, 33, 168);
     font-family: 'PoppinsSemiBold';
   }
 
@@ -44,6 +50,6 @@
     margin: 0;
     font-size: 11pt;
     text-align: left;
-    color: #581c87;
+    color: rgb(88, 28, 135);
   }
 }

@@ -16,12 +16,22 @@ export interface ParsedSection {
   imageSlots: ImageSlot[];
 }
 
+// For challenges, we need to track which challenge each image belongs to
+export interface ChallengeImageMapping {
+  challengeIndex: number; // 0-based index of the challenge within the section
+  imageSlot: ImageSlot;
+}
+
+export interface ChallengeParsedSection extends ParsedSection {
+  challengeImageMappings: ChallengeImageMapping[];
+}
+
 export interface DoclingParsedSections {
   preface: ParsedSection;
   getReady: ParsedSection;
   addYourCode: ParsedSection;
   tryItOut: ParsedSection;
-  challenge: ParsedSection;
+  challenge: ChallengeParsedSection;
   testYourself: ParsedSection;
   funFact: ParsedSection;
 }
@@ -39,6 +49,53 @@ function createImageSlots(count: number, prefix: string): ImageSlot[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `${prefix}_img_${i + 1}`,
   }));
+}
+
+/**
+ * Parse challenge section content to map images to specific challenges.
+ * Individual challenges are identified by ## headers within the challenge section.
+ * Images are assigned to the challenge they appear under.
+ */
+function parseChallengeImageMappings(content: string): ChallengeImageMapping[] {
+  const mappings: ChallengeImageMapping[] = [];
+  const lines = content.split('\n');
+
+  // Find the main "## Challenge" header first, then look for sub-challenges
+  // Sub-challenges typically start with ## followed by the challenge name
+  let currentChallengeIndex = -1; // -1 means before any challenge
+  let imageCounter = 0;
+  let isAfterMainHeader = false;
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+
+    // Check if this is the main Challenge header (## Challenge or ## Challenge!)
+    if (SECTION_HEADERS.challenge.test(trimmedLine)) {
+      isAfterMainHeader = true;
+      continue;
+    }
+
+    // Check if this is a sub-challenge header (## followed by text, but not a known section)
+    if (isAfterMainHeader && /^##\s+\S/.test(trimmedLine)) {
+      // Make sure it's not another main section header
+      const isMainSection = Object.values(SECTION_HEADERS).some((pattern) =>
+        pattern.test(trimmedLine)
+      );
+      if (!isMainSection) {
+        currentChallengeIndex++;
+      }
+    }
+
+    // Check for image marker
+    if (trimmedLine === IMAGE_MARKER && currentChallengeIndex >= 0) {
+      mappings.push({
+        challengeIndex: currentChallengeIndex,
+        imageSlot: { id: `challenge_img_${++imageCounter}` },
+      });
+    }
+  }
+
+  return mappings;
 }
 
 function splitAtHeader(markdown: string, headerPattern: RegExp): SectionSplit | null {
@@ -79,7 +136,7 @@ export function parseDoclingMarkdown(markdown: string): DoclingParsedSections {
     getReady: { content: '', imageSlots: [] },
     addYourCode: { content: '', imageSlots: [] },
     tryItOut: { content: '', imageSlots: [] },
-    challenge: { content: '', imageSlots: [] },
+    challenge: { content: '', imageSlots: [], challengeImageMappings: [] },
     testYourself: { content: '', imageSlots: [] },
     funFact: { content: '', imageSlots: [] },
   };
@@ -120,10 +177,17 @@ export function parseDoclingMarkdown(markdown: string): DoclingParsedSections {
     SECTION_HEADERS.challenge,
   ]).trim();
 
+  // Extract Challenge section, with image mappings (for Scratch lessons)
   sections.challenge.content = extractSection(markdown, SECTION_HEADERS.challenge, [
     SECTION_HEADERS.testYourself,
     SECTION_HEADERS.funFact,
   ]).trim();
+  // Parse challenge-specific image mappings (tracks which challenge each image belongs to)
+  sections.challenge.challengeImageMappings = parseChallengeImageMappings(
+    sections.challenge.content
+  );
+  // Also create flat imageSlots for compatibility
+  sections.challenge.imageSlots = sections.challenge.challengeImageMappings.map((m) => m.imageSlot);
 
   sections.testYourself.content = extractSection(markdown, SECTION_HEADERS.testYourself, [
     SECTION_HEADERS.funFact,
@@ -152,9 +216,10 @@ export function assignImagesToSlots(
     }
   };
 
-  // Only assign to sections that track image slots
+  // Assign to sections that track image slots (in document order)
   assignToSection(sections.preface);
   assignToSection(sections.addYourCode);
+  assignToSection(sections.challenge);
 
   return sections;
 }
