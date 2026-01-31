@@ -11,6 +11,7 @@ import {
   sampleSmallBasicLesson3VariablesRGB,
 } from '@sample-data/smallbasic-lessons';
 import { sampleCLesson3VariablesClockAngles } from '@sample-data/c-lessons';
+import { sampleRuby2LoopPasswordCheck } from '@sample-data/ruby-lessons';
 
 @Component({
   selector: 'app-live-editor',
@@ -47,7 +48,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleLesson9LoopModernArt;
+    this.activeData = sampleRuby2LoopPasswordCheck;
 
     this.previewData = { ...this.activeData };
   }
