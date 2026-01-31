@@ -6,16 +6,32 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-ruby';
+import 'prismjs/components/prism-lua';
 
 @Injectable({ providedIn: 'root' })
 export class PrismHighlightService {
   normalizeLanguage(language?: string): string | null {
     if (!language) return null;
     const lower = language.toLowerCase().trim();
-    if (lower === 'none') return null;
-    if (lower === 'small-basic') return 'clike';
-    if (lower === 'javascript or html or css') return 'markup';
-    if (lower === 'c' || lower === 'java') return 'clike';
+
+    switch (lower) {
+      case 'none':
+        return null;
+
+      case 'small-basic':
+      case 'c':
+      case 'java':
+        return 'clike';
+
+      case 'javascript or html or css':
+        return 'markup';
+
+      case 'pygame':
+        return 'python';
+    }
+
+    // Languages that just work by itself
     return lower;
   }
 
