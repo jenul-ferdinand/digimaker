@@ -101,12 +101,9 @@ export const ProgrammingLessonSchema = z.object({
     .describe('List of setup steps to prepare for the project (adding sprites, backdrops, etc.)'),
   addYourCodeSection: z
     .array(StepsWithCodeBlockSchema)
-    .describe(
-      'Multiple steps with a code block directly following each, or some without a code block. If there is only one step provide it as an array with one item'
-    )
     .nullable()
     .describe(
-      'Section that guides students on adding the base code. Null only when it is a debugging lesson'
+      'Multiple steps with a code block directly following each, or some without a code block. If there is only one step provide it as an array with one item'
     ),
   tryItOutSection: z
     .array(z.string())
@@ -197,15 +194,17 @@ const DebugLessonLLMSchemaNoType = DebugLessonLLMSchema.omit({
   'Use this for debugging exercises where the goal is to fix an existing issues rather than building one from scratch.'
 );
 
-export const LessonLLMSchema = z.union([
+export const LessonLLMSchemaNoType = z.union([
   StandardLessonLLMSchemaNoType,
   ScratchLessonLLMSchemaNoType,
   DebugLessonLLMSchemaNoType,
 ]);
 
-export const LessonLLMSchemaWithoutLanguage = z.union([
+export const ScratchLessonLLMSchemaNoTypeNoLang = ScratchLessonLLMSchemaNoType.omit({
+  programmingLanguage: true,
+});
+export const LessonLLMSchemaNoTypeNoLang = z.union([
   StandardLessonLLMSchemaNoType.omit({ programmingLanguage: true }),
-  ScratchLessonLLMSchemaNoType.omit({ programmingLanguage: true }),
   DebugLessonLLMSchemaNoType.omit({ programmingLanguage: true }),
 ]);
 
@@ -219,4 +218,4 @@ export type Challenge = z.infer<typeof ChallengeSchema>;
 export type ScratchChallenge = z.infer<typeof ScratchChallengeSchema>;
 export type NewProject = z.infer<typeof NewProjectSchema>;
 export type Lesson = z.infer<typeof LessonSchema>;
-export type LessonLLM = z.infer<typeof LessonLLMSchema>;
+export type LessonLLM = z.infer<typeof LessonLLMSchemaNoType>;

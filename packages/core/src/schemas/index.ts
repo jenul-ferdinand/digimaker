@@ -8,7 +8,7 @@ export {
   ScratchLessonSchema,
   DebugLessonSchema,
   LessonSchema,
-  LessonLLMSchema,
+  LessonLLMSchemaNoType as LessonLLMSchema,
   type ImageSlot,
   type StepWithImage,
   type StepsWithCodeBlock,

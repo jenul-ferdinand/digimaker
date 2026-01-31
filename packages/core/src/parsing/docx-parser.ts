@@ -6,9 +6,10 @@ import { logger } from '../logger.js';
 import { extractFooterInfo } from './footer-parser.js';
 import {
   LessonLLM,
-  LessonLLMSchema,
-  LessonLLMSchemaWithoutLanguage,
+  LessonLLMSchemaNoType,
+  LessonLLMSchemaNoTypeNoLang,
   ProgrammingLanguage,
+  ScratchLessonLLMSchemaNoTypeNoLang,
 } from '../schemas/lesson.js';
 import { parseDoclingMarkdown, assignImagesToSlots } from './docling-parser.js';
 import { getDoclingMarkdown } from './docling-runners.js';
@@ -96,9 +97,25 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
     logger.warn('Programming language not found from footer, LLM must determine');
   }
 
-  // If we find the programming language in the footer,
-  // we don't need the LLM to figure it out.
-  const llmSchema = footerLanguage ? LessonLLMSchemaWithoutLanguage : LessonLLMSchema;
+  // - If we find the programming language in the footer, we provide the schema
+  //   without the language field.
+  // - If we find 'scratch' in the footer, then we provide the scratch schema.
+  const llmSchema = footerLanguage
+    ? (() => {
+        return footerLanguage === 'scratch'
+          ? (() => {
+              logger.debug('Chose scratch lesson schema to pass into LLM');
+              return ScratchLessonLLMSchemaNoTypeNoLang;
+            })()
+          : (() => {
+              logger.debug('Chose union programming or debug lesson schema to pass into LLM');
+              return LessonLLMSchemaNoTypeNoLang;
+            })();
+      })()
+    : (() => {
+        logger.debug('Chose union of all lesson schema to pass into LLM');
+        return LessonLLMSchemaNoType;
+      })();
 
   let output: unknown;
   try {
@@ -107,9 +124,7 @@ export async function parseDocx(filePath: string): Promise<ParseResult> {
     logger.info(`Extracting structured data using ${model} model`);
     const response = await generateText({
       model: getGoogleClient()(model),
-      output: Output.object({
-        schema: llmSchema,
-      }),
+      output: Output.object({ schema: llmSchema as any }),
       system: docxParserSystemPrompt,
       prompt: buildDocxParserPrompt(textForLLM),
       temperature: 0,
