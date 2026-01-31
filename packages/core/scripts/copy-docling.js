@@ -10,6 +10,7 @@ const destDir = path.resolve(__dirname, '..', 'dist', 'docling-cleaner');
 const cleanerScript = path.resolve(srcDir, 'cleaner.py');
 const pyprojectFile = path.resolve(srcDir, 'pyproject.toml');
 const uvLockFile = path.resolve(srcDir, 'uv.lock');
+const pythonVersionFile = path.resolve(srcDir, '.python-version');
 
 if (!fs.existsSync(srcDir)) {
   console.error(`docling-cleaner source not found at ${srcDir}`);
@@ -27,6 +28,9 @@ if (fs.existsSync(pyprojectFile)) {
 }
 if (fs.existsSync(uvLockFile)) {
   fs.copyFileSync(uvLockFile, path.join(destDir, 'uv.lock'));
+}
+if (fs.existsSync(pythonVersionFile)) {
+  fs.copyFileSync(pythonVersionFile, path.join(destDir, '.python-version'));
 }
 
 console.log(`Copied docling-cleaner runtime assets to ${destDir}`);
