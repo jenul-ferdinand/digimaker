@@ -12,6 +12,7 @@ import {
 } from '@sample-data/smallbasic-lessons';
 import { sampleCLesson3VariablesClockAngles } from '@sample-data/c-lessons';
 import { sampleRuby2LoopPasswordCheck } from '@sample-data/ruby-lessons';
+import { samplePygame1BrickCollect } from '@sample-data/pygame-lessons';
 
 @Component({
   selector: 'app-live-editor',
@@ -48,7 +49,7 @@ export class LiveEditorComponent {
   }
 
   loadInitialData() {
-    this.activeData = sampleRuby2LoopPasswordCheck;
+    this.activeData = samplePygame1BrickCollect;
 
     this.previewData = { ...this.activeData };
   }
