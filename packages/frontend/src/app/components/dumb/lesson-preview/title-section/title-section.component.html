@@ -2,5 +2,5 @@
   <div class="topic-and-project">
     <h1 class="topic">{{ topic }}</h1>
   </div>
-  <p class="description">{{ description }}</p>
+  <p class="description" [innerHTML]="description | markdown"></p>
 </section>
